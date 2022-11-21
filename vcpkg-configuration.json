@@ -1,0 +1,12 @@
+{
+  "registries": [
+    {
+      "kind": "git",
+      "repository": "git@github.com:onbings/onbings-vcpkg-registry.git",
+      "baseline": "2913feb014cb2deddd68e3f649d8542ed50f0106",
+      "packages": [
+        "bofstd"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+include(CMakeFindDependencyMacro)
+
+macro(find_package_dependency)
+
+  # When loading the *Config.cmake we should
+  # call find_dependency which is just a wrapper
+  # around find_package to display better
+  # messages to the user. When directly dealing
+  # with our CMakeLists.txt, we should call
+  # find_package directly
+  if(FROM_CONFIG_FILE)
+     find_dependency(${ARGN})
+  else()
+     find_package(${ARGN})
+  endif()
+
+endmacro()
+
+# =========================
+# == PUBLIC DEPENDENCIES ==
+# =========================
+
+# if(NOT TARGET ONBINGS::onbings-somelib)
+#   find_package_dependency(onbings-somelib REQUIRED)
+# endif()
+
+# ==========================
+# == PRIVATE DEPENDENCIES ==
+# ==========================
+
+#find_package_dependency(Qt5 REQUIRED Core Gui Widgets)
+
+# if(NOT TARGET ONBINGS::onbings-anotherlib)
+#   find_package_dependency(onbings-anotherlib REQUIRED)
+# endif()
+
+find_package_dependency(glfw3 REQUIRED)
+find_package_dependency(glad REQUIRED)
+find_package_dependency(glm REQUIRED)
+find_package_dependency(freetype REQUIRED)
+
+find_package_dependency(libyuv REQUIRED)
+find_package_dependency(ZLIB REQUIRED)
+find_package_dependency(ZenLib REQUIRED)
+find_package_dependency(MediaInfoLib REQUIRED)
+find_package_dependency(OpenSSL REQUIRED)
+find_package(bofstd CONFIG REQUIRED)
+
+message("===FREETYPE_FOUND===========>" ${FREETYPE_FOUND})
+message("===FREETYPE_INCLUDE_DIRS===========>" ${FREETYPE_INCLUDE_DIRS})
+message("===FREETYPE_INCLUDE_DIR_ft2build===========>" ${FREETYPE_INCLUDE_DIR_ft2build})
+message("===FREETYPE_INCLUDE_DIR_freetype2===========>" ${FREETYPE_INCLUDE_DIR_freetype2})
+message("===FREETYPE_LIBRARIES===========>" ${FREETYPE_LIBRARIES})
+message("===FREETYPE_VERSION_STRING===========>" ${FREETYPE_VERSION_STRING})
+
+
+find_path(STB_INCLUDE_DIRS "stb_image.h")
+
+##target_include_directories(main PRIVATE ${STB_INCLUDE_DIRS})
+message("===STB_INCLUDE_DIRS===========>" ${STB_INCLUDE_DIRS})
+find_path( AVCODEC_INCLUDE_DIR libavcodec/avcodec.h )
+find_library( AVCODEC_LIBRARY avcodec )
+message("===AVCODEC_INCLUDE_DIR===========>" ${AVCODEC_INCLUDE_DIR})
+message("===AVCODEC_LIBRARY===========>" ${AVCODEC_LIBRARY})
+
+## 1>===STB_INCLUDE_DIRS===========>C:/bld/bofstd/vcpkg_installed/evs-x64-swx-windows-dynamic/include
+## 1>===AVCODEC_INCLUDE_DIR===========>C:/bld/bofstd/vcpkg_installed/evs-x64-swx-windows-dynamic/include
+## 1>===AVCODEC_LIBRARY===========>C:/bld/bofstd/vcpkg_installed/evs-x64-swx-windows-dynamic/debug/lib/avcodec.lib
