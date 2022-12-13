@@ -1,7 +1,28 @@
+/*
+ * Copyright (c) 2013-2023, OnBings All rights reserved.
+ *
+ * THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+ * KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
+ * PURPOSE.
+ *
+ * This module implements the unit testing of the bof2d class
+ *
+ * Name:        ut_enum.cpp
+ * Author:      Bernard HARMEL: onbings@dscloud.me
+ * Web:					onbings.dscloud.me
+ * Revision:    1.0
+ *
+ * Rem:         Nothing
+ *
+ * History:
+ *
+ * V 1.00  Dec 26 2013  BHA : Initial release
+ */
 #include "gtestrunner.h"
 
-#include <bof2d/bof2d_game_engine.h>
-#include <bof2d/bof2d_res_mgr.h>
+#include <bof2d/engine/bof2d_game_engine.h>
+#include <bof2d/engine/bof2d_res_mgr.h>
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -76,7 +97,7 @@ void APIENTRY glDebugOutput(GLenum source,
   std::cout << std::endl;
 }
 
-TEST(GameEngin2d_Test, Loop)
+TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
 {
   /* Initialize the library */
   if (glfwInit())

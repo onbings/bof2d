@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
   testing::InitGoogleTest(&argc, argv);
   int    Rts_i;
 
-  ::testing::GTEST_FLAG(filter) = "GameEngin2d_Test.*";
+//  ::testing::GTEST_FLAG(filter) = "Bof2d_GameEngine_Test.*";
   Rts_i = RUN_ALL_TESTS();
 
 #if !defined(NDEBUG)

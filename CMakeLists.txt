@@ -17,6 +17,28 @@
 #               06 March 2021 remove dependency on third party and cmake helpers
 #               22 April 2022 updated with NMA cmake and vcpkg ideas 
 
+# "dependencies": [
+#   { "name": "bofstd" },  
+#	{
+#	  "name": "glfw3",
+#      "platform": "windows"
+#    },
+#    { "name": "glm" },
+#{
+#  "registries": [
+#    {
+#      "kind": "git",
+#      "repository": "git@github.com:onbings/onbings-vcpkg-registry.git",
+#      "baseline": "2913feb014cb2deddd68e3f649d8542ed50f0106",
+#      "packages": [
+#        "bofstd"
+#      ]
+#    }
+#  ]
+#}
+
+
+
 cmake_minimum_required(VERSION 3.15)
 if (VCPKG_TARGET_ANDROID)
 message("ANDROID->include C:/pro/vcpkg/docs/examples/vcpkg_android_example_cmake_script/cmake/vcpkg_android.cmake")

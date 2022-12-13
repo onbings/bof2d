@@ -4,10 +4,7 @@
   "description": "The onbings general purpose 2d C++ Multiplatform library",
   "dependencies": [
     { "name": "bofstd" },  
-	{
-	  "name": "glfw3",
-      "platform": "windows"
-    },
+    { "name": "glfw3" },  
     { "name": "glm" },
     { "name": "freetype" },
     { "name": "stb" },

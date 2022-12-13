@@ -8,28 +8,34 @@ set(PUBLIC_INCLUDES_FILES
 set(API_FILES
 	./include/bof2d/bof2d.h
 	./src/bof2d.cpp
+	./include/bof2d/bof2d_convert.h
+	./src/bof2d_convert.cpp
+	./include/bof2d/bof2d_fileio.h
+	./src/bof2d_fileio.cpp
+	./include/bof2d/bof2d_mediadetector.h
+	./src/bof2d_mediadetector.cpp
 )
 
 set(GAME_ENGINE_FILES
-	./include/bof2d/bof2d_ball_obj.h
-	./src/bof2d_ball_obj.cpp
-	./include/bof2d/bof2d_game_engine.h
-	./src/bof2d_game_engine.cpp
-	./include/bof2d/bof2d_game_obj.h
-	./src/bof2d_game_obj.cpp
-	./include/bof2d/bof2d_particle_gen.h
-	./src/bof2d_particle_gen.cpp
-	./src/bof2d_opengl.cpp
-	./include/bof2d/bof2d_res_mgr.h
-	./src/bof2d_res_mgr.cpp
-	./include/bof2d/bof2d_shader.h
-	./src/bof2d_shader.cpp
-	./include/bof2d/bof2d_sprite_renderer.h
-	./src/bof2d_sprite_renderer.cpp
-	./include/bof2d/bof2d_text_renderer.h
-	./src/bof2d_text_renderer.cpp
-	./include/bof2d/bof2d_texture.h
-	./src/bof2d_texture.cpp
+	./include/bof2d/engine/bof2d_ball_obj.h
+	./src/engine/bof2d_ball_obj.cpp
+	./include/bof2d/engine/bof2d_game_engine.h
+	./src/engine/bof2d_game_engine.cpp
+	./include/bof2d/engine/bof2d_game_obj.h
+	./src/engine/bof2d_game_obj.cpp
+	./include/bof2d/engine/bof2d_particle_gen.h
+	./src/engine/bof2d_particle_gen.cpp
+	./src/engine/bof2d_opengl.cpp
+	./include/bof2d/engine/bof2d_res_mgr.h
+	./src/engine/bof2d_res_mgr.cpp
+	./include/bof2d/engine/bof2d_shader.h
+	./src/engine/bof2d_shader.cpp
+	./include/bof2d/engine/bof2d_sprite_renderer.h
+	./src/engine/bof2d_sprite_renderer.cpp
+	./include/bof2d/engine/bof2d_text_renderer.h
+	./src/engine/bof2d_text_renderer.cpp
+	./include/bof2d/engine/bof2d_texture.h
+	./src/engine/bof2d_texture.cpp
 )
 
 set(SOURCES_FILES
