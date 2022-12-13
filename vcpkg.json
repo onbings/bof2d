@@ -14,6 +14,7 @@
     { "name": "libyuv" },
     { "name": "libzen" },
     { "name": "openssl" },
-    { "name": "zlib" }	
+    { "name": "zlib" },
+    { "name": "ffmpeg" }	
   ]
 }

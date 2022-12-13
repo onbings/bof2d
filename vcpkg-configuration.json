@@ -11,7 +11,7 @@
     {
       "kind": "git",
       "repository": "ssh://git@bitbucket.evs.tv:7999/vcpkg/evs-vcpkg-registry.git",
-      "baseline": "47bf9540fa780c50235fabd666e212e43c1dbb24",
+      "baseline": "d75ca7cfd9d7ce17babf5432fffee366765729e7",
       "packages": [
         "bofstd"
       ]
