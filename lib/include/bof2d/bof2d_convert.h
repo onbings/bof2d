@@ -19,12 +19,10 @@
 #pragma once
 //#include <bof2d/bof2d.h>
 #pragma message("!!!!!!!!!!!!! CPP => TODO ADAPT THIS LINE AND REMOVE FILE FORM bofstd !!!!!!!!!!!!!")
-#include "../include/bof2d/bof2d.h"
+#include <2d/include/bof2d/bof2d.h>
 
 BEGIN_BOF2D_NAMESPACE()
 
-BOF2D_EXPORT BOFERR Bof_Rgb2Yuv(uint8_t _r_UB, uint8_t _g_UB, uint8_t _b_UB, uint8_t &_rY_UB, uint8_t &_rU_UB, uint8_t &_rV_UB);
-BOF2D_EXPORT BOFERR Bof_Yuv2Rgb(uint8_t _y_UB, uint8_t _u_UB, uint8_t _v_UB, uint8_t &_rR_UB, uint8_t &_rG_UB, uint8_t &_rB_UB);
 BOF2D_EXPORT void Bof_YuvToRgbReference(int y, int u, int v, uint8_t *r, uint8_t *g, uint8_t *b);
 // JPEG YUV to RGB reference
 BOF2D_EXPORT void Bof_YuvjToRgbReference(int y, int u, int v, uint8_t *r, uint8_t *g, uint8_t *b);

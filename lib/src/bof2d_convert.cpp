@@ -16,8 +16,7 @@
  *
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
-#include <bof2d/bof2d_convert.h>
-
+#include <2d/include/bof2d/bof2d_convert.h>
 #include <libyuv.h>
 
 BEGIN_BOF2D_NAMESPACE()
@@ -162,11 +161,12 @@ BOFERR Bof_UyvyToBgra(uint32_t _Width_U32, int _Height_i, uint32_t /*_UyvyStride
 
 BOFERR Bof_BgraToUyvy(uint32_t _Width_U32, int _Height_i, uint32_t _BrgaStride_U32, const uint8_t *_pBgra_U8, uint32_t _UyvyStride_U32, BOF_RECT *_pCrop_X, BOF_ROTATION _Rotation_E, uint8_t *_pUyvy_U8)
 {
-  BOFERR Rts_E = BOF_ERR_EINVAL;
+  BOFERR Rts_E = BOF_ERR_NO_ERROR;  // BOF_ERR_EINVAL;
   BOF_RECT r_X(0, 0, _Width_U32, _Height_i);
   int      DstStrideBgra_i, DstStrideUyvy_i, Sts_i, DstWidth_i, DstHeight_i;
   uint8_t *pBgra_U8;
 
+  /*
   if ((_pCrop_X) && (_pCrop_X->IsInside(r_X)))
   {
     Rts_E = BOF_ERR_NO_ERROR;
@@ -176,6 +176,7 @@ BOFERR Bof_BgraToUyvy(uint32_t _Width_U32, int _Height_i, uint32_t _BrgaStride_U
     Rts_E = BOF_ERR_NO_ERROR;
   }
   if (Rts_E == BOF_ERR_NO_ERROR)
+  */
   {
     DstStrideBgra_i = _BrgaStride_U32;
     DstStrideUyvy_i = _UyvyStride_U32;
@@ -219,7 +220,7 @@ BOFERR Bof_BgraToUyvy(uint32_t _Width_U32, int _Height_i, uint32_t _BrgaStride_U
             Rts_E = BOF_ERR_NO_ERROR;
           }
         }
-        BOF_SAFE_DELETE(pBgra_U8);
+        BOF_SAFE_DELETE_ARRAY(pBgra_U8);
       }
     }
     else

@@ -16,7 +16,7 @@
  *
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
-#include <bof2d/bof2d_fileio.h>
+#include <2d/include/bof2d/bof2d_fileio.h>
 #include <bofstd/boffs.h>
 #include <bofstd/bofstring.h>
 
@@ -493,7 +493,7 @@ BOFERR Bof_ReadGraphicFile(intptr_t Io, uint32_t _RecordIndex_U32, bool _TopDown
       }
       else
       {
-        Nb_U32 = 0;
+        //Nb_U32 = 0;
         p_UB = (_pData_UB)+((NbLineToRead_U32 - 1) * WidthInByte_U32);
         for (i_U32 = 0; i_U32 < NbLineToRead_U32; i_U32++)
         {
