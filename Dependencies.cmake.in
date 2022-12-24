@@ -69,7 +69,7 @@ message("===AVCODEC_LIBRARY===========>" ${AVCODEC_LIBRARY})
 #message("----------- CMAKE_FIND_ROOT_PATH------------>" ${CMAKE_FIND_ROOT_PATH})
 message("----------- activate CMAKE_FIND_DEBUG_MODE")
 set(CMAKE_FIND_DEBUG_MODE ON) 
-message("----------- CMAKE_FIND_ROOT_PATH-IS----------->" ${CMAKE_FIND_ROOT_PATH})
+message("-bha---------- CMAKE_FIND_ROOT_PATH-IS----------->" ${CMAKE_FIND_ROOT_PATH})
 message("----------- CMAKE_MODULE_PATH-IS----------->" ${CMAKE_MODULE_PATH})
 
 find_package_dependency(bofstd REQUIRED CONFIG)
