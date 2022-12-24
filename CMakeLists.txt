@@ -17,7 +17,7 @@
 #               06 March 2021 remove dependency on third party and cmake helpers
 #               22 April 2022 updated with NMA cmake and vcpkg ideas 
 cmake_minimum_required(VERSION 3.15)
-message("====ANDROID_PLATFORM==ROOT=D=================>" ${ANDROID_PLATFORM})
+message("====ANDROID_PLATFORM==ROOT=no include=================>" ${ANDROID_PLATFORM})
 #if(NOT "${ANDROID_PLATFORM}")
 #    message("ANDROID->include vcpkg_android.cmake")
 #    include("vcpkg_android.cmake")
