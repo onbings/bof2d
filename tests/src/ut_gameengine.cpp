@@ -28,6 +28,8 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 BOF2D::Game Breakout(SCR_WIDTH, SCR_HEIGHT);
 
+#if defined(ANDROID)
+#else
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -50,6 +52,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
       Breakout.Keys[key] = false;
   }
 }
+#endif
 void APIENTRY glDebugOutput(GLenum source,
   GLenum type,
   unsigned int id,
@@ -97,8 +100,11 @@ void APIENTRY glDebugOutput(GLenum source,
   std::cout << std::endl;
 }
 
-TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
+//TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
+TEST(Bof2d_GameEngine_Test, Loop)
 {
+#if defined(ANDROID)
+#else
   /* Initialize the library */
   if (glfwInit())
   {
@@ -183,4 +189,5 @@ TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
     }
     glfwTerminate();
   }
+#endif
 }

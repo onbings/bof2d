@@ -24,7 +24,10 @@
 #include <tuple>
 
 #include <glad/glad.h>
+#if defined(ANDROID)
+#else
 #include <GLFW/glfw3.h>
+#endif
 #include <glm/glm.hpp>
 
 #include <bof2d/bof2d.h>

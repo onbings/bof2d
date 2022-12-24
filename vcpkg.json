@@ -3,8 +3,7 @@
   "version": "1.0.0.1",
   "description": "The onbings general purpose 2d C++ Multiplatform library",
   "dependencies": [
-    { "name": "bofstd" },  
-    { "name": "glfw3" },  
+    { "name": "bofstd" },
     { "name": "glm" },
     { "name": "freetype" },
     { "name": "stb" },
@@ -12,9 +11,6 @@
     { "name": "gtest" },
     { "name": "libmediainfo" },
     { "name": "libyuv" },
-    { "name": "libzen" },
-    { "name": "openssl" },
-    { "name": "zlib" },
-    { "name": "ffmpeg" }	
+    { "name": "zlib" }
   ]
 }
