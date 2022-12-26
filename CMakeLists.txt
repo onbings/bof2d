@@ -273,7 +273,7 @@ install(
   EXPORT      bof2d
   FILE        bof2d-targets.cmake
   NAMESPACE   ONBINGS::
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/bof2d
+  DESTINATION ${CMAKE_INSTALL_DATADIR}
   COMPONENT   bof2d-devel
 )
 
@@ -286,7 +286,7 @@ set(INTERNAL_NAMESPACE ONBINGS)
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/bof2d-config.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}/bof2d
+  INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}
 )
 
 unset(INTERNAL_NAMESPACE)
@@ -303,7 +303,7 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/bof2d-config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/bof2d-version.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/bof2d-dependencies.cmake
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/bof2d
+  DESTINATION ${CMAKE_INSTALL_DATADIR}
   COMPONENT   bof2d-devel
 )
 
