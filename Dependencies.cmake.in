@@ -37,7 +37,7 @@ endmacro()
 #find_package_dependency(glfw3 REQUIRED)
 find_package_dependency(glad REQUIRED)
 find_package_dependency(glm REQUIRED)
-find_package_dependency(freetype REQUIRED)
+find_package_dependency(Freetype REQUIRED)	#Freetype::Freetype
 
 find_package_dependency(libyuv REQUIRED)
 find_package_dependency(ZLIB REQUIRED)

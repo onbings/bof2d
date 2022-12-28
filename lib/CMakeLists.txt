@@ -99,8 +99,7 @@ target_link_libraries(bof2d-objects
 
   PRIVATE
 #    Qt5::Widgets
-#does not work so use FREETYPE_LIBRARIES below    freetype
-	${FREETYPE_LIBRARIES}
+	Freetype::Freetype
     glm::glm
 	glad::glad
     yuv
