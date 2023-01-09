@@ -105,6 +105,8 @@ target_link_libraries(bof2d-objects
     yuv
 	mediainfo
 	ONBINGS::bofstd
+#	SDL2::SDL2main
+#    SDL2::SDL2 #SDL2-static
 
 #	${Boost_LIBRARIES}
 #	${FFMPEG_LIBRARIES}
