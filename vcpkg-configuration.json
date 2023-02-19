@@ -1,20 +1,17 @@
 {
+  "default-registry": {
+    "kind": "git",
+    "repository": "ssh://git@github.com/onbings/vcpkg.git",
+    "baseline": "cbfd659098fe153125f0c518e4bc78d58259e3a8"
+  },
   "registries": [
     {
       "kind": "git",
       "repository": "git@github.com:onbings/onbings-vcpkg-registry.git",
-      "baseline": "2913feb014cb2deddd68e3f649d8542ed50f0106",
-      "packages": [
-        "bof2d"
-      ]
-    },
-    {
-      "kind": "git",
-      "repository": "ssh://git@bitbucket.evs.tv:7999/vcpkg/evs-vcpkg-registry.git",
-      "baseline": "d75ca7cfd9d7ce17babf5432fffee366765729e7",
+      "baseline": "b7837142dc8e49ccfc4950d4aa423ff2f8ceb4a9",
       "packages": [
         "bofstd"
       ]
-    }	
+    }
   ]
 }

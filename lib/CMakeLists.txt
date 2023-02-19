@@ -99,14 +99,14 @@ target_link_libraries(bof2d-objects
 
   PRIVATE
 #    Qt5::Widgets
-    glfw
-#does not work so use FREETYPE_LIBRARIES below    freetype
-	${FREETYPE_LIBRARIES}
+	Freetype::Freetype
     glm::glm
 	glad::glad
     yuv
 	mediainfo
 	ONBINGS::bofstd
+#	SDL2::SDL2main
+#    SDL2::SDL2 #SDL2-static
 
 #	${Boost_LIBRARIES}
 #	${FFMPEG_LIBRARIES}
@@ -115,9 +115,12 @@ target_link_libraries(bof2d-objects
 #message("=Boost_LIBRARIES==============>"${Boost_LIBRARIES})
 #message("=FFMPEG_INCLUDE_DIRS==============>"${FFMPEG_INCLUDE_DIRS})
 #message("=FFMPEG_LIBRARIES==============>"${FFMPEG_LIBRARIES})	
+message("=CMAKE_FIND_ROOT_PATH==============>"${CMAKE_FIND_ROOT_PATH})	
+
 if(WIN32)
 target_link_libraries(bof2d-objects
   PUBLIC
+    glfw
 #	Ws2_32
 #	Iphlpapi
 #	Winmm
@@ -127,6 +130,13 @@ target_link_libraries(bof2d-objects
 #    Qt5::Widgets
 )
 else()
+if(NOT "${ANDROID_PLATFORM}")
+else()
+target_link_libraries(bof2d-objects
+  PUBLIC
+    glfw
+	)
+endif()	
 endif()	
 
 # Defines
@@ -143,6 +153,12 @@ target_compile_definitions(bof2d-objects
 #	-DCRT_NONSTDC_NO_DEPRECATE
 #	-DWINSOCK_DEPRECATED_NO_WARNINGS
 )
+if(NOT "${ANDROID_PLATFORM}")
+target_compile_definitions(bof2d-objects
+  PRIVATE
+	-DBOF2D_STATIC_DEFINE
+)
+endif()
 
 # Features (We need at least C++11 support)
 target_compile_features(bof2d-objects
@@ -218,10 +234,22 @@ if(NOT APPLE)
   set_target_properties(bof2d PROPERTIES
     INSTALL_RPATH $ORIGIN
   )
-
 endif()
 
 # Install the target runtime
+if(NOT "${ANDROID_PLATFORM}")  
+install(
+  TARGETS  bof2d bof2d-objects
+  EXPORT   bof2d
+  RUNTIME  DESTINATION        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}     # For binaries and dll
+           COMPONENT          bof2d-runtime
+  LIBRARY  DESTINATION        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}     # For shared libraries
+           COMPONENT          bof2d-runtime
+           NAMELINK_COMPONENT bof2d-devel
+  ARCHIVE  DESTINATION        ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}     # For static libraries
+           COMPONENT          bof2d-devel
+)
+else()		
 install(
   TARGETS  bof2d bof2d-objects
   EXPORT   bof2d
@@ -233,6 +261,7 @@ install(
   ARCHIVE  DESTINATION        ${CMAKE_INSTALL_LIBDIR}     # For static libraries
            COMPONENT          bof2d-devel
 )
+endif()
 
 # Install the public headers (don't forget the generated export directives)
 install(DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/include/

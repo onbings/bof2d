@@ -19,7 +19,8 @@
 #pragma once
 //#include <bof2d/bof2d.h>
 #pragma message("!!!!!!!!!!!!! CPP => TODO ADAPT THIS LINE AND REMOVE FILE FORM bofstd !!!!!!!!!!!!!")
-#include <2d/include/bof2d/bof2d.h>
+//#include <2d/include/bof2d/bof2d.h>
+#include <bof2d/bof2d.h>
 
 #include <bofstd/bofpath.h>
 

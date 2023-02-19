@@ -49,7 +49,10 @@ glview: https://realtech-vr.com/home/glview
 #include <string>
 
 #include <glad/glad.h>
+#if defined(ANDROID)
+#else
 #include <GLFW/glfw3.h>
+#endif
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -107,6 +110,13 @@ unsigned int VAO, VBO;
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
+#if defined(ANDROID)
+bool PostGlErrorMessage(const char* _pError_c)
+{
+  bool Rts_B = false;
+    return Rts_B;
+}
+#else
 void processInput(GLFWwindow* window)
 {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -125,6 +135,6 @@ bool PostGlErrorMessage(const char* _pError_c)
   }
   return Rts_B;
 }
-
+#endif
 
 END_BOF2D_NAMESPACE()

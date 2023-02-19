@@ -263,6 +263,8 @@ void Game::ProcessInput(float dt)
   // if (this->State == GAME_ACTIVE)
   {
     float velocity = PLAYER_VELOCITY * dt;
+#if defined(ANDROID)
+#else
     // move playerboard
     if (this->Keys[GLFW_KEY_LEFT])
     {
@@ -284,6 +286,7 @@ void Game::ProcessInput(float dt)
     }
     if (this->Keys[GLFW_KEY_SPACE])
       Ball->Stuck = false;
+#endif
   }
 }
 

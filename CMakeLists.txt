@@ -16,37 +16,15 @@
 # History:		05 June 2014: Initial version 
 #               06 March 2021 remove dependency on third party and cmake helpers
 #               22 April 2022 updated with NMA cmake and vcpkg ideas 
-
-# "dependencies": [
-#   { "name": "bofstd" },  
-#	{
-#	  "name": "glfw3",
-#      "platform": "windows"
-#    },
-#    { "name": "glm" },
-#{
-#  "registries": [
-#    {
-#      "kind": "git",
-#      "repository": "git@github.com:onbings/onbings-vcpkg-registry.git",
-#      "baseline": "2913feb014cb2deddd68e3f649d8542ed50f0106",
-#      "packages": [
-#        "bofstd"
-#      ]
-#    }
-#  ]
-#}
-
-
-
 cmake_minimum_required(VERSION 3.15)
-if (VCPKG_TARGET_ANDROID)
-message("ANDROID->include C:/pro/vcpkg/docs/examples/vcpkg_android_example_cmake_script/cmake/vcpkg_android.cmake")
-    include("C:/pro/vcpkg/docs/examples/vcpkg_android_example_cmake_script/cmake/vcpkg_android.cmake")
-endif()
+message("====ANDROID_PLATFORM==ROOT=no include=================>" ${ANDROID_PLATFORM})
+#if(NOT "${ANDROID_PLATFORM}")
+#    message("ANDROID->include vcpkg_android.cmake")
+#    include("vcpkg_android.cmake")
+#endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/fixup_vs_crt.cmake)
 
-project(bof2d VERSION 1.0.0.1)
+project(bof2d VERSION 1.1.1.1)
 
 # Some naming conventions either requires lower or upper case.
 # And some don't like underscore.
@@ -192,7 +170,7 @@ enable_testing()
 
 # Add configuration files to a dummy library to
 # make sure files are properly found
-if (VCPKG_TARGET_ANDROID)
+if(NOT "${ANDROID_PLATFORM}")
 else()
 add_library(bof2d-config-files INTERFACE
   Config.cmake.in
@@ -304,7 +282,6 @@ install(
 include(CMakePackageConfigHelpers)
 
 set(INTERNAL_NAMESPACE ONBINGS)
-
 # Create and install the cmake configuration file based on our template
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
