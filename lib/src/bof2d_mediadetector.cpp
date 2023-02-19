@@ -16,9 +16,10 @@
  *
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
-#include <bof2d/bof2d_mediadetector.h>
 #include <bofstd/boffs.h>
 #include <bofstd/bofstring.h>
+
+#include <bof2d/bof2d_mediadetector.h>
 
 BEGIN_BOF2D_NAMESPACE()
 

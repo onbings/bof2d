@@ -20,7 +20,6 @@
  * V 1.00  Dec 26 2013  BHA : Initial release
  */
 #include <bofstd/bofsystem.h>
-#include <bofstd/bof2d.h>
 #include <bofstd/bofstring.h>
 #include <bofstd/boffs.h>
 #include <bofstd/bofenum.h>
@@ -29,6 +28,8 @@
 #include <bofstd/bofaudiostandard.h>
 #include <bofstd/bofparameter.h>
 #include <bofstd/bofjsonwriter.h>
+
+#include <bof2d/bof2d_mediadetector.h>
 
 #include "gtestrunner.h"
 
@@ -220,13 +221,13 @@ struct MUSE_FILE_SYSTEM_MEDIA
 };
 //Depends on line terminator and pathname
 //#define CHECK_STR
-void DisplayParamValue(const std::string &_Title_S, BofMediaDetector &_rMediaInfoParser)
+void DisplayParamValue(const std::string &_Title_S, BOF2D::BofMediaDetector &_rMediaInfoParser)
 {
   std::string Result_S;
   uint32_t i_U32;
   char *p_c, *q_c, *pColon_c, *pBuffer_c, *pSpace_c;
   const char *pParam_c;
-  BOF::BofMediaDetector::MediaStreamType MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::General;
+  BOF2D::BofMediaDetector::MediaStreamType MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::General;
   std::string MediaStreamType_S, Type_S, Info_S, Extra_S;
   bool MoreThanOptionIAndO_B, NewType_B;
   //Oss = MediaInfoParser.Option(__T("Info_Version"), __T("0.7.13;MediaInfoDLL_Example_MSVC;0.7.13"));
@@ -259,37 +260,37 @@ void DisplayParamValue(const std::string &_Title_S, BofMediaDetector &_rMediaInf
       pParam_c = Type_S.c_str();
       if (Type_S == "General")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::General;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::General;
         MediaStreamType_S = "General";
       }
       else if (Type_S == "Video")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::Video;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::Video;
         MediaStreamType_S = "Video";
       }
       else if (Type_S == "Audio")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::Audio;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::Audio;
         MediaStreamType_S = "Audio";
       }
       else if (Type_S == "Text")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::Text;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::Text;
         MediaStreamType_S = "Text";
       }
       else if (Type_S == "Other")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::Other;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::Other;
         MediaStreamType_S = "Other";
       }
       else if (Type_S == "Image")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::Image;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::Image;
         MediaStreamType_S = "Image";
       }
       else if (Type_S == "Menu")
       {
-        MediaStreamType_E = BOF::BofMediaDetector::MediaStreamType::Menu;
+        MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::Menu;
         MediaStreamType_S = "Menu";
       }
       else
@@ -316,7 +317,7 @@ void DisplayParamValue(const std::string &_Title_S, BofMediaDetector &_rMediaInf
         }
         else
         {
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::Info, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::Info, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " I:'" + Result_S + "'";
@@ -326,38 +327,38 @@ void DisplayParamValue(const std::string &_Title_S, BofMediaDetector &_rMediaInf
             Info_S += " I:'???'";
           }
 
-          //EXPECT_EQ(_rMediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, pParam_c, BOF::BofMediaDetector::InfoType::Name, Result_S), BOF_ERR_NO_ERROR);
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+          //EXPECT_EQ(_rMediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, pParam_c, BOF2D::BofMediaDetector::InfoType::Name, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " T:'" + Result_S + "'";
             MoreThanOptionIAndO_B = true;
           }
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::Measure, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::Measure, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " M:'" + Result_S + "'";
             MoreThanOptionIAndO_B = true;
           }
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::Options, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::Options, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " O:'" + Result_S + "'";
           }
-          //EXPECT_EQ(_rMediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, pParam_c, BOF::BofMediaDetector::InfoType::Name_Text, Result_S), BOF_ERR_NO_ERROR);
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::Measure_Text, Result_S), BOF_ERR_NO_ERROR);
+          //EXPECT_EQ(_rMediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, pParam_c, BOF2D::BofMediaDetector::InfoType::Name_Text, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::Measure_Text, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " m:'" + Result_S + "'";
             MoreThanOptionIAndO_B = true;
           }
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::HowTo, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::HowTo, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " H:'" + Result_S + "'";
             MoreThanOptionIAndO_B = true;
           }
-          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF::BofMediaDetector::InfoType::Domain, Result_S), BOF_ERR_NO_ERROR);
+          EXPECT_EQ(_rMediaInfoParser.Query(MediaStreamType_E, pParam_c, BOF2D::BofMediaDetector::InfoType::Domain, Result_S), BOF_ERR_NO_ERROR);
           if (Result_S != "")
           {
             Info_S += " D:'" + Result_S + "'";
@@ -380,49 +381,49 @@ void DisplayParamValue(const std::string &_Title_S, BofMediaDetector &_rMediaInf
 
 TEST(Bof2d_MediaDetector_Test, MediaDetectorParam)
 {
-  BofMediaDetector MediaInfoParser;
+  BOF2D::BofMediaDetector MediaInfoParser;
   std::string Result_S;
 
-  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
   DisplayParamValue("colorbar.jpg", MediaInfoParser);
 
   /*
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Name, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Name, Result_S), BOF_ERR_NO_ERROR);
     printf("Name: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
     printf("Text: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Measure, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Measure, Result_S), BOF_ERR_NO_ERROR);
     printf("Measure: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Options, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Options, Result_S), BOF_ERR_NO_ERROR);
     printf("Options: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Name_Text, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Name_Text, Result_S), BOF_ERR_NO_ERROR);
     printf("Name_Text: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Measure_Text, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Measure_Text, Result_S), BOF_ERR_NO_ERROR);
     printf("Measure_Text: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Info, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Info, Result_S), BOF_ERR_NO_ERROR);
     printf("Info: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::HowTo, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::HowTo, Result_S), BOF_ERR_NO_ERROR);
     printf("HowTo: %s\n", Result_S.c_str());
-    EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF::BofMediaDetector::InfoType::Domain, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileExtension", BOF2D::BofMediaDetector::InfoType::Domain, Result_S), BOF_ERR_NO_ERROR);
     printf("Domain: %s\n", Result_S.c_str());
   */
-  EXPECT_EQ(MediaInfoParser.ParseFile("./data/sample-mp4-file.mp4", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.ParseFile("./data/sample-mp4-file.mp4", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
   DisplayParamValue("sample-mp4-file.mp4", MediaInfoParser);
 
   /*
-    EXPECT_EQ(MediaInfoDetector.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+    EXPECT_EQ(MediaInfoDetector.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 
     for (i_U32 = 0; i_U32 < BOF_NB_ELEM_IN_ARRAY(S_ppListOfGeneralParam); i_U32++)
     {
-      EXPECT_EQ(MediaInfoDetector.Query(BOF::BofMediaDetector::MediaStreamType::General, S_ppListOfGeneralParam[i_U32],
-                                     BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+      EXPECT_EQ(MediaInfoDetector.Query(BOF2D::BofMediaDetector::MediaStreamType::General, S_ppListOfGeneralParam[i_U32],
+                                     BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
       printf("Param '%s'='%s'\n", S_ppListOfGeneralParam[i_U32], Result_S.c_str());
     }
     */
 }
 TEST(Bof2d_MediaDetector_Test, MediaDetectorParse)
 {
-  BofMediaDetector MediaInfoParser;
+  BOF2D::BofMediaDetector MediaInfoParser;
   std::string Result_S;
   uint32_t Width_U32, Height_U32, Fps_U32;
   BofDateTime Created, Modified;
@@ -431,21 +432,21 @@ TEST(Bof2d_MediaDetector_Test, MediaDetectorParse)
   MUSE_FILE_SYSTEM_MEDIA_COLOR_SPACE  ColorSpace_E;
   MUSE_FILE_SYSTEM_MEDIA_VIDEO_FORMAT VideoFormat_E;
 
-  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 //  EXPECT_EQ(MediaInfoParser.ParseFile("./data/pexels-christian-heitz-842711.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
   EXPECT_STREQ("General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar.jpg\r\nFormat                                   : JPEG\r\nFile size                                : 9.60 KiB\r\n\r\nImage\r\nFormat                                   : JPEG\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : YUV\r\nChroma subsampling                       : 4:2:2\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossy\r\nStream size                              : 9.60 KiB (100%)\r\n\r\n", Result_S.c_str());
 #endif
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "Format", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "Format", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "JPEG");
   VideoFormat_E = S_MuseFileSystemMediaVideoFormatEnumConverter.ToEnum(Result_S);
   EXPECT_EQ(VideoFormat_E, MUSE_FILE_SYSTEM_MEDIA_VIDEO_FORMAT::MUSE_FILE_SYSTEM_MEDIA_VIDEO_FORMAT_JPG);
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "AudioCount", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "AudioCount", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_EQ(std::atol(Result_S.c_str()), 0);
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::Image, "Width", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::Image, "Width", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   Width_U32 = std::atol(Result_S.c_str());
   EXPECT_EQ(Width_U32, 259);
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::Image, "Height", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::Image, "Height", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   Height_U32 = std::atol(Result_S.c_str());
   EXPECT_EQ(Height_U32, 194);
   Fps_U32 = 0;
@@ -453,23 +454,23 @@ TEST(Bof2d_MediaDetector_Test, MediaDetectorParse)
   Created  Saturday, September 17, 2022, 10:12:46 AM
   Modified Saturday, September 17, 2022, 10:12:46 AM
   */
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "FileSize", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_EQ(std::atoll(Result_S.c_str()), 9830);
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "File_Created_Date", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "File_Created_Date", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   Created.FromString(Result_S, "UTC %Y-%m-%d %H:%M:%S.%q");
 //No the same on different pc  EXPECT_STREQ(Created.ToString("%Y-%m-%d %H:%M:%S.%q").c_str(), "2022-09-17 08:12:46.389");
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "File_Modified_Date", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "File_Modified_Date", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   Modified.FromString(Result_S, "UTC %Y-%m-%d %H:%M:%S.%q");
   EXPECT_STREQ(Modified.ToString("%Y-%m-%d %H:%M:%S.%q").c_str(), "2022-09-17 11:29:29.185");
 
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::Image, "BitDepth", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::Image, "BitDepth", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_EQ(std::atol(Result_S.c_str()), 8);
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::Image, "ColorSpace", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::Image, "ColorSpace", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "YUV");
   ColorSpace_E = S_MuseFileSystemMediaColorSpaceEnumConverter.ToEnum(Result_S);
   EXPECT_EQ(ColorSpace_E, MUSE_FILE_SYSTEM_MEDIA_COLOR_SPACE::MUSE_FILE_SYSTEM_MEDIA_COLOR_SPACE_YUV);
 
-  EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::Image, "ChromaSubsampling", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::Image, "ChromaSubsampling", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "4:2:2");
 
   /*
@@ -482,7 +483,7 @@ TEST(Bof2d_MediaDetector_Test, MediaDetectorParse)
   */
 
 
-EXPECT_EQ(MediaInfoParser.Query(BOF::BofMediaDetector::MediaStreamType::General, "CompleteName", BOF::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "CompleteName", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
 Ref = BofPath(Result_S);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Ref.ToString().c_str(), "C:/bld/bofstd/tests/data/colorbar.jpg");
@@ -493,66 +494,66 @@ Vs = BOF::BofVideoStandard(std::to_string(Width_U32) + 'x' + std::to_string(Heig
 EXPECT_STREQ(Vs.ToString().c_str(), "259x194@0p");
 
 
-EXPECT_NE(MediaInfoParser.ParseFile("./data/dontexist.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_NE(MediaInfoParser.ParseFile("./data/dontexist.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar.jpg\r\nFormat                                   : JPEG\r\nFile size                                : 9.60 KiB\r\n\r\nImage\r\nFormat                                   : JPEG\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : YUV\r\nChroma subsampling                       : 4:2:2\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossy\r\nStream size                              : 9.60 KiB (100%)\r\n\r\n");
 #endif
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Html, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Html, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "<html>\r\n\r\n<head>\r\n<META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /></head>\r\n<body>\r\n<table width=\"100%\" border=\"0\" cellpadding=\"1\" cellspacing=\"2\" style=\"border:1px solid Navy\">\r\n<tr>\r\n    <td width=\"150\"><h2>General</h2></td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Complete name :</i></td>\r\n    <td colspan=\"3\">C:\\bld\\bofstd\\tests\\data\\colorbar.jpg</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Format :</i></td>\r\n    <td colspan=\"3\">JPEG</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>File size :</i></td>\r\n    <td colspan=\"3\">9.60 KiB</td>\r\n  </tr>\r\n</table>\r\n<br />\r\n<table width=\"100%\" border=\"0\" cellpadding=\"1\" cellspacing=\"2\" style=\"border:1px solid Navy\">\r\n<tr>\r\n    <td width=\"150\"><h2>Image</h2></td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Format :</i></td>\r\n    <td colspan=\"3\">JPEG</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Width :</i></td>\r\n    <td colspan=\"3\">259 pixels</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Height :</i></td>\r\n    <td colspan=\"3\">194 pixels</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Color space :</i></td>\r\n    <td colspan=\"3\">YUV</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Chroma subsampling :</i></td>\r\n    <td colspan=\"3\">4:2:2</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Bit depth :</i></td>\r\n    <td colspan=\"3\">8 bits</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Compression mode :</i></td>\r\n    <td colspan=\"3\">Lossy</td>\r\n  </tr>\r\n  <tr>\r\n    <td><i>Stream size :</i></td>\r\n    <td colspan=\"3\">9.60 KiB (100%)</td>\r\n  </tr>\r\n</table>\r\n<br />\r\n\r\n</body>\r\n</html>\r\n");
 #endif
-//Leak  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Json, Result_S), BOF_ERR_NO_ERROR);
+//Leak  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Json, Result_S), BOF_ERR_NO_ERROR);
 //Leak #if defined(CHECK_STR)
 //Leak   EXPECT_STREQ(Result_S.c_str(), "{\r\n\"media\": {\r\n\"@ref\": \"C:\\\\bld\\\\bofstd\\\\tests\\\\data\\\\colorbar.jpg\",\r\n\"track\": [\r\n{\r\n\"@type\": \"General\",\r\n\"ImageCount\": \"1\",\r\n\"FileExtension\": \"jpg\",\r\n\"Format\": \"JPEG\",\r\n\"FileSize\": \"9830\",\r\n\"StreamSize\": \"0\",\r\n\"File_Created_Date\": \"UTC 2022-09-17 08:12:46.389\",\r\n\"File_Created_Date_Local\": \"2022-09-17 10:12:46.389\",\r\n\"File_Modified_Date\": \"UTC 2022-09-17 11:29:29.685000\",\r\n\"File_Modified_Date_Local\": \"2022-09-17 13:29:29.701000\"\r\n},\r\n{\r\n\"@type\": \"Image\",\r\n\"Format\": \"JPEG\",\r\n\"Width\": \"259\",\r\n\"Height\": \"194\",\r\n\"ColorSpace\": \"YUV\",\r\n\"ChromaSubsampling\": \"4:2:2\",\r\n\"BitDepth\": \"8\",\r\n\"Compression_Mode\": \"Lossy\",\r\n\"StreamSize\": \"9830\"\r\n}\r\n]\r\n}\r\n}\r\n");
 //Leak #endif
 
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_jpg_with_bad_ext.png", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_jpg_with_bad_ext.png", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_jpg_with_bad_ext.png\r\nFormat                                   : JPEG\r\nFile size                                : 9.63 KiB\r\nFileExtension_Invalid                    : h3d jpeg jpg jpe jps mpo\r\n\r\nImage\r\nFormat                                   : JPEG\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : YUV\r\nChroma subsampling                       : 4:2:2\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossy\r\nStream size                              : 9.63 KiB (100%)\r\n\r\n");
 #endif
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_jpg_with_no_ext", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_jpg_with_no_ext", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_jpg_with_no_ext\r\nFormat                                   : JPEG\r\nFile size                                : 9.69 KiB\r\nFileExtension_Invalid                    : h3d jpeg jpg jpe jps mpo\r\n\r\nImage\r\nFormat                                   : JPEG\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : YUV\r\nChroma subsampling                       : 4:2:2\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossy\r\nStream size                              : 9.69 KiB (100%)\r\n\r\n");
 #endif
 
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.png", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.png", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar.png\r\nFormat                                   : PNG\r\nFormat/Info                              : Portable Network Graphic\r\nFile size                                : 1.45 KiB\r\n\r\nImage\r\nFormat                                   : PNG\r\nFormat/Info                              : Portable Network Graphic\r\nFormat_Compression                       : Deflate\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : RGB\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossless\r\nStream size                              : 1.45 KiB (100%)\r\n\r\n");
 #endif
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_png_with_bad_ext.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_png_with_bad_ext.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_png_with_bad_ext.jpg\r\nFormat                                   : PNG\r\nFormat/Info                              : Portable Network Graphic\r\nFile size                                : 1.45 KiB\r\nFileExtension_Invalid                    : png pns\r\n\r\nImage\r\nFormat                                   : PNG\r\nFormat/Info                              : Portable Network Graphic\r\nFormat_Compression                       : Deflate\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : RGB\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossless\r\nStream size                              : 1.45 KiB (100%)\r\n\r\n");
 #endif
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_png_with_no_ext", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_png_with_no_ext", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_png_with_no_ext\r\nFormat                                   : PNG\r\nFormat/Info                              : Portable Network Graphic\r\nFile size                                : 976 Bytes\r\nFileExtension_Invalid                    : png pns\r\n\r\nImage\r\nFormat                                   : PNG\r\nFormat/Info                              : Portable Network Graphic\r\nFormat_Compression                       : Deflate\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : RGB\r\nBit depth                                : 8 bits\r\nCompression mode                         : Lossless\r\nStream size                              : 976 Bytes (100%)\r\n\r\n");
 #endif
 
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_uncompress_32b.tga", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_uncompress_32b.tga", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_uncompress_32b.tga\r\nFormat                                   : TGA\r\nFormat version                           : Version 2\r\nFile size                                : 197 KiB\r\n\r\nImage\r\nFormat                                   : Raw\r\nCodec ID                                 : 2\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : RGB\r\nBit depth                                : 32 bits\r\n\r\n");
 #endif
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_rle_32b.tga", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_rle_32b.tga", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_rle_32b.tga\r\nFormat                                   : TGA\r\nFormat version                           : Version 2\r\nFile size                                : 18.0 KiB\r\n\r\nImage\r\nFormat                                   : RLE\r\nFormat/Info                              : Run-length encoding\r\nCodec ID                                 : 10\r\nWidth                                    : 259 pixels\r\nHeight                                   : 194 pixels\r\nColor space                              : RGB\r\nBit depth                                : 32 bits\r\n\r\n");
 #endif
 
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_in_raw_32b_194x259.raw", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_in_raw_32b_194x259.raw", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_in_raw_32b_194x259.raw\r\nFile size                                : 197 KiB\r\n\r\n");
 #endif
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_1920x1080p59_8bit_captured_by_sdk.422", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar_1920x1080p59_8bit_captured_by_sdk.422", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 #if defined(CHECK_STR)
 EXPECT_STREQ(Result_S.c_str(), "General\r\nComplete name                            : C:\\bld\\bofstd\\tests\\data\\colorbar_1920x1080p59_8bit_captured_by_sdk.422\r\nFile size                                : 1.98 MiB\r\n\r\n");
 #endif
 
-EXPECT_EQ(MediaInfoParser.ParseFile("./data/sample-mp4-file.mp4", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+EXPECT_EQ(MediaInfoParser.ParseFile("./data/sample-mp4-file.mp4", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 }
 BOFERR ParseFileBuffer(BofPath &_rPathname, std::string &_rResult_S)
 {
-  BofMediaDetector MediaInfoParser;
+  BOF2D::BofMediaDetector MediaInfoParser;
   std::string Result_S;
   BOFERR Rts_E;
   bool Finish_B;
@@ -571,7 +572,7 @@ BOFERR ParseFileBuffer(BofPath &_rPathname, std::string &_rResult_S)
   Finish_B = false;
   do
   {
-    Rts_E = MediaInfoParser.ParseBuffer(SubBuffer_X, BofMediaDetector::ResultFormat::Text, _rResult_S, OffsetInBuffer_U64);
+    Rts_E = MediaInfoParser.ParseBuffer(SubBuffer_X, BOF2D::BofMediaDetector::ResultFormat::Text, _rResult_S, OffsetInBuffer_U64);
     printf("Parse %zx:%p -> %d Off %zx Cap %zx\n", SubBuffer_X.Size_U64, SubBuffer_X.pData_U8, Rts_E, SubBuffer_X.pData_U8 - BufferToDeleteAfterUsage_X.pData_U8, BufferToDeleteAfterUsage_X.Capacity_U64);
     if (Rts_E == BOF_ERR_SEEK)
     {
@@ -635,25 +636,25 @@ TEST(Bof2d_MediaDetector_Test, MediaDetectorParseBuffer)
 
 TEST(Bof2d_MediaDetector_Test, MediaDetectorQuery)
 {
-  BofMediaDetector MediaInfoParser;
+  BOF2D::BofMediaDetector MediaInfoParser;
   std::string Result_S;
 
-  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Name, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Name, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "FileSize");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "9830");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Measure, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Measure, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), " byte");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Options, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Options, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "N YTY");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Name_Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Name_Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "File size");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Measure_Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Measure_Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), " byte");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Info, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::Info, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "File size in bytes");
-  EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::HowTo, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "FileSize", BOF2D::BofMediaDetector::InfoType::HowTo, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_STREQ(Result_S.c_str(), "");
   //EXPECT_EQ(MediaInfoParser.Query(BofMediaDetector::MediaStreamType::General, "FileSize", BofMediaDetector::InfoType::Domain, Result_S), BOF_ERR_NO_ERROR);
   //EXPECT_STREQ(Result_S.c_str(), "");
@@ -691,12 +692,12 @@ std::vector< BOFPARAMETER > S_MuseFileSystemMediaJsonSchemaCollection =
 
 TEST(Bof2d_MediaDetector_Test, MediaDetectorToJson)
 {
-  BofMediaDetector MediaInfoParser;
+  BOF2D::BofMediaDetector MediaInfoParser;
   std::string Result_S, JsonOut_S, ToString_S, Tp_S;
   BofJsonWriter BofJsonWriter;
   MUSE_FILE_SYSTEM_MEDIA_TYPE Tp_E;
 
-  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(MediaInfoParser.ParseFile("./data/colorbar.jpg", BOF2D::BofMediaDetector::ResultFormat::Text, Result_S), BOF_ERR_NO_ERROR);
 
   S_MuseFileSystemMedia_X.Header_X.FileSize_U64 = 32183316;
   S_MuseFileSystemMedia_X.Header_X.Created = BofDateTime(21, 9, 2022, 12, 16, 43, 685000);
@@ -756,7 +757,7 @@ bool JsonParserError(int _Sts_i, const BOFPARAMETER &_rJsonEntry_X, const char *
 }
 TEST(Bof2d_MediaDetector_Test, MediaDetectorFromJson)
 {
-  BofMediaDetector MediaInfoParser;
+  BOF2D::BofMediaDetector MediaInfoParser;
   std::string Result_S, JsonOut_S, ToString_S;
   std::string Json_S = R"({"Media":{"Audio":{"DurationInNs":0,"Format":"Mp3","Path":"/media/audio/pexels-alexander-grey-1149347.mp3","Ref":"C:/pro/evs-muse/evs-muse-storage/tests/data/pexels-alexander-grey-1149347.mp3","Standard":"16xS24L32@48000","TpInNs":0,"Uri":"storage://10.129.4.172:11000/5/file/21225887208829f231d46f5738b44ca0b4237df3"},"Header":{"Created":"UTC 2022-09-21 12:16:43.685000","FileSize":32183316,"Modified":"UTC 2022-09-21 12:16:43.701000","Type":"Still"},"Video":{"BitDepth":8,"ColorSpace":"RGB","DurationInNs":0,"Format":"PNG","Path":"/media/still/pexels-alexander-grey-1149347.png","Ref":"C:/pro/evs-muse/evs-muse-storage/tests/data/pexels-alexander-grey-1149347.png","Standard":"1920x1080@59.94i","TpInNs":0,"Uri":"storage://10.129.4.172:11000/5/file/b09fdf1fdc7edc9f87c1c0f3efddf742e4f2f4f0"}}})";
   BofJsonParser BofJsonParser(Json_S);

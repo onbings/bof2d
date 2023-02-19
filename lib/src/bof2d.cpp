@@ -16,14 +16,8 @@
 
    V 1.00  Sep 30 2000  BHA : Initial release
  */
-#pragma message("!!!!!!!!!!!!! CPP => TODO ADAPT THIS LINE AND REMOVE FILE FORM bofstd !!!!!!!!!!!!!")
-#include "../include/bof2d/bof2d.h"
-//#include <bofstd/boffs.h>
-//#include <bofstd/bofstring.h>
 
-//#include <libyuv.h>
-//#include <iostream>
-//#include <string>
+#include <bof2d/bof2d.h>
 
 BEGIN_BOF2D_NAMESPACE()
 //YUV Color

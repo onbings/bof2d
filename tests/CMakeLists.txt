@@ -110,7 +110,20 @@ target_link_libraries(bof2d-tests
   PRIVATE
     ONBINGS::bof2d-objects
     GTest::GTest
+	${AVCODEC_LIBRARY}
+	${AVDEVICE_LIBRARY}
+	${AVFILTER_LIBRARY}
+	${AVFORMAT_LIBRARY}
+	${AVUTIL_LIBRARY}
+	${SWRESAMPLE_LIBRARY}
+	${SWSCALE_LIBRARY}
+#Visual Leak Detector: vld
+#if (MSVC)
+    bofstd/vld/lib/Win64/vld.lib
+#    C:/bld/bof2d/vcpkg_installed/evs-x64-swx-windows-static/include/bofstd/vld/lib/Win64/vld.lib
+#endif()
 )
+
 
 # Object library is not a shared library
 # void import directive only for linking

@@ -34,7 +34,7 @@ endmacro()
 #   find_package_dependency(onbings-anotherlib REQUIRED)
 # endif()
 
-#find_package_dependency(glfw3 REQUIRED)
+find_package_dependency(glfw3 REQUIRED)
 find_package_dependency(glad REQUIRED)
 find_package_dependency(glm REQUIRED)
 find_package_dependency(Freetype REQUIRED)	#Freetype::Freetype
@@ -61,12 +61,44 @@ find_path(STB_INCLUDE_DIRS "stb_image.h")
 message("===STB_INCLUDE_DIRS===========>" ${STB_INCLUDE_DIRS})
 
 ##target_include_directories(main PRIVATE ${STB_INCLUDE_DIRS})
-find_path( AVCODEC_INCLUDE_DIR libavcodec/avcodec.h )
-find_library( AVCODEC_LIBRARY avcodec )
+
+find_path(AVCODEC_INCLUDE_DIR libavcodec/avcodec.h )
+find_library(AVCODEC_LIBRARY avcodec)
 message("===AVCODEC_INCLUDE_DIR===========>" ${AVCODEC_INCLUDE_DIR})
 message("===AVCODEC_LIBRARY===========>" ${AVCODEC_LIBRARY})
+
+find_path(AVDEVICE_INCLUDE_DIR libavdevice/avdevice.h )
+find_library(AVDEVICE_LIBRARY avdevice)
+message("===AVDEVICE_INCLUDE_DIR===========>" ${AVDEVICE_INCLUDE_DIR})
+message("===AVDEVICE_LIBRARY===========>" ${AVDEVICE_LIBRARY})
+
+find_path(AVFILTER_INCLUDE_DIR libavfilter/avfilter.h )
+find_library(AVFILTER_LIBRARY avfilter)
+message("===AVFILTER_INCLUDE_DIR===========>" ${AVFILTER_INCLUDE_DIR})
+message("===AVFILTER_LIBRARY===========>" ${AVFILTER_LIBRARY})
+
+find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h )
+find_library(AVFORMAT_LIBRARY avformat)
+message("===AVFORMAT_INCLUDE_DIR===========>" ${AVFORMAT_INCLUDE_DIR})
+message("===AVFORMAT_LIBRARY===========>" ${AVFORMAT_LIBRARY})
+
+find_path(AVUTIL_INCLUDE_DIR libavutil/avutil.h )
+find_library(AVUTIL_LIBRARY avutil)
+message("===AVUTIL_INCLUDE_DIR===========>" ${AVUTIL_INCLUDE_DIR})
+message("===AVUTIL_LIBRARY===========>" ${AVUTIL_LIBRARY})
+
+find_path(SWRESAMPLE_INCLUDE_DIR libswresample/swresample.h )
+find_library(SWRESAMPLE_LIBRARY swresample)
+message("===SWRESAMPLE_INCLUDE_DIR===========>" ${SWRESAMPLE_INCLUDE_DIR})
+message("===SWRESAMPLE_LIBRARY===========>" ${SWRESAMPLE_LIBRARY})
+
+find_path(SWSCALE_INCLUDE_DIR libswscale/swscale.h )
+find_library(SWSCALE_LIBRARY swscale)
+message("===SWSCALE_INCLUDE_DIR===========>" ${SWSCALE_INCLUDE_DIR})
+message("===SWSCALE_LIBRARY===========>" ${SWSCALE_LIBRARY})
 
 find_package_dependency(bofstd REQUIRED)
 message("===BOFSTD_FOUND===========>" ${BOFSTD_FOUND})
 message("===BOFSTD_INCLUDE_DIRS===========>" ${BOFSTD_INCLUDE_DIRS})
 message("===BOFSTD_LIBRARIES===========>" ${BOFSTD_LIBRARIES})
+

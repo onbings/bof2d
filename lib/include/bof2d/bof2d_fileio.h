@@ -17,12 +17,9 @@
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
 #pragma once
-//#include <bof2d/bof2d.h>
-#pragma message("!!!!!!!!!!!!! CPP => TODO ADAPT THIS LINE AND REMOVE FILE FORM bofstd !!!!!!!!!!!!!")
-//#include <2d/include/bof2d/bof2d.h>
-#include <bof2d/bof2d.h>
-
 #include <bofstd/bofpath.h>
+
+#include <bof2d/bof2d.h>
 
 BEGIN_BOF2D_NAMESPACE()
 

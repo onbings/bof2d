@@ -1,21 +1,20 @@
 {
   "name": "bof2d",
-  "version": "1.1.1.1",
+  "version": "2.1.1.1",
   "description": "The onbings general purpose 2d C++ Multiplatform library",
   "dependencies": [
     { "name": "bofstd" },
-    { "name": "glfw3" },
-    { "name": "glm" },
     { "name": "ffmpeg" },
     { "name": "freetype" },
-    { "name": "sdl2" },
-    { "name": "stb" },
     { "name": "glad" },
+    { "name": "glfw3" },
+    { "name": "glm" },
     { "name": "gtest" },
     { "name": "libmediainfo" },
     { "name": "libyuv" },
+    { "name": "openssl" },
+    { "name": "sdl2" },
+    { "name": "stb" },
     { "name": "zlib" }
-    { "name": "sdl2" }
-    
   ]
 }

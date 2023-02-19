@@ -37,7 +37,7 @@ TEST(Bof2d_Convert_Test, UyvyToBgra)
   FileSize_U32 = SAMPLE_WIDTH * SAMPLE_HEIGHT * 2;
   ConvertedSize_U32 = SAMPLE_WIDTH * SAMPLE_HEIGHT * 4;
   //  ConvertedSize_U32=(SAMPLE_WIDTH * SAMPLE_HEIGHT * 4)/4;//With crop and rotate
-  EXPECT_EQ(BOF::Bof_OpenFile("./data/colorbar_1920x1080p59_8bit_captured_by_sdk.422", true, Io), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(BOF::Bof_OpenFile("./data/colorbar_1920x1080p59_8bit_captured_by_sdk.422", true, false, Io), BOF_ERR_NO_ERROR);
 
   EXPECT_EQ(BOF::Bof_ReadFile(Io, FileSize_U32, GL_pFileData_U8), BOF_ERR_NO_ERROR);
   EXPECT_EQ(BOF::Bof_CloseFile(Io), BOF_ERR_NO_ERROR);
@@ -70,7 +70,7 @@ TEST(Bof2d_Convert_Test, BgraToUyvy)
   FileSize_U32 = SAMPLE_WIDTH * SAMPLE_HEIGHT * 4;
   ConvertedSize_U32 = SAMPLE_WIDTH * SAMPLE_HEIGHT * 2;
   // ConvertedSize_U32=(SAMPLE_WIDTH * SAMPLE_HEIGHT * 2)/4; //With crop and rotate
-  EXPECT_EQ(BOF::Bof_OpenFile("./data/bgra.raw", true, Io), BOF_ERR_NO_ERROR);   //from previous test
+  EXPECT_EQ(BOF::Bof_OpenFile("./data/bgra.raw", true, false, Io), BOF_ERR_NO_ERROR);   //from previous test
   EXPECT_EQ(BOF::Bof_ReadFile(Io, FileSize_U32, GL_pFileData_U8), BOF_ERR_NO_ERROR);
   EXPECT_EQ(BOF::Bof_CloseFile(Io), BOF_ERR_NO_ERROR);
 

@@ -15,16 +15,19 @@
 # 
 # History:		05 June 2014: Initial version 
 #               06 March 2021 remove dependency on third party and cmake helpers
-#               22 April 2022 updated with NMA cmake and vcpkg ideas 
+#               22 April 2022 updated with NMA cmake and vcpkg ideas
+
+#cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/github/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-static -DBOFSTD_GENERATE_HELP=ON C:/pro/github/bof2d
+ 
 cmake_minimum_required(VERSION 3.15)
-message("====ANDROID_PLATFORM==ROOT=no include=================>" ${ANDROID_PLATFORM})
+#message("====ANDROID_PLATFORM==ROOT=no include=================>" ${ANDROID_PLATFORM})
 #if(NOT "${ANDROID_PLATFORM}")
 #    message("ANDROID->include vcpkg_android.cmake")
 #    include("vcpkg_android.cmake")
 #endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/fixup_vs_crt.cmake)
 
-project(bof2d VERSION 1.1.1.1)
+project(bof2d VERSION 2.1.1.1)
 
 # Some naming conventions either requires lower or upper case.
 # And some don't like underscore.

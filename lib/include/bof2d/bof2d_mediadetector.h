@@ -17,12 +17,10 @@
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
 #pragma once
-//#include <bof2d/bof2d.h>
-#pragma message("!!!!!!!!!!!!! CPP => TODO ADAPT THIS LINE AND REMOVE FILE FORM bofstd !!!!!!!!!!!!!")
-#include "../include/bof2d/bof2d.h"
-
 #include <bofstd/bofpath.h>
 #include <bofstd/bofsystem.h>
+
+#include <bof2d/bof2d.h>
 
 #if defined(BOFSTD_BUILD_MEDIAINFO_AS_LIBRARY)
 #include "MediaInfo/MediaInfo.h" //Staticly-loaded library (.lib or .a or .so)

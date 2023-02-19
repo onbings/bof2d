@@ -16,10 +16,10 @@
  *
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
-//#include <2d/include/bof2d/bof2d_fileio.h>
-#include <bof2d/bof2d_fileio.h>
 #include <bofstd/boffs.h>
 #include <bofstd/bofstring.h>
+
+#include <bof2d/bof2d_fileio.h>
 
 BEGIN_BOF2D_NAMESPACE()
 
@@ -100,7 +100,7 @@ BOFERR Bof_LoadBmpFile(BOF::BofPath &_rPath, BOF_BITMAP_INFO_HEADER &_rBmInfo_X,
   uint8_t                Val_UB;
   BOF_BITMAP_FILE_HEADER BmFile_X;
 
-  Rts_E = Bof_OpenFile(_rPath, true, Io);
+  Rts_E = Bof_OpenFile(_rPath, true, false, Io);
   if (Rts_E == BOF_ERR_NO_ERROR)
   {
     Nb_U32 = sizeof(BOF_BITMAP_FILE_HEADER);
@@ -215,7 +215,7 @@ BOFERR Bof_LoadTgaFile(BOF::BofPath &_rPath, BOF_TGA_HEADER &_rTgaHeader_X, BOF_
   uint32_t Nb_U32, Size_U32;
   uint8_t  pPalette_UB[8];
 
-  Rts_E = Bof_OpenFile(_rPath, true, Io);
+  Rts_E = Bof_OpenFile(_rPath, true, false, Io);
   if (Rts_E == BOF_ERR_NO_ERROR)
   {
     Nb_U32 = sizeof(BOF_TGA_HEADER);

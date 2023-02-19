@@ -16,6 +16,19 @@ set(API_FILES
 	./src/bof2d_mediadetector.cpp
 )
 
+set(CODEC_FILES
+	./include/bof2d/bof2d_video_encoder.h
+	./src/bof2d_video_encoder.cpp
+	./include/bof2d/bof2d_audio_encoder.h
+	./src/bof2d_audio_encoder.cpp
+	./include/bof2d/bof2d_video_decoder.h
+	./src/bof2d_video_decoder.cpp
+	./include/bof2d/bof2d_audio_decoder.h
+	./src/bof2d_audio_decoder.cpp
+	./include/bof2d/bof2d_av_codec.h
+	./src/bof2d_av_codec.cpp
+)
+
 set(GAME_ENGINE_FILES
 	./include/bof2d/engine/bof2d_ball_obj.h
 	./src/engine/bof2d_ball_obj.cpp
@@ -40,6 +53,7 @@ set(GAME_ENGINE_FILES
 
 set(SOURCES_FILES
 	${API_FILES}
+	${CODEC_FILES}
 	${GAME_ENGINE_FILES}
 )
 
@@ -48,6 +62,7 @@ set(SOURCES_FILES
 #source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src            PREFIX "src"    FILES ${SOURCES_FILES})
 
 source_group("Api"         FILES ${API_FILES})
+source_group("Codec"       FILES ${CODEC_FILES})
 source_group("GameEngine"  FILES ${GAME_ENGINE_FILES})
 
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/include/bof2d/bof2d_version_info.h.in ${CMAKE_CURRENT_BINARY_DIR}/bof2d_version_info.h @ONLY)
@@ -105,17 +120,14 @@ target_link_libraries(bof2d-objects
     yuv
 	mediainfo
 	ONBINGS::bofstd
-#	SDL2::SDL2main
-#    SDL2::SDL2 #SDL2-static
+	SDL2::SDL2main
+    SDL2::SDL2 #SDL2-static
 
 #	${Boost_LIBRARIES}
-#	${FFMPEG_LIBRARIES}
+	${FFMPEG_LIBRARIES}
 )
 #message("=Boost_INCLUDE_DIRS==============>"${Boost_INCLUDE_DIRS})
 #message("=Boost_LIBRARIES==============>"${Boost_LIBRARIES})
-#message("=FFMPEG_INCLUDE_DIRS==============>"${FFMPEG_INCLUDE_DIRS})
-#message("=FFMPEG_LIBRARIES==============>"${FFMPEG_LIBRARIES})	
-message("=CMAKE_FIND_ROOT_PATH==============>"${CMAKE_FIND_ROOT_PATH})	
 
 if(WIN32)
 target_link_libraries(bof2d-objects
