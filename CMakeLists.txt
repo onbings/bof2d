@@ -17,7 +17,7 @@
 #               06 March 2021 remove dependency on third party and cmake helpers
 #               22 April 2022 updated with NMA cmake and vcpkg ideas
 
-#cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/github/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-static -DBOFSTD_GENERATE_HELP=ON C:/pro/github/bof2d
+#cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/github/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_OVERLAY_PORTS=C:/pro/github/onbings-vcpkg-registry/ports/ -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-static -DBOF2D_GENERATE_HELP=OFF -DBOF2D_VLD=ON C:/pro/github/bof2d
  
 cmake_minimum_required(VERSION 3.15)
 #message("====ANDROID_PLATFORM==ROOT=no include=================>" ${ANDROID_PLATFORM})
@@ -104,7 +104,14 @@ if(BOF2D_GENERATE_HELP)
   endif()
 endif()
 
+option(BOF2D_VLD "Activate Visual Leak Detector (vld)" OFF)
 
+message("=BOF2D_VLD==============> " ${BOF2D_VLD})
+if (${BOF2D_VLD})
+message("===============> Activate Visual Leak Detector")
+else()
+message("===============> Visual Leak Detector is NOT active") 
+endif()
 #option(BUILD_SHARED_LIBS "If ON, all libraries will be built shared unless the library was explicitly added as a static library"          ON)
 
 SET(CMAKE_COLOR_MAKEFILE ON)

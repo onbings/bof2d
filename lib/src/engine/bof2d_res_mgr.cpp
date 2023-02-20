@@ -24,8 +24,7 @@
 #include <sstream>
 #include <fstream>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 
 BEGIN_BOF2D_NAMESPACE()
 

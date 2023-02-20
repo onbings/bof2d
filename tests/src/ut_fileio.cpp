@@ -17,9 +17,26 @@
  * V 1.00  Dec 26 2013  BHA : Initial release
  */
 #include "gtestrunner.h"
+#include <bofstd/boffs.h>
+#include <bof2d/bof2d_fileio.h>
+ //USE_BOF2D_NAMESPACE()
 
-//USE_BOF2D_NAMESPACE()
-
-TEST(Bof2d_FileIo_Test, Dumy)
+TEST(Bof2d_FileIo_Test, ReadWrite)
 {
+  BOF2D::BOF_FRAME_DATA FrameData_X;
+
+  FrameData_X.Reset();
+  EXPECT_NE(BOF2D::Bof_ReadGraphicFile("./data/marble.dontexist", 0, FrameData_X), BOF_ERR_NO_ERROR);
+  FrameData_X.Reset();
+  EXPECT_EQ(BOF2D::Bof_ReadGraphicFile("./data/marble.bmp", 0, FrameData_X), BOF_ERR_NO_ERROR);
+
+  EXPECT_EQ(BOF2D::Bof_WriteGraphicFile(BOF2D::BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_BMP, "./data/marble.tbd.bmp", 90, FrameData_X), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(BOF2D::Bof_WriteGraphicFile(BOF2D::BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_PNG, "./data/marble.tbd.png", 90, FrameData_X), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(BOF2D::Bof_WriteGraphicFile(BOF2D::BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_TGA, "./data/marble.tbd.tga", 90, FrameData_X), BOF_ERR_NO_ERROR);
+  EXPECT_EQ(BOF2D::Bof_WriteGraphicFile(BOF2D::BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_JPG, "./data/marble.tbd.jpg", 90, FrameData_X), BOF_ERR_NO_ERROR);
+
+  EXPECT_NE(BOF2D::Bof_WriteGraphicFile(BOF2D::BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_MAX, "./data/marble.tbd.bmp", 90, FrameData_X), BOF_ERR_NO_ERROR);
+  EXPECT_NE(BOF2D::Bof_WriteGraphicFile(BOF2D::BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_BMP, "./data/marble2.tbd.bmp", 110, FrameData_X), BOF_ERR_NO_ERROR);
+
+  EXPECT_EQ(BOF2D::Bof_ViewGraphicFile(FrameData_X), BOF_ERR_NO_ERROR);
 }

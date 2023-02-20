@@ -20,510 +20,190 @@
 #include <bofstd/bofstring.h>
 
 #include <bof2d/bof2d_fileio.h>
+#include <stb_image.h>
+#include <stb_image_write.h>
+#include <SDL.h>        
 
 BEGIN_BOF2D_NAMESPACE()
-
-/*!
-   Description
-   The LoadGraphicFile function loads a .bmp or .tga graphic file
-
-   Parameters
-   _rPath: Specifies the graphic filename to open
-   _rBmInfo_X: \Returns the graphic file characteristics
-   _pPaletteEntry_X: if not nullptr \returns palette table
-   _pData_UB: if nullptr just returns the graphic file characteristics in pBmInfo_X
-   and _pPaletteEntry_X otherwise store the graphic pixel data
-   _LoadIndex_U32: Return the graphic data stored at offset ((FileHEaderSize)+RecordIndex_U32*(*pSize_U32)).
-   This feature is usefull to load big graphic file in a small buffer in several passes
-   _rSize_U32:   Specifies and returns the number of data read inside the pData_UB buffer. If nullptr
-   the buffer is supposed to be large enought to read the data.
-
-   Returns
-   bool: true if the operation is successful
-
-   Remarks
-   None
- */
-
-BOFERR Bof_LoadGraphicFile(BOF::BofPath &_rPath, BOF_BITMAP_INFO_HEADER &_rBmInfo_X, BOF_PALETTE_ENTRY *_pPaletteEntry_X, uint8_t *pData_UB, uint32_t _LoadIndex_U32, uint32_t &_rSize_U32)
+//https://solarianprogrammer.com/2019/06/10/c-programming-reading-writing-images-stb_image-libraries/
+BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath& _rPath, int _NbChannelToRead_i, BOF_FRAME_DATA& _rFrameData_X)
 {
-  BOFERR         Rts_E;
-  BOF_TGA_HEADER TgaHeader_X;
+  BOFERR Rts_E = BOF_ERR_FORMAT;
+  uint8_t* pFrameData_U8;
+  uint32_t FrameSize_U32;
+  int Width_i, Height_i, NbChannel_i, FileCanbeRead_B;
 
-  Rts_E = Bof_LoadBmpFile(_rPath, _rBmInfo_X, _pPaletteEntry_X, pData_UB, _LoadIndex_U32, _rSize_U32);
-  if (Rts_E != BOF_ERR_NO_ERROR)
+  FileCanbeRead_B = stbi_info(_rPath.FullPathName(false).c_str(), &Width_i, &Height_i, &NbChannel_i);
+  if (FileCanbeRead_B)
   {
-    Rts_E = Bof_LoadTgaFile(_rPath, TgaHeader_X, _pPaletteEntry_X, pData_UB, _LoadIndex_U32, _rSize_U32);
-    if (Rts_E == BOF_ERR_NO_ERROR)
+    _rFrameData_X.FrameSizeInPixel_X.Width_U32 = Width_i;
+    _rFrameData_X.FrameSizeInPixel_X.Height_U32 = Height_i;
+    _rFrameData_X.NbChannel_U32 = NbChannel_i;
+    _rFrameData_X.LineSizeInByte_U32 = (_NbChannelToRead_i == 0) ? _rFrameData_X.FrameSizeInPixel_X.Width_U32 * _rFrameData_X.NbChannel_U32 : _rFrameData_X.FrameSizeInPixel_X.Width_U32 * _NbChannelToRead_i;
+    FrameSize_U32 = _rFrameData_X.LineSizeInByte_U32 * _rFrameData_X.FrameSizeInPixel_X.Height_U32;
+     Rts_E = BOF_ERR_EINVAL;
+    if ((_rFrameData_X.FrameBuffer_X.pData_U8==nullptr) && (_rFrameData_X.FrameBuffer_X.Capacity_U64==0) && (_rFrameData_X.FrameBuffer_X.Size_U64 == 0))
     {
-      _rBmInfo_X.Reset();
-      _rBmInfo_X.Size_U32 = sizeof(BOF_BITMAP_INFO_HEADER);
-      _rBmInfo_X.BitCount_U16 = TgaHeader_X.Bits_U8;
-      _rBmInfo_X.Height_S32 = TgaHeader_X.Height_U16;
-      _rBmInfo_X.Planes_U16 = 1;
-      _rBmInfo_X.Width_S32 = TgaHeader_X.Width_U16;
-      _rBmInfo_X.ClrUsed_U32 = TgaHeader_X.ColourMapLength_U16;
-      _rBmInfo_X.SizeImage_U32 = (TgaHeader_X.Width_U16 * TgaHeader_X.Height_U16 * (TgaHeader_X.Bits_U8 >> 3));
+      Rts_E = BOF_ERR_READ;
+      pFrameData_U8 = stbi_load(_rPath.FullPathName(false).c_str(), &Width_i, &Height_i, &NbChannel_i, _NbChannelToRead_i);
+      if (pFrameData_U8)
+      {
+        BOF_ASSERT(Width_i == _rFrameData_X.FrameSizeInPixel_X.Width_U32);
+        BOF_ASSERT(Height_i == _rFrameData_X.FrameSizeInPixel_X.Height_U32);
+        BOF_ASSERT(NbChannel_i == _rFrameData_X.NbChannel_U32);
+        _rFrameData_X.FrameBuffer_X.SetStorage(FrameSize_U32, FrameSize_U32, pFrameData_U8);
+        _rFrameData_X.FrameBuffer_X.MustBeFreeed_B = true;    //stbi_image_free(pFrameData_U8);
+        Rts_E = BOF_ERR_NO_ERROR;
+      }
     }
   }
-  return (Rts_E);
+  return Rts_E;
 }
-
-/*!
-   Description
-   The LoadBmpFile function loads a .bmp graphic file
-
-   Parameters
-   _rPath: Specifies the graphic filename to open
-   _rBmInfo_X: \Returns the graphic file characteristics
-   _pPaletteEntry_X: if not nullptr \returns palette table if needed
-   _pData_UB: if nullptr just returns the graphic file characteristics in pBmInfo_X
-   and _pPaletteEntry_X otherwise store the graphic pixel data
-   _LoadIndex_U32: Return the graphic data stored at offset ((FileHEaderSize)+RecordIndex_U32*(*pSize_U32)).
-   This feature is usefull to load big graphic file in a small buffer in several passes
-   _rSize_U32:   Specifies and returns the number of data read inside the pData_UB buffer. If nullptr
-   the buffer is supposed to be large enought to read the data.
-
-   Returns
-   bool: true if the operation is successful
-
-   Remarks
-   None
- */
-
-BOFERR Bof_LoadBmpFile(BOF::BofPath &_rPath, BOF_BITMAP_INFO_HEADER &_rBmInfo_X, BOF_PALETTE_ENTRY *_pPaletteEntry_X, uint8_t *_pData_UB, uint32_t _LoadIndex_U32, uint32_t &_rSize_U32)
+BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const BOF::BofPath& _rPath, uint32_t _EncQuality_U32, const BOF_FRAME_DATA& _rFrameData_X)
 {
-  BOFERR                 Rts_E;
-  intptr_t               Io;
-  uint32_t               i_U32, Width_U32;
-  uint32_t               Nb_U32, Size_U32;
-  uint8_t                Val_UB;
-  BOF_BITMAP_FILE_HEADER BmFile_X;
+  BOFERR Rts_E = BOF_ERR_EINVAL;
 
-  Rts_E = Bof_OpenFile(_rPath, true, false, Io);
-  if (Rts_E == BOF_ERR_NO_ERROR)
+  if ((_EncQuality_U32 <= 100) && (_rFrameData_X.FrameBuffer_X.pData_U8) && (_rFrameData_X.FrameBuffer_X.Size_U64))
   {
-    Nb_U32 = sizeof(BOF_BITMAP_FILE_HEADER);
-    Rts_E = BOF::Bof_ReadFile(Io, Nb_U32, reinterpret_cast<uint8_t *>(&BmFile_X));
-    if ((Rts_E == BOF_ERR_NO_ERROR)
-        && (Nb_U32 == sizeof(BOF_BITMAP_FILE_HEADER))
-        && (BmFile_X.Type_U16 == 0x4D42)              // 'BM
-        )
+    switch (_Format_E)
     {
-      Nb_U32 = sizeof(BOF_BITMAP_INFO_HEADER);
-      Rts_E = BOF::Bof_ReadFile(Io, Nb_U32, reinterpret_cast<uint8_t *>(&_rBmInfo_X));
-      if ((Rts_E == BOF_ERR_NO_ERROR)
-          && (Nb_U32 == sizeof(BOF_BITMAP_INFO_HEADER))
-          && (_rBmInfo_X.Size_U32 == sizeof(BOF_BITMAP_INFO_HEADER))
-          && (_rBmInfo_X.Compression_U32 == BOF_BI_RGB)
-          && (_rBmInfo_X.Planes_U16 == 1)
-          )
-      {
-        if (_rBmInfo_X.BitCount_U16 == 8)
-        {
-          if (!_rBmInfo_X.ClrUsed_U32)
-          {
-            _rBmInfo_X.ClrUsed_U32 = 256;
-          }
-          Size_U32 = _rBmInfo_X.ClrUsed_U32 * static_cast<uint32_t>(sizeof(BOF_PALETTE_ENTRY));
-          if (_pPaletteEntry_X)
-          {
-            Nb_U32 = Size_U32;
-            Rts_E = BOF::Bof_ReadFile(Io, Nb_U32, reinterpret_cast<uint8_t *>(_pPaletteEntry_X));
-            if ((Rts_E == BOF_ERR_NO_ERROR)
-                && (Nb_U32 == Size_U32)
-                )
-            {
-              // the palette is stored as RGBQUAD array instead of BOF_PALETTE_ENTRY->swap r & b
-              for (i_U32 = 0; i_U32 < _rBmInfo_X.ClrUsed_U32; i_U32++)
-              {
-                Val_UB = _pPaletteEntry_X[i_U32].b_U8;
-                _pPaletteEntry_X[i_U32].b_U8 = _pPaletteEntry_X[i_U32].r_U8;
-                _pPaletteEntry_X[i_U32].r_U8 = Val_UB;
-                _pPaletteEntry_X[i_U32].Flg_U8 = 0xFF; // Opaque
-              }
-            }
-            else
-            {
-              Rts_E = BOF_ERR_FORMAT;
-            }
-          }
-          else
-          {
-            Rts_E = (BOF::Bof_SetFileIoPosition(Io, Size_U32, BOF::BOF_SEEK_METHOD::BOF_SEEK_CURRENT) != (int64_t)-1) ? BOF_ERR_NO_ERROR : BOF_ERR_SEEK;
-          }
-        }
-        else
-        {
-          Rts_E = BOF_ERR_NO_ERROR;
-        }
-        if (Rts_E == BOF_ERR_NO_ERROR)
-        {
-          // Bitmap line length are aligned on 4 bytes
-          Width_U32 = (_rBmInfo_X.BitCount_U16 >= 8) ? _rBmInfo_X.Width_S32 * (_rBmInfo_X.BitCount_U16 >> 3) : _rBmInfo_X.Width_S32 * (8 / _rBmInfo_X.BitCount_U16);
-          if (_rBmInfo_X.Width_S32 & 0x03)
-          {
-            Width_U32 += (4 - (_rBmInfo_X.Width_S32 & 0x03));
-          }
-          _rBmInfo_X.Width_S32 = Width_U32 / (_rBmInfo_X.BitCount_U16 >> 3);
+    case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_BMP:
+      Rts_E = (stbi_write_bmp(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+      break;
 
-          Rts_E = Bof_ReadGraphicFile(Io, _LoadIndex_U32, (_rBmInfo_X.Height_S32 < 0) ? true : false, (uint8_t)_rBmInfo_X.BitCount_U16, _pData_UB, _rBmInfo_X.Width_S32, _rBmInfo_X.Height_S32,
-                                      &_rSize_U32);
-        }
-      }
-      else
-      {
-        Rts_E = BOF_ERR_FORMAT;
-      }
-    }
-    else
-    {
-      Rts_E = BOF_ERR_FORMAT;
-    }
-    BOF::Bof_CloseFile(Io);
-  }
-  return (Rts_E);
-}
-
-/*!
-   Description
-   The LoadTgaFile function loads a .tga graphic file
-
-   Parameters
-   _rPath: Specifies the graphic filename to open
-   _rTgaHeader_X: \Returns the graphic file characteristics
-   _pPaletteEntry_X: if not nullptr \returns palette table if needed
-   _pData_UB: if nullptr just returns the graphic file characteristics in pTgaHeader_X
-   and _pPaletteEntry_X otherwise store the graphic pixel data
-   _LoadIndex_U32: Return the graphic data stored at offset ((FileHEaderSize)+RecordIndex_U32*(*pSize_U32)).
-   This feature is usefull to load big graphic file in a small buffer in several passes
-   _rSize_U32:   Specifies and returns the number of data read inside the pData_UB buffer. If nullptr
-   the buffer is supposed to be large enough to read the data.
-
-   Returns
-   bool: true if the operation is successful
-
-   Remarks
-   None
- */
-
-BOFERR Bof_LoadTgaFile(BOF::BofPath &_rPath, BOF_TGA_HEADER &_rTgaHeader_X, BOF_PALETTE_ENTRY *_pPaletteEntry_X, uint8_t *_pData_UB, uint32_t _LoadIndex_U32, uint32_t &_rSize_U32)
-{
-  BOFERR   Rts_E;
-  intptr_t Io;
-  uint32_t i_U32;
-  uint32_t Nb_U32, Size_U32;
-  uint8_t  pPalette_UB[8];
-
-  Rts_E = Bof_OpenFile(_rPath, true, false, Io);
-  if (Rts_E == BOF_ERR_NO_ERROR)
-  {
-    Nb_U32 = sizeof(BOF_TGA_HEADER);
-
-    Rts_E = BOF::Bof_ReadFile(Io, Nb_U32, reinterpret_cast<uint8_t *>(&_rTgaHeader_X));
-    if ((Rts_E == BOF_ERR_NO_ERROR)
-        && (Nb_U32 == sizeof(BOF_TGA_HEADER))
-        && (_rTgaHeader_X.ColourMapType_U8 <= 8)
-        )
-    {
-      Rts_E = (BOF::Bof_SetFileIoPosition(Io, _rTgaHeader_X.IdentSize_U8, BOF::BOF_SEEK_METHOD::BOF_SEEK_CURRENT) != (int64_t)-1) ? BOF_ERR_NO_ERROR : BOF_ERR_SEEK;
-      if (Rts_E == BOF_ERR_NO_ERROR)
-      {
-        if (_rTgaHeader_X.ColourMapType_U8)
-        {
-          Size_U32 = (_rTgaHeader_X.ColourMapBits_U8 >> 3);
-          if (_pPaletteEntry_X)
-          {
-            for (i_U32 = 0; i_U32 < _rTgaHeader_X.ColourMapLength_U16; i_U32++, _pPaletteEntry_X++)
-            {
-              Nb_U32 = Size_U32;
-              Rts_E = BOF::Bof_ReadFile(Io, Nb_U32, pPalette_UB);
-              if ((Rts_E == BOF_ERR_NO_ERROR)
-                  && (Nb_U32 == Size_U32)
-                  )
-              {
-                switch (Size_U32)
-                {
-                  case 3:
-                    _pPaletteEntry_X->r_U8 = pPalette_UB[2];
-                    _pPaletteEntry_X->g_U8 = pPalette_UB[1];
-                    _pPaletteEntry_X->b_U8 = pPalette_UB[0];
-                    _pPaletteEntry_X->Flg_U8 = 0xFF;
-                    break;
-
-                  case 4:
-                    _pPaletteEntry_X->r_U8 = pPalette_UB[2];
-                    _pPaletteEntry_X->g_U8 = pPalette_UB[1];
-                    _pPaletteEntry_X->b_U8 = pPalette_UB[0];
-                    _pPaletteEntry_X->Flg_U8 = pPalette_UB[3];
-                    break;
-
-                  default:
-                    Rts_E = BOF_ERR_EINVAL;
-                    break;
-                }
-              }
-              else
-              {
-                Rts_E = BOF_ERR_READ;
-              }
-              if (Rts_E != BOF_ERR_NO_ERROR)
-              {
-                break;
-              }
-            }
-          }
-          else
-          {
-            Rts_E = (BOF::Bof_SetFileIoPosition(Io, (Size_U32 * _rTgaHeader_X.ColourMapLength_U16), BOF::BOF_SEEK_METHOD::BOF_SEEK_CURRENT) != (int64_t)-1) ? BOF_ERR_NO_ERROR : BOF_ERR_SEEK;
-          }
-        }
-        else
-        {
-          Rts_E = BOF_ERR_NO_ERROR;
-        }
-        if (Rts_E == BOF_ERR_NO_ERROR)
-        {
-          if (_rTgaHeader_X.ImageType_U8 > 3)
-          {
-            Rts_E = BOF_ERR_BAD_TYPE;   // Accept only uncompressed image
-          }
-          else
-          {
-            Rts_E = Bof_ReadGraphicFile(Io, _LoadIndex_U32, (_rTgaHeader_X.Descriptor_X.Origin_UB != 0) ? true : false, static_cast<uint8_t>(_rTgaHeader_X.Bits_U8 >> 3), _pData_UB,
-                                        _rTgaHeader_X.Width_U16, _rTgaHeader_X.Height_U16, &_rSize_U32);
-          }
-        }
-      }
-    }
-    else
-    {
-      Rts_E = BOF_ERR_FORMAT;
-    }
-    BOF::Bof_CloseFile(Io);
-  }
-
-  return (Rts_E);
-}
-
-/*!
-   Description
-   The GenerateTgaFile function creates a dummy .tga graphic file
-
-   Parameters
-   pFn_c: Specifies the graphic filename to create
-   Width_U32: Specifies the graphic width
-   Height_U32: Specifies the graphic height
-
-   Returns
-   bool: true if the operation is successful
-
-   Remarks
-   None
- */
-
-
-BOFERR Bof_GenerateTgaFile(BOF::BofPath &_rPath, uint32_t _Width_U32, uint32_t _Height_U32)
-{
-  BOF_TGA_HEADER TgaHeader_X;
-  BOFERR         Rts_E = BOF_ERR_ENOMEM;
-  intptr_t       Io;
-  uint32_t       x_U32, y_U32, v_U32, *p_U32, w_U32;
-  uint32_t       Nb_U32, Size_U32;
-  uint8_t *pData_UB;
-
-  Size_U32 = _Height_U32 * (_Width_U32 << 2);
-  if ((pData_UB = new uint8_t[(uint32_t)Size_U32]) != nullptr)
-  {
-    Rts_E = Bof_CreateFile(BOF::BOF_FILE_PERMISSION_ALL_FOR_ALL, _rPath, false, Io);
-    if (Rts_E == BOF_ERR_NO_ERROR)
-    {
-      TgaHeader_X.Reset();
-      TgaHeader_X.Bits_U8 = 32;
-      TgaHeader_X.ImageType_U8 = 2;
-      TgaHeader_X.Descriptor_X.Origin_UB = 1;
-      TgaHeader_X.Height_U16 = (uint16_t)_Height_U32;
-      TgaHeader_X.Width_U16 = (uint16_t)_Width_U32;
-      Nb_U32 = sizeof(BOF_TGA_HEADER);
-      Rts_E = BOF::Bof_WriteFile(Io, Nb_U32, reinterpret_cast<const uint8_t *>(&TgaHeader_X));
-      if ((Rts_E == BOF_ERR_NO_ERROR)
-          && (Nb_U32 == sizeof(BOF_TGA_HEADER))
-          )
-      {
-        Rts_E = (BOF::Bof_SetFileIoPosition(Io, TgaHeader_X.IdentSize_U8, BOF::BOF_SEEK_METHOD::BOF_SEEK_CURRENT) != (int64_t)-1) ? BOF_ERR_NO_ERROR : BOF_ERR_SEEK;
-        if (Rts_E == BOF_ERR_NO_ERROR)
-        {
-          memset(pData_UB, 0, (size_t)Size_U32);
-          p_U32 = (uint32_t *)pData_UB;
-          for (y_U32 = 0; y_U32 < TgaHeader_X.Height_U16; y_U32++, p_U32 += _Width_U32)
-          {
-            w_U32 = TgaHeader_X.Width_U16 - 1;
-            v_U32 = 0xFFFF0000;
-            for (x_U32 = 0; x_U32 < w_U32; x_U32++)
-            {
-              if (x_U32 == (w_U32 - 1))
-              {
-                v_U32 &= 0x00FFFFFF;
-                v_U32 |= 0x80000000;
-              }
-              p_U32[x_U32] = v_U32;
-            }
-          }
-          Nb_U32 = Size_U32;
-          Rts_E = BOF::Bof_WriteFile(Io, Nb_U32, pData_UB);
-          if ((Rts_E == BOF_ERR_NO_ERROR)
-              && (Nb_U32 == Size_U32)
-              )
-          {
-          }
-          else
-          {
-            Rts_E = BOF_ERR_WRITE;
-          }
-        }
-      }
-      else
-      {
-        Rts_E = BOF_ERR_READ;
-      }
-      BOF::Bof_CloseFile(Io);
-    }
-    BOF_SAFE_DELETE_ARRAY(pData_UB);
-    //		delete pData_UB;
-  }
-  return (Rts_E);
-}
-
-/*!
-   Description
-   The ReadGraphicFile function reads the data part of a tga or bmp file. These one can be
-   Top_S32 down or down Top_S32 oriented
-
-   Parameters
-   Io: Specifies the file handle. The file read pointer must be located on the first byte of
-   the graphic file data zone
-   _RecordIndex_U32: Specifies the record index inside the file data zone to access. The file data zone is view as a list of
-   successive binary record of length
-   TopDown_B: true if the data byte in the file are Top_S32 down oriented
-   _BytePerPixel_UB: Specifies the number of byte per pixel
-   _pData_UB: Specifies a pointer to the buffer which will contain the data read.
-   _Width_U32: Specifies the graphic width
-   _Height_U32: Specifies the graphic height
-   _rRecordSize_U32. Specifies the size of a data record. This information is used with RecordIndex_U32 and
-   the TopDown_B argument to compute the file offset to read
-   The data really read are also returned to the called via this pointer
-
-   Returns
-   bool: true if the operation is successful
-
-   Remarks
-   None
- */
-
-BOFERR Bof_ReadGraphicFile(intptr_t Io, uint32_t _RecordIndex_U32, bool _TopDown_B, uint8_t _BytePerPixel_UB, uint8_t *_pData_UB, uint32_t _Width_U32, uint32_t _Height_U32, uint32_t *_pRecordSize_U32)
-{
-  BOFERR   Rts_E = BOF_ERR_EINVAL;
-  uint32_t NbLineToRead_U32, i_U32, LineInFile_U32, WidthInByte_U32;
-  uint32_t Size_U32, Nb_U32;
-  uint8_t *p_UB;
-
-  if (_pData_UB)
-  {
-    WidthInByte_U32 = _Width_U32 * _BytePerPixel_UB;
-    if (_pRecordSize_U32)
-    {
-      NbLineToRead_U32 = (*_pRecordSize_U32 / WidthInByte_U32);
-      if (NbLineToRead_U32 > _Height_U32)
-      {
-        NbLineToRead_U32 = _Height_U32;
-      }
-
-      if (_TopDown_B)
-      {
-        LineInFile_U32 = _RecordIndex_U32 * NbLineToRead_U32;
-        if (LineInFile_U32 < _Height_U32)
-        {
-          if ((LineInFile_U32 + NbLineToRead_U32) >= _Height_U32)
-          {
-            NbLineToRead_U32 = _Height_U32 - LineInFile_U32;
-          }
-        }
-      }
-      else
-      {
-        LineInFile_U32 = _Height_U32 - ((_RecordIndex_U32 + 1) * NbLineToRead_U32);
-        if (LineInFile_U32 & 0x80000000)
-        {
-          NbLineToRead_U32 = _Height_U32 + LineInFile_U32; // LineInFile_U32 is <0
-          LineInFile_U32 = 0;
-        }
-      }
-
-      if ((!(LineInFile_U32 & 0x80000000))
-          && (!(NbLineToRead_U32 & 0x80000000))
-          && (LineInFile_U32 < _Height_U32)
-          )
-      {
-        Rts_E = (BOF::Bof_SetFileIoPosition(Io, LineInFile_U32 * WidthInByte_U32, BOF::BOF_SEEK_METHOD::BOF_SEEK_CURRENT) != (int64_t)-1) ? BOF_ERR_NO_ERROR : BOF_ERR_SEEK;
-      }
-      *_pRecordSize_U32 = 0;
-    }
-    else
-    {
-      NbLineToRead_U32 = _Height_U32;
+    case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_PNG:
       Rts_E = BOF_ERR_NO_ERROR;
-    }
+      //int stbi_write_tga_with_rle;             // defaults to true; set to 0 to disable RLE
+  /*
+  STBIW_ZLIB_COMPRESS: Use Zlib:
+     The compression level must be Z_DEFAULT_COMPRESSION, or between 0 and 9:
+     1 gives best speed, 9 gives best compression, 0 gives no compression at all
+     (the input data is simply copied a block at a time).  Z_DEFAULT_COMPRESSION
+     requests a default compromise between speed and compression (currently
+     equivalent to level 6).
 
-    if (Rts_E == BOF_ERR_NO_ERROR)
+  */
+      stbi_write_png_compression_level = (_EncQuality_U32 / 10);    //if not zlib: defaults to 8; set to higher for more compression
+      //https://optipng.sourceforge.net/pngtech/png_optimization.html#:~:text=The%20PNG%20format%20employs%20five,and%2For%20the%20upper%20left.
+      stbi_write_force_png_filter = -1;
+      /*
+      Most of the parameters are the same ones that are also passed to stbi_write_png which has a documentation in the header file:
+
+      pixels is the uncompressed image data
+      stride_bytes is the number of bytes between two the start of two consecutive rows:
+      "stride_in_bytes" is the distance in bytes from the first byte of a row of pixels to the first byte of the next row of pixels.
+
+      x (called w in stbi_write_png) is the width of the image
+      y (called h in stbi_write_png) is the height of the image
+      n (called comp in stbi_write_png) is the number of channels:
+      Each pixel contains 'comp' channels of data stored interleaved with 8-bits per channel, in the following order: 1=Y, 2=YA, 3=RGB, 4=RGBA.
+
+      out_len is a output parameter which returns the number of bytes the compressed data has.
+      */
+      Rts_E = (stbi_write_png(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8, _rFrameData_X.LineSizeInByte_U32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+      break;
+
+    case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_TGA:
+      Rts_E = BOF_ERR_NO_ERROR;
+      stbi_write_tga_with_rle = (_EncQuality_U32 != 0) ? true : false;             // defaults to true; set to 0 to disable RLE
+      Rts_E = (stbi_write_tga(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+      break;
+
+    case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_JPG:
+      /*
+      The last parameter of the stbi_write_jpg function is a quality parameter that goes from 1 to 100.
+      Since JPG is a lossy image format, you can chose how much data is dropped at save time. Lower quality
+      means smaller image size on disk and lower visual image quality.
+      Most image editors, like GIMP, will save jpg images with a default quality parameter of 80 or 90,
+      but the user can tune the quality parameter if required. I’ve used a quality parameter of 100 in all
+      examples from this article.
+      */
+      Rts_E = (stbi_write_jpg(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8, _EncQuality_U32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+      break;
+
+    default:
+      Rts_E = BOF_ERR_FORMAT;
+      break;
+    }
+  }
+  return Rts_E;
+}
+
+
+BOFERR Bof2d_SdlCheckIfError(int _SdlErrorCode_i, const std::string& _rErrorContext_S, const std::string& _rFile_S, const std::string& _rFunction_S, uint32_t _Line_U32)
+{
+  BOFERR Rts_E = BOF_ERR_NO_ERROR;
+  static const std::map<int, BOFERR> S_Sdl2BoferrorCodeCollection
+  {
+    {SDL_ENOMEM       , BOF_ERR_ENOMEM },
+    {SDL_EFREAD       , BOF_ERR_READ},
+    {SDL_EFWRITE      , BOF_ERR_WRITE },
+    {SDL_EFSEEK       , BOF_ERR_SEEK},
+    {SDL_UNSUPPORTED  , BOF_ERR_NOT_SUPPORTED},
+    {SDL_LASTERROR    , BOF_ERR_INTERNAL},
+  };
+ 
+  if (_SdlErrorCode_i < 0)
+  {
+    auto It = S_Sdl2BoferrorCodeCollection.find(_SdlErrorCode_i);
+    if (It != S_Sdl2BoferrorCodeCollection.end())
     {
-      Size_U32 = 0;
-      if (_TopDown_B)
+      Rts_E = It->second;
+    }
+    else
+    {
+      Rts_E = BOF_ERR_INTERFACE;
+      //Rts_E = (BOFERR)(_SdlErrorCode_i));
+    }
+    printf("%s:%s:%04d Error %d/%X\nBof:    %s\nCtx:    %s\nSdl: %s\n", _rFile_S.c_str(), _rFunction_S.c_str(), _Line_U32, _SdlErrorCode_i, _SdlErrorCode_i, BOF::Bof_ErrorCode(Rts_E), _rErrorContext_S.c_str(), SDL_GetError());
+  }
+  return Rts_E;
+}
+#define SDL_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = Bof2d_SdlCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
+
+//https://gigi.nullneuron.net/gigilabs/displaying-an-image-in-an-sdl2-window/
+BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF_SIZE &_rWindowSize_X, const BOF_FRAME_DATA& _rFrameData_X)
+{
+BOFERR Rts_E = BOF_ERR_EINVAL;
+bool Finish_B = false;
+SDL_Event SdlEvent_E;
+SDL_Window *pSdlWnd_X;
+SDL_Renderer *pSdlRenderer;
+
+  if ((_rFrameData_X.FrameBuffer_X.pData_U8) && (_rFrameData_X.FrameBuffer_X.Size_U64))
+  {
+    SDL_Init(SDL_INIT_VIDEO);
+    pSdlWnd_X = SDL_CreateWindow(_rTitle_S.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _rWindowSize_X.Width_U32, _rWindowSize_X.Height_U32, 0);
+    if (pSdlWnd_X == nullptr)
+    {
+      SDL_CHK_IF_ERR(SDL_ENOMEM, "Could not SDL_CreateWindow", Rts_E);
+    }
+    else
+    {
+      pSdlRenderer = SDL_CreateRenderer(pSdlWnd_X, -1, 0);
+      if (pSdlWnd_X == nullptr)
       {
-        Size_U32 = WidthInByte_U32 * NbLineToRead_U32;
-        Nb_U32 = Size_U32;
-        Rts_E = BOF::Bof_ReadFile(Io, Nb_U32, _pData_UB);
-        if ((Rts_E == BOF_ERR_NO_ERROR)
-            && (Nb_U32 == Size_U32)
-            )
-        {
-        }
-        else
-        {
-          Rts_E = BOF_ERR_READ;
-        }
+        SDL_CHK_IF_ERR(AVERROR_STREAM_NOT_FOUND, "Could not find decoder for codec " + std::to_string(mpVidDecCodecParam_X->codec_id), Rts_E);
       }
       else
       {
-        //Nb_U32 = 0;
-        p_UB = (_pData_UB)+((NbLineToRead_U32 - 1) * WidthInByte_U32);
-        for (i_U32 = 0; i_U32 < NbLineToRead_U32; i_U32++)
+        while (!Finish_B)
         {
-          Nb_U32 = WidthInByte_U32;
-          if ((BOF::Bof_ReadFile(Io, Nb_U32, p_UB) != 0)
-              || (Nb_U32 != WidthInByte_U32)
-              )
+          SDL_WaitEvent(&SdlEvent_E);
+
+          switch (SdlEvent_E.type)
           {
-            Size_U32 += Nb_U32;
+          case SDL_QUIT:
+            Finish_B = true;
             break;
           }
-          else
-          {
-            p_UB -= WidthInByte_U32;
-          }
-          Size_U32 += Nb_U32;
         }
-        Rts_E = (i_U32 == NbLineToRead_U32) ? BOF_ERR_NO_ERROR : BOF_ERR_READ;
-      }
-      if (_pRecordSize_U32)
-      {
-        *_pRecordSize_U32 = (uint32_t)Size_U32;
       }
     }
+    SDL_Quit();
+
   }
-  else
-  {
-    Rts_E = BOF_ERR_NO_ERROR;
-  }
-  return (Rts_E);
+  return Rts_E;
 }
+
 END_BOF2D_NAMESPACE()

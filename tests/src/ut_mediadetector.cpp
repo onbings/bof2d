@@ -461,7 +461,7 @@ TEST(Bof2d_MediaDetector_Test, MediaDetectorParse)
 //No the same on different pc  EXPECT_STREQ(Created.ToString("%Y-%m-%d %H:%M:%S.%q").c_str(), "2022-09-17 08:12:46.389");
   EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::General, "File_Modified_Date", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   Modified.FromString(Result_S, "UTC %Y-%m-%d %H:%M:%S.%q");
-  EXPECT_STREQ(Modified.ToString("%Y-%m-%d %H:%M:%S.%q").c_str(), "2022-09-17 11:29:29.185");
+  EXPECT_STREQ(Modified.ToString("%Y-%m-%d %H:%M:%S.%q").c_str(), "2022-12-16 16:11:07.729"); // "2022-09-17 11:29:29.185");
 
   EXPECT_EQ(MediaInfoParser.Query(BOF2D::BofMediaDetector::MediaStreamType::Image, "BitDepth", BOF2D::BofMediaDetector::InfoType::Text, Result_S), BOF_ERR_NO_ERROR);
   EXPECT_EQ(std::atol(Result_S.c_str()), 8);

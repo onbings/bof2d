@@ -156,7 +156,7 @@ endif()
 #disable exception in spd log and replace thme by assert(false) to avoid try around every sprintf
 target_compile_definitions(bof2d-objects
   PUBLIC
-    -DBOFSTD_BUILD_MEDIAINFO_AS_LIBRARY=1	#MediaInfo dll is a shame -> use only the static lib version
+    -DBOF2D_BUILD_MEDIAINFO_AS_LIBRARY=1	#MediaInfo dll is a shame -> use only the static lib version
 
   PRIVATE
     -Dbof2d_EXPORTS=1	#in lower case to define the SYMBOL BOFSTD_EXPORT (upper case)in bof2d_export.h
@@ -169,6 +169,15 @@ if(NOT "${ANDROID_PLATFORM}")
 target_compile_definitions(bof2d-objects
   PRIVATE
 	-DBOF2D_STATIC_DEFINE
+)
+endif()
+
+message("=BOF2D_VLD==============> " ${BOF2D_VLD})
+if (${BOF2D_VLD})
+message("===============> Activate Visual Leak Detector")
+target_compile_definitions(bof2d-objects
+  PRIVATE
+	-DBOF2D_VLD
 )
 endif()
 

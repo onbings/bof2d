@@ -55,6 +55,8 @@ set(DATA_FILES
   ./data/colorbar_uncompress_32b.tga
   ./data/colorbar_rle_32b.tga
   ./data/sample-mp4-file.mp4
+  ./data/HDRI_Sample_Scene_Balls_HDR.jpg
+  ./data/marble.bmp
 )
 
 set(2D_FILES
@@ -105,11 +107,34 @@ target_include_directories(bof2d-tests
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../lib/src>
 )
 
+#print all cmake var
+#get_cmake_property(_variableNames VARIABLES)
+#list (SORT _variableNames) 
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "EXISTING VAR==============${_variableName}=${${_variableName}}")
+#endforeach() 
+
+message("--BOF2D_VLD-->" ${BOF2D_VLD})
+if (${BOF2D_VLD})
+set(VLD_ROOT_DIR ${bofstd_DIR}/../../include/bofstd/vld)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+set(VLD_DLL_DIR ${VLD_ROOT_DIR}/bin/Win64)
+message("--BOF2D_VLD-->64 bits " ${VLD_DLL_DIR})
+elseif()
+set(VLD_DLL_DIR ${VLD_ROOT_DIR}/bin/Win)
+message("--BOF2D_VLD-->32 bits "  ${VLD_DLL_DIR})
+endif()
+
+message("--VLD_ROOT_DIR-->" ${VLD_ROOT_DIR})
+message("--VLD_DLL_DIR--->" ${VLD_DLL_DIR})
+endif()
+
 # Link
 target_link_libraries(bof2d-tests
   PRIVATE
     ONBINGS::bof2d-objects
     GTest::GTest
+	ONBINGS::bofstd
 	${AVCODEC_LIBRARY}
 	${AVDEVICE_LIBRARY}
 	${AVFILTER_LIBRARY}
@@ -117,13 +142,26 @@ target_link_libraries(bof2d-tests
 	${AVUTIL_LIBRARY}
 	${SWRESAMPLE_LIBRARY}
 	${SWSCALE_LIBRARY}
-#Visual Leak Detector: vld
-#if (MSVC)
-    bofstd/vld/lib/Win64/vld.lib
-#    C:/bld/bof2d/vcpkg_installed/evs-x64-swx-windows-static/include/bofstd/vld/lib/Win64/vld.lib
-#endif()
+)
+if (MSVC)
+target_link_libraries(bof2d-tests
+  PRIVATE
+    ONBINGS::bof2d-objects
+	Mfplat.lib
+	Secur32.lib
+	Mfuuid.lib
+	Strmiids.lib
 )
 
+#Visual Leak Detector: vld
+if (${BOF2D_VLD})
+target_link_libraries(bof2d-tests
+  PRIVATE
+    ONBINGS::bof2d-objects
+	${VLD_ROOT_DIR}/lib/Win64/vld.lib
+)
+endif()
+endif()
 
 # Object library is not a shared library
 # void import directive only for linking
@@ -186,5 +224,10 @@ message("Copy test files from " ${CMAKE_CURRENT_SOURCE_DIR} "/data to " ${CMAKE_
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data)
 foreach(Filename ${DATA_FILES})
   message("Copy " ${Filename} " to " ${CMAKE_CURRENT_BINARY_DIR} "/data")
-  file(COPY ${Filename} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data)
+  file(COPY ${Filename} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data) 
 endforeach()
+
+if (${BOF2D_VLD})
+message("Copy vld files from " ${VLD_DLL_DIR}/* " to " ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+#add_custom_command(TARGET bof2d-tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${VLD_DLL_DIR} $<TARGET_FILE_DIR:bof2d-tests>)
+endif()

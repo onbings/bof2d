@@ -20,9 +20,11 @@
  * V 1.00  Dec 26 2013  BHA : Initial release
  */
 #include "gtestrunner.h"
+#include <bof2d/bof2d.h>
 
 //USE_BOF2D_NAMESPACE()
 
-TEST(Bof2d_Test, Dumy)
+TEST(Bof2d_Test, Api)
 {
+  EXPECT_STREQ(BOF2D::Bof_GetVersion().c_str(), "2.1.1.1");
 }

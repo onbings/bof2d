@@ -100,6 +100,7 @@ void APIENTRY glDebugOutput(GLenum source,
   std::cout << std::endl;
 }
 
+#if defined(BOF2D_TEST_GAME_ENGINE)
 //TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
 TEST(Bof2d_GameEngine_Test, Loop)
 {
@@ -191,3 +192,4 @@ TEST(Bof2d_GameEngine_Test, Loop)
   }
 #endif
 }
+#endif

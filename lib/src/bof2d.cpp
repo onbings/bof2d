@@ -18,6 +18,49 @@
  */
 
 #include <bof2d/bof2d.h>
+#include <bof2d_version_info.h>
+
+#include <zlib.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+
+uint8_t* ZlibCompressor(unsigned char* data, int _DataToCompressSizeInByte_i, int* out_len, int quality);
+#define STBIW_ZLIB_COMPRESS ZlibCompressor
+
+/*
+   You can #define STBIW_ZLIB_COMPRESS to use a custom zlib-style compress function
+   for PNG compression (instead of the builtin one), it must have the following signature:
+   unsigned char * my_compress(unsigned char *data, int _DataToCompressSizeInByte_i, int *out_len, int quality);
+   The returned data will be freed with STBIW_FREE() (free() by default),
+   so it must be heap allocated with STBIW_MALLOC() (malloc() by default),
+
+*/
+//const long int CHUNK = { 16384 };
+uint8_t* ZlibCompressor(uint8_t* _pDataToCompress_U8, int _DataToCompressSizeInByte_i, int* _pDataCompressedSizeInByte_i, int _Quality_i)
+{
+  uint8_t* pRts_U8 = nullptr;
+  unsigned long OutLen_U32 = 0;
+  int Sts_i;
+
+  if ((_pDataToCompress_U8) && (_pDataCompressedSizeInByte_i))
+  {
+    pRts_U8 = (uint8_t*)STBIW_MALLOC(_DataToCompressSizeInByte_i);
+    OutLen_U32 = _DataToCompressSizeInByte_i;
+    Sts_i = compress2(pRts_U8, &OutLen_U32, _pDataToCompress_U8, _DataToCompressSizeInByte_i, _Quality_i);
+    if (Sts_i)
+    {
+      STBIW_FREE(pRts_U8);
+      pRts_U8 = nullptr;
+      OutLen_U32 = 0;
+    }
+  }
+  *_pDataCompressedSizeInByte_i = static_cast<int>(OutLen_U32);
+
+  return pRts_U8;
+}
 
 BEGIN_BOF2D_NAMESPACE()
 //YUV Color
@@ -86,6 +129,16 @@ const BOF_YUVA GL_YuvBlack0_X = { 16, 128, 128, 255 };
 const BOF_YUVA GL_YuvBlack2_X = { 20, 128, 128, 255 };
 const BOF_YUVA GL_YuvBlack4_X = { 25, 128, 128, 255 };
 const BOF_YUVA GL_YuvNeg2_X = { 12, 128, 128, 255 };
+
+std::string Bof_GetVersion()
+{
+  //Just to check
+  //const char *pFfmpegVersion_c = av_version_info();
+  //const char *pOpenSslVersion_c = OpenSSL_version(OPENSSL_VERSION); 
+  //const char *pBoostVersion_c = BOOST_LIB_VERSION;
+
+  return std::to_string(BOF2D_VERSION_MAJOR) + "." + std::to_string(BOF2D_VERSION_MINOR) + "." + std::to_string(BOF2D_VERSION_PATCH) + "." + std::to_string(BOF2D_VERSION_BUILD);
+}
 
 /*!
    Description
@@ -459,46 +512,7 @@ BOFERR Bof_DecimateGraphicData(uint8_t _BytePerPixel_UB, uint8_t *_pData_UB, uin
   return (Rts_B ? BOF_ERR_NO_ERROR : BOF_ERR_EINVAL);
 }
 
-/*!
-   Description
-   The LookForColor function scans a color table looking for a particula value
 
-   Parameters
-   _NbColorEntry_U32: Specifies the number of colors in the pColorTable_X array
-   _pColorTable_X: Specifies the color table array
-   _Color_X: Specifies the color to look for
-   _pColorEntry_U32: \Returns the color table entry found (-1 if no match)
-
-   Returns
-   bool: true if the operation is successful
-
-   Remarks
-   None
- */
-
-BOFERR Bof_LookForColor(uint32_t _NbColorEntry_U32, BOF_PALETTE_ENTRY *_pColorTable_X, BOF_PALETTE_ENTRY _Color_X, uint32_t *_pColorEntry_U32)
-{
-  bool     Rts_B = false;
-  uint32_t i_U32;
-
-  if ((_pColorTable_X) && (_pColorEntry_U32))
-  {
-    *_pColorEntry_U32 = (uint32_t)-1;
-    for (i_U32 = 0; i_U32 < _NbColorEntry_U32; i_U32++, _pColorTable_X++)
-    {
-      if ((_pColorTable_X->r_U8 == _Color_X.r_U8)
-          && (_pColorTable_X->g_U8 == _Color_X.g_U8)
-          && (_pColorTable_X->b_U8 == _Color_X.b_U8)
-          )
-      {
-        Rts_B = true;
-        *_pColorEntry_U32 = i_U32;
-        break;
-      }
-    }
-  }
-  return (Rts_B ? BOF_ERR_NO_ERROR : BOF_ERR_EINVAL);
-}
 
 /*!
    Description

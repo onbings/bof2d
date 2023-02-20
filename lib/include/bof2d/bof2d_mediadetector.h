@@ -22,7 +22,7 @@
 
 #include <bof2d/bof2d.h>
 
-#if defined(BOFSTD_BUILD_MEDIAINFO_AS_LIBRARY)
+#if defined(BOF2D_BUILD_MEDIAINFO_AS_LIBRARY)
 #include "MediaInfo/MediaInfo.h" //Staticly-loaded library (.lib or .a or .so)
 #define MediaInfoNameSpace MediaInfoLib;
 //#pragma message("MediaInfoNameSpace MediaInfoLib")
