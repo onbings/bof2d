@@ -19,7 +19,7 @@
 #pragma once
 #include <bofstd/bofpath.h>
 
-//#include <bof2d/bof2d.h>
+ //#include <bof2d/bof2d.h>
 #include <bof2d/bof2d_av_codec.h>
 
 BEGIN_BOF2D_NAMESPACE()
@@ -44,8 +44,8 @@ struct BOF2D_EXPORT BOF_FRAME_DATA
   }
 };
 
-BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath& _rPath, int _NbChannelToRead_i, BOF_FRAME_DATA& _rFrameData_X);
-BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const BOF::BofPath& _rPath, uint32_t _EncQuality_U32, const BOF_FRAME_DATA& _rFrameData_X);
-BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string& _rTitle_S, BOF_SIZE& _rWindowSize_X, const BOF_FRAME_DATA& _rFrameData_X);
+BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath &_rPath, int _NbChannelToRead_i, BOF_FRAME_DATA &_rFrameData_X);
+BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const BOF::BofPath &_rPath, uint32_t _EncQuality_U32, const BOF_FRAME_DATA &_rFrameData_X);
+BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF::BOF_SIZE &_rWindowSize_X, const BOF_FRAME_DATA &_rFrameData_X);
 
 END_BOF2D_NAMESPACE()

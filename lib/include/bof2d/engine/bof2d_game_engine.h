@@ -34,7 +34,7 @@
 
 BEGIN_BOF2D_NAMESPACE()
 
-bool PostGlErrorMessage(const char* _pError_c);
+bool PostGlErrorMessage(const char *_pError_c);
 
 // Represents the current state of the game
 enum GameState {

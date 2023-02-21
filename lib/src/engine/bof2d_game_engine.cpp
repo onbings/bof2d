@@ -26,17 +26,16 @@
 #include <bof2d/engine/bof2d_text_renderer.h>
 #include <bof2d/engine/bof2d_particle_gen.h>
 
-#define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio/miniaudio.h>
 
 BEGIN_BOF2D_NAMESPACE()
 // Game-related State data
-SpriteRenderer* Renderer;
-BofBallObject2d* Ball;
-TextRenderer* Text;
-GameObject* Player;
-ParticleGenerator* Particles;
-ma_engine* pAudioEngine;
+SpriteRenderer *Renderer;
+BofBallObject2d *Ball;
+TextRenderer *Text;
+GameObject *Player;
+ParticleGenerator *Particles;
+ma_engine *pAudioEngine;
 ma_sound music;
 ma_sound bleep;
 ma_sound solid;
@@ -65,7 +64,7 @@ Direction VectorDirection(glm::vec2 target)
   return (Direction)best_match;
 }
 
-bool CheckCollision(GameObject& one, GameObject& two) // AABB - AABB collision
+bool CheckCollision(GameObject &one, GameObject &two) // AABB - AABB collision
 {
   // collision x-axis?
   bool collisionX = one.Position.x + one.Size.x >= two.Position.x &&
@@ -77,7 +76,7 @@ bool CheckCollision(GameObject& one, GameObject& two) // AABB - AABB collision
   return collisionX && collisionY;
 }
 
-Collision CheckCollision(BofBallObject2d& one, GameObject& two) // AABB - Circle collision
+Collision CheckCollision(BofBallObject2d &one, GameObject &two) // AABB - Circle collision
 {
   // get center point circle first 
   glm::vec2 center(one.Position + one.Radius);
@@ -152,8 +151,8 @@ void Game::Init()
       {
         PostGlErrorMessage("Could not load paddle texture");
       }
-//      tex = ResourceManager::LoadTexture("./res/texture/particle.png", true, "particle");
-//      tex = ResourceManager::LoadTexture("./res/texture/particle_red.png", true, "particle");
+      //      tex = ResourceManager::LoadTexture("./res/texture/particle.png", true, "particle");
+      //      tex = ResourceManager::LoadTexture("./res/texture/particle_red.png", true, "particle");
       tex = ResourceManager::LoadTexture("./res/texture/particle_face.png", true, "particle");
       if (!tex.IsValid())
       {
@@ -295,7 +294,7 @@ void Game::Render()
   static float S_Alpha_f = 0.0f, S_AlphaInc_f = 0.0005f;
   //static float S_Alpha_f = 0.5f, S_AlphaInc_f = 0.000f;
   Texture2D texture = ResourceManager::GetTexture("face");
-  
+
   mLoopCounter_U32++;
 
   Renderer->DrawSprite(texture, glm::vec3(200.0f, 200.0f, 0.0f), glm::vec3(500.0f, 500.0f, 0.0f), 45.0f, glm::vec4(1.0f, 1.0f, 1.0f, S_Alpha_f));

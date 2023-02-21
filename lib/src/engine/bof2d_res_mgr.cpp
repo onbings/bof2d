@@ -33,7 +33,7 @@ std::map<std::string, Texture2D>    ResourceManager::Textures;
 std::map<std::string, Shader>       ResourceManager::Shaders;
 
 
-Shader ResourceManager::LoadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name)
+Shader ResourceManager::LoadShader(const char *vShaderFile, const char *fShaderFile, const char *gShaderFile, std::string name)
 {
   Shaders[name] = loadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
   return Shaders[name];
@@ -44,7 +44,7 @@ Shader ResourceManager::GetShader(std::string name)
   return Shaders[name];
 }
 
-Texture2D ResourceManager::LoadTexture(const char* file, bool alpha, std::string name)
+Texture2D ResourceManager::LoadTexture(const char *file, bool alpha, std::string name)
 {
   Textures[name] = loadTextureFromFile(file, alpha);
   return Textures[name];
@@ -65,7 +65,7 @@ void ResourceManager::Clear()
     glDeleteTextures(1, &iter.second.ID);
 }
 
-Shader ResourceManager::loadShaderFromFile(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
+Shader ResourceManager::loadShaderFromFile(const char *vertexPath, const char *fragmentPath, const char *geometryPath)
 //const char *vShaderFile, const char *fShaderFile, const char *gShaderFile)
 {
   Shader shader;
@@ -73,7 +73,7 @@ Shader ResourceManager::loadShaderFromFile(const char* vertexPath, const char* f
   std::string vertexCode, fragmentCode, geometryCode;
   std::ifstream vShaderFile, fShaderFile, gShaderFile;
   std::stringstream vShaderStream, fShaderStream, gShaderStream;
-  const char* vShaderCode = nullptr, * fShaderCode = nullptr, * gShaderCode = nullptr;
+  const char *vShaderCode = nullptr, *fShaderCode = nullptr, *gShaderCode = nullptr;
 
   // ensure ifstream objects can throw exceptions:
   vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -112,14 +112,14 @@ Shader ResourceManager::loadShaderFromFile(const char* vertexPath, const char* f
     // 2. now create shader object from source code
     shader.Compile(vShaderCode, fShaderCode, gShaderCode);
   }
-  catch (std::ifstream::failure& e)
+  catch (std::ifstream::failure &e)
   {
     std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
   }
   return shader;
 }
 
-Texture2D ResourceManager::loadTextureFromFile(const char* file, bool alpha)
+Texture2D ResourceManager::loadTextureFromFile(const char *file, bool alpha)
 {
   // create texture object
   Texture2D texture;
@@ -130,7 +130,7 @@ Texture2D ResourceManager::loadTextureFromFile(const char* file, bool alpha)
   }
   // load image
   int width, height, nrChannels;
-  unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
+  unsigned char *data = stbi_load(file, &width, &height, &nrChannels, 0);
   if (data)
   {
     // now generate texture

@@ -28,11 +28,11 @@
 
 #include <cstdint>
 
-
 #define BOF2D                         onbings::bof2d
 #define BEGIN_BOF2D_NAMESPACE()       namespace onbings { namespace bof2d {
 #define END_BOF2D_NAMESPACE()         } }
 #define USE_BOF2D_NAMESPACE()         using namespace BOF2D;
+
 
 BEGIN_BOF2D_NAMESPACE()
 #define BOF_FOURCC(a, b, c, d)                                     \
@@ -47,7 +47,20 @@ enum BOF_ROTATION
   BOF_ROTATION_270 = 270,  // Rotate 270 degrees clockwise.
 };
 
+struct BOF2D_EXPORT BOF2DPARAM
+{
+  bool Dummy_B;
 
+  BOF2DPARAM()
+  {
+    Reset();
+  }
+
+  void Reset()
+  {
+    Dummy_B = false;
+  }
+};
 /*!
 * Summary
 * Definition of a size entity
@@ -332,9 +345,20 @@ extern const BOF_YUVA GL_YuvBlack4_X;
 extern const BOF_YUVA GL_YuvNeg2_X;
 
 BOF2D_EXPORT std::string Bof_GetVersion();
+BOF2D_EXPORT BOFERR Bof_Initialize(const BOF2DPARAM &_r2dParam_X);
+BOF2D_EXPORT BOFERR Bof_Shutdown();
+BOF2D_EXPORT BOFERR Bof_ProcessEvent();
 BOF2D_EXPORT BOFERR Bof_LookForZoneCoordinate(BOF_RECT &_rRect_X, uint32_t _BitCount_U32, void *_pData, uint32_t _Pitch_U32, uint32_t _Color_U32);
 BOF2D_EXPORT BOFERR Bof_EraseZoneBorder(BOF_RECT &_rRect_X, uint32_t _BitCount_U32, void *_pData, uint32_t _Pitch_U32);
 BOF2D_EXPORT BOFERR Bof_DecimateGraphicData(uint8_t _BytePerPixel_UB, uint8_t *_pData_UB, uint32_t _Width_U32, uint32_t _Height_U32, float _DecimationStepX_f, float _DecimationStepY_f);
 BOF2D_EXPORT BOFERR Bof_SwapColorEntries(uint8_t _BytePerPixel_UB, uint8_t *pData_UB, uint32_t _Width_U32, uint32_t _Height_U32, uint32_t _ColorEntry1_U32, uint32_t _ColorEntry2_U32);
 
+BOF2D_EXPORT BOFERR Bof2d_SdlCheckIfError(int _SdlErrorCode_i, const std::string &_rErrorContext_S, const std::string &_rFile_S, const std::string &_rFunction_S, uint32_t _Line_U32);
+#define SDL_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = Bof2d_SdlCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
+
+BOF2D_EXPORT BOFERR Bof2d_FfmpegCheckIfError(int _FfmpegErrorCode_i, const std::string &_rErrorContext_S, const std::string &_rFile_S, const std::string &_rFunction_S, uint32_t _Line_U32);
+#define FFMPEG_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = Bof2d_FfmpegCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
+
 END_BOF2D_NAMESPACE()
+
+extern BOF2D_EXPORT BOF2D::BOF2DPARAM GL_Bof2dParam_X;

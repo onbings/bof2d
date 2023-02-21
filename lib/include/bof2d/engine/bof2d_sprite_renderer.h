@@ -32,18 +32,18 @@ BEGIN_BOF2D_NAMESPACE()
 class BOF2D_EXPORT SpriteRenderer
 {
 public:
-    // Constructor (inits shaders/shapes)
-    SpriteRenderer(Shader &shader);
-    // Destructor
-    ~SpriteRenderer();
-    // Renders a defined quad textured with given sprite
-    void DrawSprite(Texture2D& texture, glm::vec3 position, glm::vec2 size, float rotate, glm::vec4 color);
+  // Constructor (inits shaders/shapes)
+  SpriteRenderer(Shader &shader);
+  // Destructor
+  ~SpriteRenderer();
+  // Renders a defined quad textured with given sprite
+  void DrawSprite(Texture2D &texture, glm::vec3 position, glm::vec2 size, float rotate, glm::vec4 color);
 private:
-    // Render state
-    Shader       shader; 
-    unsigned int quadVAO;
-    // Initializes and configures the quad's buffer and vertex attributes
-    void initRenderData();
+  // Render state
+  Shader       shader;
+  unsigned int quadVAO;
+  // Initializes and configures the quad's buffer and vertex attributes
+  void initRenderData();
 };
 
 END_BOF2D_NAMESPACE()

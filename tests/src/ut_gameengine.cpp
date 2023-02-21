@@ -6,9 +6,8 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- * This module implements the unit testing of the bof2d class
+ * This module implements the unit testing of the bof2d/gameengine class
  *
- * Name:        ut_enum.cpp
  * Author:      Bernard HARMEL: onbings@dscloud.me
  * Web:					onbings.dscloud.me
  * Revision:    1.0
@@ -100,9 +99,8 @@ void APIENTRY glDebugOutput(GLenum source,
   std::cout << std::endl;
 }
 
-#if defined(BOF2D_TEST_GAME_ENGINE)
 //TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
-TEST(Bof2d_GameEngine_Test, Loop)
+TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
 {
 #if defined(ANDROID)
 #else
@@ -192,4 +190,3 @@ TEST(Bof2d_GameEngine_Test, Loop)
   }
 #endif
 }
-#endif

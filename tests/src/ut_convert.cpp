@@ -6,7 +6,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
  * PURPOSE.
  *
- * This module implements the unit testing of the bof2d class
+ * This module implements the unit testing of the bof2d/convert class
  *
  * Author:      Bernard HARMEL: onbings@dscloud.me
  * Web:					onbings.dscloud.me

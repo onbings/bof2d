@@ -31,20 +31,20 @@ bool ParticleGenerator::IsValid()
 {
   return texture.IsValid();
 }
-void ParticleGenerator::Update(float dt, GameObject& object, unsigned int newParticles, glm::vec3 offset)
+void ParticleGenerator::Update(float dt, GameObject &object, unsigned int newParticles, glm::vec3 offset)
 {
   // add new particles 
-  
+
   for (unsigned int i = 0; i < newParticles; ++i)
   {
     int unusedParticle = this->firstUnusedParticle();
     this->respawnParticle(this->particles[unusedParticle], object, offset);
   }
-  
+
   // update all particles
   for (unsigned int i = 0; i < this->amount; ++i)
   {
-    Particle& p = this->particles[i];
+    Particle &p = this->particles[i];
     p.Life -= dt; // reduce life
     if (p.Life > 0.0f)
     {	// particle is alive, thus update
@@ -147,7 +147,7 @@ unsigned int ParticleGenerator::firstUnusedParticle()
   return 0;
 }
 
-void ParticleGenerator::respawnParticle(Particle& particle, GameObject& object, glm::vec3 offset)
+void ParticleGenerator::respawnParticle(Particle &particle, GameObject &object, glm::vec3 offset)
 {
   float random = ((rand() % 100) - 50) / 10.0f;
   float rColor = 0.5f + ((rand() % 100) / 100.0f);

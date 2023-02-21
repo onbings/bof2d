@@ -156,7 +156,7 @@ void TextRenderer::RenderText(std::string text, glm::vec3 position, float scale,
   this->TextShader.SetVector3f("textColor", color);
   glActiveTexture(GL_TEXTURE0);
   glBindVertexArray(this->vao);
-  
+
   // iterate through all characters
   std::string::const_iterator c;
   for (c = text.begin(); c != text.end(); c++)

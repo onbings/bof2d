@@ -57,6 +57,8 @@ set(DATA_FILES
   ./data/sample-mp4-file.mp4
   ./data/HDRI_Sample_Scene_Balls_HDR.jpg
   ./data/marble.bmp
+  ./data/Sample24bit96kHz5.1.wav
+  ./data/sample-15s.mp3
 )
 
 set(2D_FILES
@@ -65,6 +67,7 @@ set(2D_FILES
 	./src/ut_mediadetector.cpp
 	./src/ut_fileio.cpp
 	./src/ut_convert.cpp
+	./src/ut_ffmpeg.cpp
 )
 set(API_FILES
 	include/gtestrunner.h

@@ -21,13 +21,22 @@
 #include <bof2d_version_info.h>
 
 #include <zlib.h>
+#include <SDL.h>        
 
+#include <map>
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+}
+
+#define MINIAUDIO_IMPLEMENTATION
+#include <miniaudio/miniaudio.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
-uint8_t* ZlibCompressor(unsigned char* data, int _DataToCompressSizeInByte_i, int* out_len, int quality);
+uint8_t *ZlibCompressor(unsigned char *data, int _DataToCompressSizeInByte_i, int *out_len, int quality);
 #define STBIW_ZLIB_COMPRESS ZlibCompressor
 
 /*
@@ -39,15 +48,15 @@ uint8_t* ZlibCompressor(unsigned char* data, int _DataToCompressSizeInByte_i, in
 
 */
 //const long int CHUNK = { 16384 };
-uint8_t* ZlibCompressor(uint8_t* _pDataToCompress_U8, int _DataToCompressSizeInByte_i, int* _pDataCompressedSizeInByte_i, int _Quality_i)
+uint8_t *ZlibCompressor(uint8_t *_pDataToCompress_U8, int _DataToCompressSizeInByte_i, int *_pDataCompressedSizeInByte_i, int _Quality_i)
 {
-  uint8_t* pRts_U8 = nullptr;
+  uint8_t *pRts_U8 = nullptr;
   unsigned long OutLen_U32 = 0;
   int Sts_i;
 
   if ((_pDataToCompress_U8) && (_pDataCompressedSizeInByte_i))
   {
-    pRts_U8 = (uint8_t*)STBIW_MALLOC(_DataToCompressSizeInByte_i);
+    pRts_U8 = (uint8_t *)STBIW_MALLOC(_DataToCompressSizeInByte_i);
     OutLen_U32 = _DataToCompressSizeInByte_i;
     Sts_i = compress2(pRts_U8, &OutLen_U32, _pDataToCompress_U8, _DataToCompressSizeInByte_i, _Quality_i);
     if (Sts_i)
@@ -62,7 +71,26 @@ uint8_t* ZlibCompressor(uint8_t* _pDataToCompress_U8, int _DataToCompressSizeInB
   return pRts_U8;
 }
 
+BOF2D_EXPORT BOF2D::BOF2DPARAM GL_Bof2dParam_X;
+
 BEGIN_BOF2D_NAMESPACE()
+
+struct BOF2D_STATE
+{
+  bool LibInit_B;
+  ma_engine *pAudioEngine_X;
+  BOF2D_STATE()
+  {
+    Reset();
+  }
+  void Reset()
+  {
+    LibInit_B = false;
+    pAudioEngine_X = nullptr;
+  }
+};
+static BOF2D_STATE S_Bof2dState_X;
+
 //YUV Color
 const BOF_YUVA GL_pYuvRainbow75_X[] =
 {
@@ -130,6 +158,93 @@ const BOF_YUVA GL_YuvBlack2_X = { 20, 128, 128, 255 };
 const BOF_YUVA GL_YuvBlack4_X = { 25, 128, 128, 255 };
 const BOF_YUVA GL_YuvNeg2_X = { 12, 128, 128, 255 };
 
+BOFERR Bof2d_SdlCheckIfError(int _SdlErrorCode_i, const std::string &_rErrorContext_S, const std::string &_rFile_S, const std::string &_rFunction_S, uint32_t _Line_U32)
+{
+  BOFERR Rts_E = BOF_ERR_NO_ERROR;
+  static const std::map<int, BOFERR> S_Sdl2BoferrorCodeCollection
+  {
+    {SDL_ENOMEM       , BOF_ERR_ENOMEM },
+    {SDL_EFREAD       , BOF_ERR_READ},
+    {SDL_EFWRITE      , BOF_ERR_WRITE },
+    {SDL_EFSEEK       , BOF_ERR_SEEK},
+    {SDL_UNSUPPORTED  , BOF_ERR_NOT_SUPPORTED},
+    {SDL_LASTERROR    , BOF_ERR_INTERNAL},
+  };
+
+  if (_SdlErrorCode_i)
+  {
+    auto It = S_Sdl2BoferrorCodeCollection.find(_SdlErrorCode_i);
+    if (It != S_Sdl2BoferrorCodeCollection.end())
+    {
+      Rts_E = It->second;
+    }
+    else
+    {
+      Rts_E = BOF_ERR_INTERFACE;
+      //Rts_E = (BOFERR)(_SdlErrorCode_i));
+    }
+    printf("%s:%s:%04d Error %d/%X\nBof: %s\nCtx: %s\nSdl: %s\n", _rFile_S.c_str(), _rFunction_S.c_str(), _Line_U32, _SdlErrorCode_i, _SdlErrorCode_i, BOF::Bof_ErrorCode(Rts_E), _rErrorContext_S.c_str(), SDL_GetError());
+  }
+  return Rts_E;
+}
+
+BOFERR Bof2d_FfmpegCheckIfError(int _FfmpegErrorCode_i, const std::string &_rErrorContext_S, const std::string &_rFile_S, const std::string &_rFunction_S, uint32_t _Line_U32)
+{
+  BOFERR Rts_E = BOF_ERR_NO_ERROR;
+  std::string Err_S;
+  size_t ErrorSize = AV_ERROR_MAX_STRING_SIZE;
+  static const std::map<int, BOFERR> S_Ffmpeg2BoferrorCodeCollection
+  {
+    {AVERROR_BSF_NOT_FOUND     , BOF_ERR_NOT_FOUND },
+    {AVERROR_BUG               , BOF_ERR_INTERNAL},
+    {AVERROR_BUFFER_TOO_SMALL  , BOF_ERR_TOO_SMALL},
+    {AVERROR_DECODER_NOT_FOUND , BOF_ERR_CODEC},
+    {AVERROR_DEMUXER_NOT_FOUND , BOF_ERR_INPUT},
+    {AVERROR_ENCODER_NOT_FOUND , BOF_ERR_OUTPUT},
+    {AVERROR_EOF               , BOF_ERR_EOF},
+    {AVERROR_EXIT              , BOF_ERR_CANNOT_STOP},
+    {AVERROR_EXTERNAL          , BOF_ERR_ELIBACC},
+    {AVERROR_FILTER_NOT_FOUND  , BOF_ERR_NOT_FOUND},
+    {AVERROR_INVALIDDATA       , BOF_ERR_ENODATA},
+    {AVERROR_MUXER_NOT_FOUND   , BOF_ERR_NOT_FOUND},
+    {AVERROR_OPTION_NOT_FOUND  , BOF_ERR_NOT_FOUND},
+    {AVERROR_PATCHWELCOME      , BOF_ERR_EMLINK},
+    {AVERROR_PROTOCOL_NOT_FOUND, BOF_ERR_NOT_FOUND},
+    {AVERROR_STREAM_NOT_FOUND  , BOF_ERR_NOT_FOUND},
+    {AVERROR_BUG2              , BOF_ERR_INTERNAL},
+    {AVERROR_UNKNOWN           , BOF_ERR_INTERNAL},
+    {AVERROR_EXPERIMENTAL      , BOF_ERR_INTERNAL},
+    {AVERROR_INPUT_CHANGED     , BOF_ERR_INPUT},
+    {AVERROR_OUTPUT_CHANGED    , BOF_ERR_OUTPUT},
+    {AVERROR_HTTP_BAD_REQUEST  , BOF_ERR_EBADRQC},
+    {AVERROR_HTTP_UNAUTHORIZED , BOF_ERR_EACCES},
+    {AVERROR_HTTP_FORBIDDEN    , BOF_ERR_LOCK},
+    {AVERROR_HTTP_NOT_FOUND    , BOF_ERR_NOT_FOUND},
+    {AVERROR_HTTP_OTHER_4XX    , BOF_ERR_NOT_FOUND},
+    {AVERROR_HTTP_SERVER_ERROR , BOF_ERR_ENODEV}
+  };
+  if (_FfmpegErrorCode_i < 0)
+  {
+    Err_S.resize(ErrorSize);
+    if (av_strerror(_FfmpegErrorCode_i, &Err_S.at(0), ErrorSize))
+    {
+      Err_S = "Unable to translate Ffmpeg error code " + std::to_string(_FfmpegErrorCode_i);  //Less than AV_ERROR_MAX_STRING_SIZE 
+    }
+
+    auto It = S_Ffmpeg2BoferrorCodeCollection.find(_FfmpegErrorCode_i);
+    if (It != S_Ffmpeg2BoferrorCodeCollection.end())
+    {
+      Rts_E = It->second;
+    }
+    else
+    {
+      //Rts_E = BOF_ERR_INTERFACE;
+      Rts_E = (BOFERR)(AVUNERROR(_FfmpegErrorCode_i));
+    }
+    printf("%s:%s:%04d Error %d/%X\nBof:    %s\nCtx:    %s\nFfmpeg: %s\n", _rFile_S.c_str(), _rFunction_S.c_str(), _Line_U32, _FfmpegErrorCode_i, _FfmpegErrorCode_i, BOF::Bof_ErrorCode(Rts_E), _rErrorContext_S.c_str(), Err_S.c_str());
+  }
+  return Rts_E;
+}
 std::string Bof_GetVersion()
 {
   //Just to check
@@ -140,6 +255,98 @@ std::string Bof_GetVersion()
   return std::to_string(BOF2D_VERSION_MAJOR) + "." + std::to_string(BOF2D_VERSION_MINOR) + "." + std::to_string(BOF2D_VERSION_PATCH) + "." + std::to_string(BOF2D_VERSION_BUILD);
 }
 
+BOFERR Bof_Initialize(const BOF2DPARAM &_r2dParam_X)
+{
+  BOFERR Rts_E = BOF_ERR_INIT;
+
+  if (!S_Bof2dState_X.LibInit_B)
+  {
+    Rts_E = BOF_ERR_NO_ERROR;
+    GL_Bof2dParam_X = _r2dParam_X;
+    SDL_Init(SDL_INIT_VIDEO);
+    S_Bof2dState_X.LibInit_B = true;
+  }
+  return Rts_E;
+}
+BOFERR Bof_Shutdown()
+{
+  BOFERR Rts_E = BOF_ERR_INIT;
+
+  if (S_Bof2dState_X.LibInit_B)
+  {
+    Rts_E = BOF_ERR_NO_ERROR;
+    SDL_Quit();
+    S_Bof2dState_X.LibInit_B = false;
+  }
+  return Rts_E;
+}
+BOFERR Bof_ProcessEvent()
+{
+  BOFERR Rts_E = BOF_ERR_INIT;
+  SDL_Event     SdlEvent_X;
+
+  if (S_Bof2dState_X.LibInit_B)
+  {
+    Rts_E = BOF_ERR_EINVAL;
+    //if (_pFinish_B)
+    {
+      Rts_E = BOF_ERR_NO_ERROR;
+      SDL_WaitEvent(&SdlEvent_X);
+      //printf("SdlEvent_E[%d] %d\n", Loop_U32, SdlEvent_X.type);
+      switch (SdlEvent_X.type)
+      {
+        case SDL_QUIT:
+          Rts_E = BOF_ERR_FINISHED;
+          break;
+
+        case SDL_WINDOWEVENT:
+          //printf("   SDL_WINDOWEVENT %d\n", SdlEvent_X.window.event);
+          switch (SdlEvent_X.window.event)
+          {
+            //Get new dimensions and repaint on window size change
+            case SDL_WINDOWEVENT_SIZE_CHANGED:
+              //Width_i = SdlEvent_X.window.data1;
+              //Height_i = SdlEvent_X.window.data2;
+              //SDL_RenderPresent(pSdlRenderer_X);
+              break;
+
+              //Repaint on exposure
+            case SDL_WINDOWEVENT_EXPOSED:
+              //SDL_RenderPresent(pSdlRenderer_X);
+              break;
+              //Mouse entered window
+            case SDL_WINDOWEVENT_ENTER:
+              break;
+
+              //Mouse left window
+            case SDL_WINDOWEVENT_LEAVE:
+              break;
+
+              //Window has keyboard focus
+            case SDL_WINDOWEVENT_FOCUS_GAINED:
+              break;
+
+              //Window lost keyboard focus
+            case SDL_WINDOWEVENT_FOCUS_LOST:
+              break;
+
+              //Window minimized
+            case SDL_WINDOWEVENT_MINIMIZED:
+              break;
+
+              //Window maximized
+            case SDL_WINDOWEVENT_MAXIMIZED:
+              break;
+
+              //Window restored
+            case SDL_WINDOWEVENT_RESTORED:
+              break;
+          }
+      }
+    }
+  }
+  return Rts_E;
+}
 /*!
    Description
    The LookForZoneCoordinate function scans a pixel buffer looking for a pixel color. It is
@@ -245,8 +452,8 @@ BOFERR Bof_LookForZoneCoordinate(BOF_RECT &_rRect_X, uint32_t _BitCount_U32, voi
           for (x_U32 = 0; x_U32 < Width_U32; x_U32++)
           {
             if ((x_U32 < (Width_U32 - 1))
-                || (y_U32 < (Height_U32 - 1))
-                )                     // Avoid bus error on last pixel (.net)
+              || (y_U32 < (Height_U32 - 1))
+              )                     // Avoid bus error on last pixel (.net)
             {
               if ((*p_U32 & 0x00FFFFFFFF) == _Color_U32)
               {
@@ -453,14 +660,14 @@ BOFERR Bof_DecimateGraphicData(uint8_t _BytePerPixel_UB, uint8_t *_pData_UB, uin
   float    r_F, c_F, Index_F;
 
   if ((_pData_UB)
-      && (_DecimationStepX_f >= 1.0f)
-      && (_DecimationStepY_f >= 1.0f)
-      )
+    && (_DecimationStepX_f >= 1.0f)
+    && (_DecimationStepY_f >= 1.0f)
+    )
   {
     Rts_B = true;
     if ((_DecimationStepX_f != 1.0f)
-        || (_DecimationStepY_f != 1.0f)
-        )
+      || (_DecimationStepY_f != 1.0f)
+      )
     {
       p_UB = _pData_UB;
       p_U16 = (uint16_t *)_pData_UB;

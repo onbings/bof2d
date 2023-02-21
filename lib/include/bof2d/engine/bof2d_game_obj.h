@@ -45,7 +45,7 @@ public:
   GameObject();
   GameObject(glm::vec3 pos, glm::vec2 size, Texture2D sprite, glm::vec4 color, glm::vec3 velocity);
   // draw sprite
-  virtual void Draw(SpriteRenderer& renderer);
+  virtual void Draw(SpriteRenderer &renderer);
   bool IsValid();
 };
 END_BOF2D_NAMESPACE()
