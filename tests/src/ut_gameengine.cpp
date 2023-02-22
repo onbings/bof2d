@@ -99,7 +99,7 @@ void APIENTRY glDebugOutput(GLenum source,
   std::cout << std::endl;
 }
 
-//TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
+//TEST(Bof2d_GameEngine_Test, Loop)
 TEST(Bof2d_GameEngine_Test, DISABLED_Loop)
 {
 #if defined(ANDROID)

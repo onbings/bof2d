@@ -228,7 +228,7 @@ void Game::DoCollisions()
     float percentage = distance / (Player->Size.x / 2.0f);
     // then move accordingly
     float strength = 2.0f;
-    glm::vec2 oldVelocity = Ball->Velocity;
+    glm::vec3 oldVelocity = Ball->Velocity;
     Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength;
     //Ball->Velocity.y = -Ball->Velocity.y;
     Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity); // keep speed consistent over both axes (multiply by length of old velocity, so total strength is not changed)

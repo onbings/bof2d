@@ -124,7 +124,14 @@ target_link_libraries(bof2d-objects
     SDL2::SDL2 #SDL2-static
 
 #	${Boost_LIBRARIES}
-	${FFMPEG_LIBRARIES}
+	${AVCODEC_LIBRARY}
+	${AVDEVICE_LIBRARY}
+	${AVFILTER_LIBRARY}
+	${AVFORMAT_LIBRARY}
+	${AVUTIL_LIBRARY}
+	${SWRESAMPLE_LIBRARY}
+	${SWSCALE_LIBRARY}
+
 )
 #message("=Boost_INCLUDE_DIRS==============>"${Boost_INCLUDE_DIRS})
 #message("=Boost_LIBRARIES==============>"${Boost_LIBRARIES})
@@ -150,7 +157,23 @@ target_link_libraries(bof2d-objects
 	)
 endif()	
 endif()	
+if (MSVC)
+target_link_libraries(bof2d-objects
+  PRIVATE
+	Mfplat.lib
+	Secur32.lib
+	Mfuuid.lib
+	Strmiids.lib
+)
 
+#Visual Leak Detector: vld
+if (${BOF2D_VLD})
+target_link_libraries(bof2d-tests
+  PRIVATE
+	${VLD_ROOT_DIR}/lib/Win64/vld.lib
+)
+endif()
+endif()
 # Defines
 #use external libfmt lib instead of the bundled one
 #disable exception in spd log and replace thme by assert(false) to avoid try around every sprintf

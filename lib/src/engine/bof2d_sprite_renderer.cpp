@@ -33,7 +33,7 @@ SpriteRenderer::~SpriteRenderer()
 {
   glDeleteVertexArrays(1, &this->quadVAO);
 }
-void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec3 position, glm::vec2 size, float rotate, glm::vec4 color)
+void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec3 position, glm::vec3 size, float rotate, glm::vec4 color)
 {
   // prepare transformations
   this->shader.Use();
@@ -44,7 +44,7 @@ void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec3 position, glm::vec
   model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f)); // then rotate
   model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f)); // move origin back
 
-  model = glm::scale(model, glm::vec3(size, 1.0f)); // last scale
+  model = glm::scale(model, glm::vec3(size)); // last scale
 
   this->shader.SetMatrix4("model", model);
 

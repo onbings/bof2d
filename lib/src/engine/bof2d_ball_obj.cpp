@@ -25,9 +25,9 @@ BEGIN_BOF2D_NAMESPACE()
 BofBallObject2d::BofBallObject2d() : GameObject(), Radius(12.5f), Stuck(true), Sticky(false), PassThrough(false) { }
 
 BofBallObject2d::BofBallObject2d(glm::vec3 pos, float radius, glm::vec3 velocity, Texture2D sprite)
-  : GameObject(pos, glm::vec2(radius * 2.0f, radius * 2.0f), sprite, glm::vec4(1.0f), velocity), Radius(radius), Stuck(true), Sticky(false), PassThrough(false) { }
+  : GameObject(pos, glm::vec3(radius * 2.0f, radius * 2.0f, 0.0f), sprite, glm::vec4(1.0f), velocity), Radius(radius), Stuck(true), Sticky(false), PassThrough(false) { }
 
-glm::vec2 BofBallObject2d::Move(float dt, unsigned int window_width, unsigned int window_height, bool &_rBounce_B)
+glm::vec3 BofBallObject2d::Move(float dt, unsigned int window_width, unsigned int window_height, bool &_rBounce_B)
 {
   _rBounce_B = false;
   // if not stuck to player board

@@ -137,34 +137,8 @@ target_link_libraries(bof2d-tests
   PRIVATE
     ONBINGS::bof2d-objects
     GTest::GTest
-	ONBINGS::bofstd
-	${AVCODEC_LIBRARY}
-	${AVDEVICE_LIBRARY}
-	${AVFILTER_LIBRARY}
-	${AVFORMAT_LIBRARY}
-	${AVUTIL_LIBRARY}
-	${SWRESAMPLE_LIBRARY}
-	${SWSCALE_LIBRARY}
-)
-if (MSVC)
-target_link_libraries(bof2d-tests
-  PRIVATE
-    ONBINGS::bof2d-objects
-	Mfplat.lib
-	Secur32.lib
-	Mfuuid.lib
-	Strmiids.lib
 )
 
-#Visual Leak Detector: vld
-if (${BOF2D_VLD})
-target_link_libraries(bof2d-tests
-  PRIVATE
-    ONBINGS::bof2d-objects
-	${VLD_ROOT_DIR}/lib/Win64/vld.lib
-)
-endif()
-endif()
 
 # Object library is not a shared library
 # void import directive only for linking

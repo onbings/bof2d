@@ -34,7 +34,7 @@ class BOF2D_EXPORT GameObject
 public:
   // object state
   glm::vec3   Position, Velocity;
-  glm::vec2 Size;
+  glm::vec3 Size;
   glm::vec4   Color;
   float       Rotation;
   bool        IsSolid;
@@ -43,7 +43,7 @@ public:
   Texture2D   Sprite;
   // constructor(s)
   GameObject();
-  GameObject(glm::vec3 pos, glm::vec2 size, Texture2D sprite, glm::vec4 color, glm::vec3 velocity);
+  GameObject(glm::vec3 pos, glm::vec3 size, Texture2D sprite, glm::vec4 color, glm::vec3 velocity);
   // draw sprite
   virtual void Draw(SpriteRenderer &renderer);
   bool IsValid();

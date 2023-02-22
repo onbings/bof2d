@@ -38,7 +38,7 @@ public:
   BofBallObject2d();
   BofBallObject2d(glm::vec3 pos, float radius, glm::vec3 velocity, Texture2D sprite);
   // moves the ball, keeping it constrained within the window bounds (except bottom edge); returns new position
-  glm::vec2 Move(float dt, unsigned int window_width, unsigned int window_height, bool &_rBounce_B);
+  glm::vec3 Move(float dt, unsigned int window_width, unsigned int window_height, bool &_rBounce_B);
   // resets the ball to original state with given position and velocity
   void      Reset(glm::vec3 position, glm::vec3 velocity);
 };
