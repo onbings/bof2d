@@ -131,7 +131,6 @@ target_link_libraries(bof2d-objects
 	${AVUTIL_LIBRARY}
 	${SWRESAMPLE_LIBRARY}
 	${SWSCALE_LIBRARY}
-
 )
 #message("=Boost_INCLUDE_DIRS==============>"${Boost_INCLUDE_DIRS})
 #message("=Boost_LIBRARIES==============>"${Boost_LIBRARIES})
@@ -157,22 +156,28 @@ target_link_libraries(bof2d-objects
 	)
 endif()	
 endif()	
-if (MSVC)
-target_link_libraries(bof2d-objects
-  PRIVATE
-	Mfplat.lib
-	Secur32.lib
-	Mfuuid.lib
-	Strmiids.lib
-)
 
-#Visual Leak Detector: vld
-if (${BOF2D_VLD})
-target_link_libraries(bof2d-tests
-  PRIVATE
-	${VLD_ROOT_DIR}/lib/Win64/vld.lib
-)
-endif()
+if (MSVC)
+	target_link_libraries(bof2d-objects
+	  PRIVATE
+		Mfplat.lib
+		Secur32.lib
+		Mfuuid.lib
+		Strmiids.lib
+	)
+
+	#Visual Leak Detector: vld
+	if (${BOF2D_VLD})
+		target_link_libraries(bof2d-objects
+		  PRIVATE
+			${VLD_ROOT_DIR}/lib/Win64/vld.lib
+		)
+	endif()
+else()
+	target_link_libraries(bof2d-objects
+	PRIVATE
+	 xcb      #for ffmpeg
+	)
 endif()
 # Defines
 #use external libfmt lib instead of the bundled one

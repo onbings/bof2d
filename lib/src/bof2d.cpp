@@ -18,8 +18,8 @@
  */
 /*
 Republish a new version
-- Change version in C:\pro\github\bof2d\CMakeLists.txt: project(bof2d VERSION 4.1.1.3)
-- Change version in C:\pro\github\bof2d\vcpkg.json:     "version": "4.1.1.3",
+- Change version in C:\pro\github\bof2d\CMakeLists.txt: project(bof2d VERSION 4.1.1.4)
+- Change version in C:\pro\github\bof2d\vcpkg.json:     "version": "4.1.1.4",
 - Change version in C:\pro\github\bof2d\vcpkg-configuration.json 
                 BofStd depend "baseline": "8c8de87e6b5b6fcfe568026faa0bf9f12767dbbc",
 Push all modified files to git and get git push ref: 
@@ -49,10 +49,10 @@ get push ref 05ea40bc619927fb9f664ad75af2c60792e8bc45		used also during last pha
 
   cd C:\pro\github\onbings-vcpkg-registry
   git pull
-  python .\update-port.py bof2d 4.1.1.3 05ea40bc619927fb9f664ad75af2c60792e8bc45
+  python .\update-port.py bof2d 4.1.1.4 05ea40bc619927fb9f664ad75af2c60792e8bc45
   git push
   git log
-  commit message should be "Update bofstd to 4.1.1.3\05ea40bc619927fb9f664ad75af2c60792e8bc45"
+  commit message should be "Update bofstd to 4.1.1.4\05ea40bc619927fb9f664ad75af2c60792e8bc45"
 
   get the new push git ref 4eb2199109841185f5075ecad7deed414f2c4f55
 
