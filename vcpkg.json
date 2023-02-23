@@ -1,6 +1,6 @@
 {
   "name": "bof2d",
-  "version": "2.1.1.1",
+  "version": "4.1.1.3",
   "description": "The onbings general purpose 2d C++ Multiplatform library",
   "dependencies": [
     { "name": "bofstd" },

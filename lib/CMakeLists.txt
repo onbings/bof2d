@@ -188,12 +188,6 @@ target_compile_definitions(bof2d-objects
 #	-DCRT_NONSTDC_NO_DEPRECATE
 #	-DWINSOCK_DEPRECATED_NO_WARNINGS
 )
-if(NOT "${ANDROID_PLATFORM}")
-target_compile_definitions(bof2d-objects
-  PRIVATE
-	-DBOF2D_STATIC_DEFINE
-)
-endif()
 
 message("=BOF2D_VLD==============> " ${BOF2D_VLD})
 if (${BOF2D_VLD})
