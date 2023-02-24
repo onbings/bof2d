@@ -23,7 +23,11 @@
 
 #include <bof2d/bof2d_av_codec.h>
 
+
+#if 0     //SDL AUDIO
+
 #include <SDL2/SDL.h>
+#include <bofstd/boffs.h>
 
 
  //Playing audio
@@ -48,8 +52,41 @@ void fill_audio(void *udata, Uint8 *stream, int len)
   audio_len -= len;
 }
 
-TEST(Bof2d_ffmpeg_Test, sdl)
+BOFERR Bof_24sTo32s(BOF::BOF_BUFFER &_rBuffer_X)
 {
+  uint32_t i_U32;
+  BOFERR Rts_E = BOF_ERR_SEEK;
+
+  if ((_rBuffer_X.Size_U64 % 12) == 0)
+  {
+  for (i_U32=0;i_U32<NbData24_U32;i_U32)
+#if 0 //FFMPEG put 24 bits audio sample in S32 var
+for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
+{
+  for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); j_U32++, Index_U32 += (mAudDecOption_X.NbChannel_U32 * 3))
+  {
+    ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 0];
+    ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
+    ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
+  }
+}
+#else
+for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
+{
+  for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); Index_U32 += (mAudDecOption_X.NbChannel_U32 * 4))
+  {
+    ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 0];
+    ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
+    ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
+  }
+}
+
+#endif
+
+  TEST(Bof2d_ffmpeg_Test, sdl)
+{
+  BOFERR Sts_E;
+
   SDL_AudioSpec wanted;
   extern void fill_audio(void *udata, Uint8 * stream, int len);
 
@@ -71,8 +108,33 @@ TEST(Bof2d_ffmpeg_Test, sdl)
  
 
   /* Load the audio data ... */
+  BOF::BOF_BUFFER BufferToDeleteAfterUsage_X;
+  Sts_E = BOF::BOF_ReadFile("C:/tmp/ffmpeg/AudioOut.PCM", BufferToDeleteAfterUsage_X);
+  uint32_t i_U32;
 
-  //BOF::BOF_ReadFi
+  for (i_U32)
+#if 0 //FFMPEG put 24 bits audio sample in S32 var
+    for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
+    {
+      for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); j_U32++, Index_U32 += (mAudDecOption_X.NbChannel_U32 * 3))
+      {
+        ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 0];
+        ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
+        ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
+      }
+    }
+#else
+    for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
+    {
+      for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); Index_U32 += (mAudDecOption_X.NbChannel_U32 * 4))
+      {
+        ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 0];
+        ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
+        ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
+      }
+    }
+
+#endif
 
   audio_pos = audio_chunk;
 
@@ -90,6 +152,7 @@ TEST(Bof2d_ffmpeg_Test, sdl)
   }
   SDL_CloseAudio();
 }
+#endif
 
 TEST(Bof2d_ffmpeg_Test, Api)
 {

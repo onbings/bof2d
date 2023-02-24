@@ -18,15 +18,15 @@
  */
 /*
 Republish a new version
-- Change version in C:\pro\github\bof2d\CMakeLists.txt: project(bof2d VERSION 4.1.1.4)
-- Change version in C:\pro\github\bof2d\vcpkg.json:     "version": "4.1.1.4",
+- Change version in C:\pro\github\bof2d\CMakeLists.txt: project(bof2d VERSION 4.1.1.5)
+- Change version in C:\pro\github\bof2d\vcpkg.json:     "version": "4.1.1.5",
 - Change version in C:\pro\github\bof2d\vcpkg-configuration.json 
                 BofStd depend "baseline": "8c8de87e6b5b6fcfe568026faa0bf9f12767dbbc",
 Push all modified files to git and get git push ref: 
-get push ref 05ea40bc619927fb9f664ad75af2c60792e8bc45		used also during last phase with the .\update-port.py command at rhe end of the procedure
+get push ref 809700f316e15c8fe75811fa9aff66bd7987b3e7		used also during last phase with the .\update-port.py command at rhe end of the procedure
 
-- Change REF and SHA512 in C:\pro\github\onbings-vcpkg-registry\ports\bof2d\portfile.cmake 
-  REF 05ea40bc619927fb9f664ad75af2c60792e8bc45
+- Change REF and SHA512 in C:\pro\github\onbings-vcpkg-registry\ports\bof2d\portfile.cmake  / C:\pro\evs-vcpkg-registry\ports\bof2d\portfile.cmake
+  REF 809700f316e15c8fe75811fa9aff66bd7987b3e7
   SHA512 0
 
 - Validate BofSrd and Bof2d with the C:\pro\github\vcpkg-packaging-env project
@@ -34,11 +34,11 @@ get push ref 05ea40bc619927fb9f664ad75af2c60792e8bc45		used also during last pha
   del * /S /Q
   cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\github\onbings-vcpkg-registry\ports\ C:\pro\github\vcpkg-packaging-env
 
-  [DEBUG] Downloading https:\\github.com\onbings\bofstd\archive\05ea40bc619927fb9f664ad75af2c60792e8bc45.tar.gz
+  [DEBUG] Downloading https:\\github.com\onbings\bofstd\archive\809700f316e15c8fe75811fa9aff66bd7987b3e7.tar.gz
   Error: Failed to download from mirror set:
   File does not have the expected hash:
-             url : [ https:\\github.com\onbings\bofstd\archive\05ea40bc619927fb9f664ad75af2c60792e8bc45.tar.gz ]
-       File path : [ C:\pro\vcpkg\downloads\onbings-bofstd-05ea40bc619927fb9f664ad75af2c60792e8bc45.tar.gz.20964.part ]
+             url : [ https:\\github.com\onbings\bofstd\archive\809700f316e15c8fe75811fa9aff66bd7987b3e7.tar.gz ]
+       File path : [ C:\pro\vcpkg\downloads\onbings-bofstd-809700f316e15c8fe75811fa9aff66bd7987b3e7.tar.gz.20964.part ]
    Expected hash : [ 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 ]
      Actual hash : [ cc7ce519399c6e77f0404900b98faf43c4b52143dd504377360b339768dfaf46e031c5b40d830f40fc3c3ca2339b1ddba7d4ba9ac0bc584f4c84e96d9fae7867 ]
 
@@ -47,18 +47,22 @@ get push ref 05ea40bc619927fb9f664ad75af2c60792e8bc45		used also during last pha
   cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\github\onbings-vcpkg-registry\ports\ C:\pro\github\vcpkg-packaging-env
   Should be ok, compile it with  cmake --build .
 
+  - Change C:\pro\evs-vcpkg-registry\ports\bof2d\portfile.cmake if needed for external project
+
   cd C:\pro\github\onbings-vcpkg-registry
   git pull
-  python .\update-port.py bof2d 4.1.1.4 05ea40bc619927fb9f664ad75af2c60792e8bc45
+  python .\update-port.py bof2d 4.1.1.5 809700f316e15c8fe75811fa9aff66bd7987b3e7
   git push
   git log
-  commit message should be "Update bofstd to 4.1.1.4\05ea40bc619927fb9f664ad75af2c60792e8bc45"
+  commit message should be "Update bofstd to 4.1.1.5\809700f316e15c8fe75811fa9aff66bd7987b3e7"
 
   get the new push git ref 4eb2199109841185f5075ecad7deed414f2c4f55
 
-  update baseline in your vcpkg-configuration of your project which want to use this new lib C:\pro\github\vcpkg-packaging-env\vcpkg-configuration.json
+  update baseline in your vcpkg-configuration of your project which want to use this new lib 
+     C:\pro\github\vcpkg-packaging-env\vcpkg-configuration.json
+     C:\pro\evs-muse\vcpkg-configuration.json
 
-  "baseline": "4eb2199109841185f5075ecad7deed414f2c4f55",
+  "baseline": "6f02dd3d5bad7f91b365c62c96ed6249201c1159",
 
 DLL:
 doxygen:

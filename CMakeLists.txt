@@ -27,7 +27,7 @@ cmake_minimum_required(VERSION 3.15)
 #endif()
 include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/fixup_vs_crt.cmake)
 
-project(bof2d VERSION 4.1.1.4) 
+project(bof2d VERSION 4.1.1.5) 
 
 # Some naming conventions either requires lower or upper case.
 # And some don't like underscore.
