@@ -18,7 +18,7 @@
  *
  * V 1.00  Nov 13 2022  BHA : Initial release
  */
-#include <Bof2d/engine/bof2d_ball_obj.h>
+#include <bof2d/engine/bof2d_ball_obj.h>
 
 BEGIN_BOF2D_NAMESPACE()
 

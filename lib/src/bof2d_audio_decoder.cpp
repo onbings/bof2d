@@ -46,8 +46,8 @@ BEGIN_BOF2D_NAMESPACE()
 struct BOF2D_WAV_HEADER
 {
   /*000*/  char pRiffHeader_c[4];                 // RIFF Header: "RIFF" Marks the file as a riff file. Characters are each 1 byte long.*/
-  /*004*/  uint32_t WavTotalSizeInByteMinus8_U32; // Size of the overall file - 8 bytes, in bytes (32-bit integer). Typically, you’d fill this in after creation. */
-  /*008*/  char pWavHeader_c[4];                  //File Type Header. For our purposes, it always equals “WAVE”.
+  /*004*/  uint32_t WavTotalSizeInByteMinus8_U32; // Size of the overall file - 8 bytes, in bytes (32-bit integer). Typically, youï¿½d fill this in after creation. */
+  /*008*/  char pWavHeader_c[4];                  //File Type Header. For our purposes, it always equals ï¿½WAVEï¿½.
   /*012*/  char pFmtHeader_c[4];                  //Format chunk marker. Includes trailing space and nullptr
   /*016*/  uint32_t FmtChunkSize_U32;             //Length of format data as listed above (Should be 16 for PCM)
   /*020*/  uint16_t AudioFormat_U16;              // Should be 1 for PCM. 3 for IEEE Float 
@@ -56,13 +56,14 @@ struct BOF2D_WAV_HEADER
   /*028*/  uint32_t ByteRate_U32;                 //Number of bytes per second:	(SampleRateInHz_U32 * BitPerSample_U16 * NbChannel_U16) / 8.
   /*032*/  uint16_t SampleAlignment_U16;          //(NbChannel_U16 * BitPerSample_U16) / 8
   /*034*/  uint16_t NbBitPerSample_U16;             //Bits per sample
-  /*036*/  char pDataHeader_X[4];                 //“data” chunk header. Marks the beginning of the data section.
+  /*036*/  char pDataHeader_X[4];                 //ï¿½dataï¿½ chunk header. Marks the beginning of the data section.
   /*040*/  uint32_t DataSizeInByte_U32;           //size of audio: number of samples * num_channels * bit_depth/8
 };
 #pragma pack()
 
 Bof2dAudioDecoder::Bof2dAudioDecoder()
 {
+  mAudDecState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   mAudDecOptionParam_X.push_back({ nullptr, "A_NBCHNL", "Specifies the number of audio channel to generate","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.NbChannel_U32, UINT32, 0, 4096) });
   mAudDecOptionParam_X.push_back({ nullptr, "A_LAYOUT", "Specifies the channel layout to generate","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.ChannelLayout_U64, UINT64, 0, 0) });
   mAudDecOptionParam_X.push_back({ nullptr, "A_RATE", "Specifies the audio sample rate to generate","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.SampleRateInHz_U32, UINT32, 0, 128000) });

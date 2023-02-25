@@ -148,13 +148,13 @@ target_link_libraries(bof2d-objects
 #    Qt5::Widgets
 )
 else()
-if(NOT "${ANDROID_PLATFORM}")
-else()
+#if(NOT "${ANDROID_PLATFORM}")
+#else()
 target_link_libraries(bof2d-objects
   PUBLIC
     glfw
 	)
-endif()	
+#endif()
 endif()	
 
 if (MSVC)
@@ -176,7 +176,8 @@ if (MSVC)
 else()
 	target_link_libraries(bof2d-objects
 	PRIVATE
-	 xcb      #for ffmpeg
+	   dl
+	 #xcb      #for ffmpeg
 	)
 endif()
 # Defines

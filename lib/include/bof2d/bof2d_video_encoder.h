@@ -90,7 +90,7 @@ private:
   BOFERR WriteChunkOut();
   BOFERR CloseFileOut();
 
-  std::atomic<BOF2D_AV_CODEC_STATE> mVidEncState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
+  std::atomic<BOF2D_AV_CODEC_STATE> mVidEncState_E; //Not correct with gcc = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   std::vector<BOF::BOFPARAMETER> mVidEncOptionParam_X;
   BOF2D_VID_ENC_OPTION mVidEncOption_X;
 

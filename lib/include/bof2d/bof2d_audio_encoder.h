@@ -102,7 +102,7 @@ private:
   BOFERR WriteChunkOut();
   BOFERR CloseFileOut();
 
-  std::atomic<BOF2D_AV_CODEC_STATE> mAudEncState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
+  std::atomic<BOF2D_AV_CODEC_STATE> mAudEncState_E; //Not correct with gcc = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   std::vector<BOF::BOFPARAMETER> mAudEncOptionParam_X;
   BOF2D_AUD_ENC_OPTION mAudEncOption_X;
   std::vector<BOF2D_AUD_ENC_OUT> mIoCollection;

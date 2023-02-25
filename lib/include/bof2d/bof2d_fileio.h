@@ -28,7 +28,7 @@ struct BOF2D_EXPORT BOF_FRAME_DATA
   uint32_t  LineSizeInByte_U32;
   uint32_t  NbChannel_U32;
   BOF::BOF_BUFFER FrameBuffer_X;
-  BOF2D::BOF_SIZE FrameSizeInPixel_X;
+  BOF::BOF_SIZE FrameSizeInPixel_X;
 
   BOF_FRAME_DATA()
   {

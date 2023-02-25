@@ -80,7 +80,7 @@ extern BOF::BofEnum<BOF2D_AV_CODEC_STATE> S_Bof2dAvCodecStateEnumConverter;
 struct BOF2D_EXPORT BOF2D_VID_DEC_OUT
 {
   BOF::BOF_BUFFER Data_X;
-  BOF2D::BOF_SIZE Size_X;
+  BOF::BOF_SIZE Size_X;
   int32_t LineSize_S32;
   AVPixelFormat PixelFmt_E;
   uint32_t NbChannel_U32; //3 RGB 4 RGBA
