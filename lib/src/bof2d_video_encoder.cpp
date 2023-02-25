@@ -46,8 +46,8 @@ struct BOF2D_BMP_HEADER               //Alias of BOF2D_BMP_HEADER
   /*028*/ uint16_t Bpp_U16;           //Number of bits per pixel
   /*030*/ uint32_t CompType_U32;      //BI_RGB (0), no pixel array compression used
   /*034*/ uint32_t SizeImage_U32;     //Size of the raw bitmap data (including padding)
-  /*038*/ int32_t  XPelsPerMeter_S32; //Print resolution of the image,  72 DPI × 39.3701 inches per metre yields 2834.6472
-  /*042*/ int32_t  YPelsPerMeter_S32; //Print resolution of the image,  72 DPI × 39.3701 inches per metre yields 2834.6472
+  /*038*/ int32_t  XPelsPerMeter_S32; //Print resolution of the image,  72 DPI ï¿½ 39.3701 inches per metre yields 2834.6472
+  /*042*/ int32_t  YPelsPerMeter_S32; //Print resolution of the image,  72 DPI ï¿½ 39.3701 inches per metre yields 2834.6472
   /*046*/ uint32_t NbPalCol_U32;      //Number of colors in the palette
   /*050*/ uint32_t ColImportant_U32;  //0 means all colors are important
 };
@@ -56,6 +56,7 @@ struct BOF2D_BMP_HEADER               //Alias of BOF2D_BMP_HEADER
 
 Bof2dVideoEncoder::Bof2dVideoEncoder()
 {
+  mVidEncState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   mVidEncOptionParam_X.push_back({ nullptr, "V_BASEFN", "if defined, video buffer will be saved in this file","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mVidEncOption_X.BasePath, PATH, 0, 0) });
   mVidEncOptionParam_X.push_back({ nullptr, "V_FMT", "Specifies the video format", "", "", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_ENUM(mVidEncOption_X.Format_E, BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_PNG, BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_MAX, S_Bof2dAvVideoFormatEnumConverter, BOF2D_AV_VIDEO_FORMAT) });
   mVidEncOptionParam_X.push_back({ nullptr, "V_QUALITY", "Specifies the encoding quality (depend on format)","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mVidEncOption_X.EncQuality_S32, INT32, 0, 100) });
@@ -375,7 +376,7 @@ BOFERR Bof2dVideoEncoder::WriteChunkOut()
         Since JPG is a lossy image format, you can chose how much data is dropped at save time. Lower quality
         means smaller image size on disk and lower visual image quality.
         Most image editors, like GIMP, will save jpg images with a default quality parameter of 80 or 90,
-        but the user can tune the quality parameter if required. I’ve used a quality parameter of 100 in all
+        but the user can tune the quality parameter if required. Iï¿½ve used a quality parameter of 100 in all
         examples from this article.
         */
         Rts_E = (stbi_write_jpg(mImagePath_S.c_str(), mVidDecOut_X.Size_X.Width_U32, mVidDecOut_X.Size_X.Height_U32, mVidDecOut_X.NbChannel_U32, mVidDecOut_X.Data_X.pData_U8, mVidEncOption_X.EncQuality_S32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
@@ -724,7 +725,7 @@ then we construct an(image / video) stream bound to the container, as stated bef
 //construct a PNG stream(image) bound to the container for writing the data.
 AVStream *pStream = avformat_new_stream(pFormatContext, NULL);
 *(pStream->codecpar) = *parameters; // we can't just override the ptr, memeory leak! we want deep-copy.
-Then we can write the frame. (the header, trailer).Then release all the corresponding resources.A better way to ensure your resource is safely released is to wrap all the C - struct into the C++ RAII mechanism, but that’s not our concern here for this simple project.
+Then we can write the frame. (the header, trailer).Then release all the corresponding resources.A better way to ensure your resource is safely released is to wrap all the C - struct into the C++ RAII mechanism, but thatï¿½s not our concern here for this simple project.
 
 if (pStream == nullptr)
 {

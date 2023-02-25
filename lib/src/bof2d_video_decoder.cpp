@@ -22,6 +22,7 @@ BEGIN_BOF2D_NAMESPACE()
 
 Bof2dVideoDecoder::Bof2dVideoDecoder()
 {
+  mVidDecState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   mVidDecOptionParam_X.push_back({ nullptr, "V_WIDTH", "Specifies converted picture width","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mVidDecOption_X.Width_U32, UINT32, 2, 32768) });
   mVidDecOptionParam_X.push_back({ nullptr, "V_HEIGHT", "Specifies converted picture height","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mVidDecOption_X.Height_U32, UINT32, 2, 32768) });
   mVidDecOptionParam_X.push_back({ nullptr, "V_BPS", "Specifies converted picture bit per pixel","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mVidDecOption_X.NbBitPerPixel_U32, UINT32, 1, 64) });

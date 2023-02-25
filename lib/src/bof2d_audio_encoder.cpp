@@ -29,8 +29,8 @@ BEGIN_BOF2D_NAMESPACE()
 struct BOF2D_WAV_HEADER
 {
   /*000*/  char pRiffHeader_c[4];                 // RIFF Header: "RIFF" Marks the file as a riff file. Characters are each 1 byte long.*/
-  /*004*/  uint32_t WavTotalSizeInByteMinus8_U32; // Size of the overall file - 8 bytes, in bytes (32-bit integer). Typically, you’d fill this in after creation. */
-  /*008*/  char pWavHeader_c[4];                  //File Type Header. For our purposes, it always equals “WAVE”.
+  /*004*/  uint32_t WavTotalSizeInByteMinus8_U32; // Size of the overall file - 8 bytes, in bytes (32-bit integer). Typically, youï¿½d fill this in after creation. */
+  /*008*/  char pWavHeader_c[4];                  //File Type Header. For our purposes, it always equals ï¿½WAVEï¿½.
   /*012*/  char pFmtHeader_c[4];                  //Format chunk marker. Includes trailing space and nullptr
   /*016*/  uint32_t FmtChunkSize_U32;             //Length of format data as listed above (Should be 16 for PCM)
   /*020*/  uint16_t AudioFormat_U16;              // Should be 1 for PCM. 3 for IEEE Float 
@@ -39,13 +39,14 @@ struct BOF2D_WAV_HEADER
   /*028*/  uint32_t ByteRate_U32;                 //Number of bytes per second:	(SampleRateInHz_U32 * BitPerSample_U16 * NbChannel_U16) / 8.
   /*032*/  uint16_t SampleAlignment_U16;          //(NbChannel_U16 * BitPerSample_U16) / 8
   /*034*/  uint16_t NbBitPerSample_U16;           //Bits per sample
-  /*036*/  char pDataHeader_X[4];                 //“data” chunk header. Marks the beginning of the data section.
+  /*036*/  char pDataHeader_X[4];                 //ï¿½dataï¿½ chunk header. Marks the beginning of the data section.
   /*040*/  uint32_t DataSizeInByte_U32;           //size of audio: number of samples * num_channels * bit_depth/8
 };
 #pragma pack()
 
 Bof2dAudioEncoder::Bof2dAudioEncoder()
 {
+  mAudEncState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   mAudEncOptionParam_X.push_back({ nullptr, "A_BASEFN", "if defined, audio buffer will be saved in this file","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudEncOption_X.BasePath, PATH, 0, 0) });
   mAudEncOptionParam_X.push_back({ nullptr, "A_CHUNKSIZE", "If specifies, it is followed by 0 (save each chank as it is received) or a circular list of values usedd to slice incoming audio buffer chunk (801,801,801,801,800)", "", "", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VECTOR(mAudEncOption_X.SaveChunkSizeInSampleCollection, UINT32, 0, 0) });
   mAudEncOptionParam_X.push_back({ nullptr, "A_NBCHNL", "Specifies the number of audio channel to save","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudEncOption_X.NbChannel_U32, UINT32, 0, 4096) });
