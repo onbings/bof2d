@@ -354,10 +354,10 @@ BOF2D_EXPORT BOFERR Bof_DecimateGraphicData(uint8_t _BytePerPixel_UB, uint8_t *_
 BOF2D_EXPORT BOFERR Bof_SwapColorEntries(uint8_t _BytePerPixel_UB, uint8_t *pData_UB, uint32_t _Width_U32, uint32_t _Height_U32, uint32_t _ColorEntry1_U32, uint32_t _ColorEntry2_U32);
 
 BOF2D_EXPORT BOFERR Bof2d_SdlCheckIfError(int _SdlErrorCode_i, const std::string &_rErrorContext_S, const std::string &_rFile_S, const std::string &_rFunction_S, uint32_t _Line_U32);
-#define SDL_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = Bof2d_SdlCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
+#define SDL_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = BOF2D::Bof2d_SdlCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
 
 BOF2D_EXPORT BOFERR Bof2d_FfmpegCheckIfError(int _FfmpegErrorCode_i, const std::string &_rErrorContext_S, const std::string &_rFile_S, const std::string &_rFunction_S, uint32_t _Line_U32);
-#define FFMPEG_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = Bof2d_FfmpegCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
+#define FFMPEG_CHK_IF_ERR(Sts, Ctx, Rts)  {const char *pFile_c; BOF_GET_FILE_FROM__FILE__(pFile_c); Rts = BOF2D::Bof2d_FfmpegCheckIfError(Sts, Ctx, pFile_c, __func__, __LINE__);}
 
 END_BOF2D_NAMESPACE()
 

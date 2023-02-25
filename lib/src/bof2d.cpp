@@ -23,56 +23,55 @@ Republish a new version
 - Change version in C:\pro\github\bof2d\vcpkg-configuration.json 
                 BofStd depend "baseline": "8c8de87e6b5b6fcfe568026faa0bf9f12767dbbc",
 Push all modified files to git and get git push ref: 
-get push ref 809700f316e15c8fe75811fa9aff66bd7987b3e7		used also during last phase with the .\update-port.py command at rhe end of the procedure
+get push ref 8c93a397246d0bdd9019ed7e1eaafe44098c5870		used also during last phase with the .\update-port.py command at rhe end of the procedure
 
 - Change REF and SHA512 in C:\pro\github\onbings-vcpkg-registry\ports\bof2d\portfile.cmake  / C:\pro\evs-vcpkg-registry\ports\bof2d\portfile.cmake
-  REF 809700f316e15c8fe75811fa9aff66bd7987b3e7
+  REF 8c93a397246d0bdd9019ed7e1eaafe44098c5870
   SHA512 0
 
 - Validate BofSrd and Bof2d with the C:\pro\github\vcpkg-packaging-env project
   cd C:\bld\b
   del * /S /Q
   cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\github\onbings-vcpkg-registry\ports\ C:\pro\github\vcpkg-packaging-env
+  cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\evs-vcpkg-registry\ports\ C:\pro\vcpkg-packaging-env
 
-  [DEBUG] Downloading https:\\github.com\onbings\bofstd\archive\809700f316e15c8fe75811fa9aff66bd7987b3e7.tar.gz
+  [DEBUG] Downloading https:\\github.com\onbings\bofstd\archive\8c93a397246d0bdd9019ed7e1eaafe44098c5870.tar.gz
   Error: Failed to download from mirror set:
   File does not have the expected hash:
-             url : [ https:\\github.com\onbings\bofstd\archive\809700f316e15c8fe75811fa9aff66bd7987b3e7.tar.gz ]
-       File path : [ C:\pro\vcpkg\downloads\onbings-bofstd-809700f316e15c8fe75811fa9aff66bd7987b3e7.tar.gz.20964.part ]
+             url : [ https:\\github.com\onbings\bofstd\archive\8c93a397246d0bdd9019ed7e1eaafe44098c5870.tar.gz ]
+       File path : [ C:\pro\vcpkg\downloads\onbings-bofstd-8c93a397246d0bdd9019ed7e1eaafe44098c5870.tar.gz.20964.part ]
    Expected hash : [ 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 ]
-     Actual hash : [ cc7ce519399c6e77f0404900b98faf43c4b52143dd504377360b339768dfaf46e031c5b40d830f40fc3c3ca2339b1ddba7d4ba9ac0bc584f4c84e96d9fae7867 ]
+     Actual hash : [ 6b637a3633827d5969077628f5cad7a4469c0f78fea94fef61bff5665bad0170136e6d4a0510c8e260ef2522887f9ba264ed43ccdad7941f8bf8febc45bf0e30 ]
 
   get the Actual hash  and put it back in SHA512 in C:\pro\github\onbings-vcpkg-registry\ports\bof2d\portfile.cmake 
 
   cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\github\onbings-vcpkg-registry\ports\ C:\pro\github\vcpkg-packaging-env
   Should be ok, compile it with  cmake --build .
 
-  - Change C:\pro\evs-vcpkg-registry\ports\bof2d\portfile.cmake if needed for external project
-
-  cd C:\pro\github\onbings-vcpkg-registry
+  cd C:\pro\github\onbings-vcpkg-registry / cd c:\pro\evs-vcpkg-registry
   git pull
-  python .\update-port.py bof2d 4.1.1.5 809700f316e15c8fe75811fa9aff66bd7987b3e7
+  python .\update-port.py bof2d 4.1.1.5 8c93a397246d0bdd9019ed7e1eaafe44098c5870
   git push
   git log
-  commit message should be "Update bofstd to 4.1.1.5\809700f316e15c8fe75811fa9aff66bd7987b3e7"
+  commit message should be "Update bofstd to 4.1.1.5\8c93a397246d0bdd9019ed7e1eaafe44098c5870"
 
-  get the new push git ref 4eb2199109841185f5075ecad7deed414f2c4f55
+  get the new push git ref 1efe88199dcecb73e2d4941d49eaeea31238cc0a
 
-  update baseline in your vcpkg-configuration of your project which want to use this new lib 
-     C:\pro\github\vcpkg-packaging-env\vcpkg-configuration.json
-     C:\pro\evs-muse\vcpkg-configuration.json
+  update baseline in your vcpkg-configuration of your project which want to use this new lib
+  C:\pro\github\vcpkg-packaging-env\vcpkg-configuration.json   //1efe88199dcecb73e2d4941d49eaeea31238cc0a
+  C:\pro\vcpkg-packaging-env\vcpkg-configuration.json          //c091c2cd5504be792b76cd6552c61f19644b88f2
+  C:\pro\evs-muse\vcpkg-configuration.json                     //c091c2cd5504be792b76cd6552c61f19644b88f2 and 1efe88199dcecb73e2d4941d49eaeea31238cc0a
 
-  "baseline": "6f02dd3d5bad7f91b365c62c96ed6249201c1159",
+  "baseline": "1efe88199dcecb73e2d4941d49eaeea31238cc0a", / "baseline": "c091c2cd5504be792b76cd6552c61f19644b88f2",
 
-DLL:
-doxygen:
-cmake -DEVS_MUSE_STORAGE_GENERATE_HELP=ON -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic C:\pro\github\vcpkg-packaging-env
-cmake -DEVS_MUSE_STORAGE_GENERATE_HELP=ON -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-static C:\pro\github\vcpkg-packaging-env
+ cmake -DEVS_MUSE_STORAGE_GENERATE_HELP=ON -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic C:\pro\github\vcpkg-packaging-env
+ cmake -DEVS_MUSE_STORAGE_GENERATE_HELP=ON -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic C:\pro\github\bof2d
 
-cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic C:\pro\github\vcpkg-packaging-env
-LIB:
-cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-static C:\pro\github\vcpkg-packaging-env
-*/
+ cmake -DEVS_MUSE_STORAGE_GENERATE_HELP=ON -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic C:\pro\vcpkg-packaging-env
+ cmake -DEVS_MUSE_STORAGE_GENERATE_HELP=ON -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic C:\pro\evs-muse
+ cmake -DCMAKE_TOOLCHAIN_FILE=~/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-linux-dynamic  ~/pro/evs-muse
+
+ */
 
 #include <bof2d/bof2d.h>
 #include <bof2d_version_info.h>
