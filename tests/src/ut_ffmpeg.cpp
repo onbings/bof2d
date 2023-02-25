@@ -24,7 +24,7 @@
 #include <bof2d/bof2d_av_codec.h>
 
 
-#if 1     //SDL AUDIO
+#if 0     //SDL AUDIO
 
 #include <SDL2/SDL.h>
 #include <bofstd/boffs.h>
@@ -119,7 +119,6 @@ BOFERR Bof_32sleTo24sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_
   return Rts_E;
 }
 
-#if 1
 TEST(Bof2d_ffmpeg_Test, sdl)
 {
   BOFERR Sts_E;

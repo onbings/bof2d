@@ -389,6 +389,7 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
   BOFERR Rts_E = BOF_ERR_EOF;
   int Sts_i;
   uint32_t NbAudioSampleConvertedPerChannel_U32, TotalSizeOfAudioConvertedPerChannel_U32, TotalSizeOfAudioConverted_U32, i_U32, j_U32, Index_U32;
+  uint64_t NbWritten_U64;
 
   _rAudDecOut_X.Reset();
   if (mAudDecState_E != BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE)
@@ -447,7 +448,7 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
               {
                 if (mAudDecOption_X.NbChannel_U32 == 1)
                 {
-                  mAudDecOut_X.ChannelBufferCollection[0].MemCpy(TotalSizeOfAudioConverted_U32, mAudDecOut_X.InterleavedData_X.pData_U8);
+                  mAudDecOut_X.ChannelBufferCollection[0].Write(TotalSizeOfAudioConverted_U32, mAudDecOut_X.InterleavedData_X.pData_U8, NbWritten_U64);
                 }
                 else
                 {
