@@ -237,4 +237,60 @@ BOFERR Bof_BgraToUyvy(uint32_t _Width_U32, int _Height_i, uint32_t _BrgaStride_U
   return Rts_E;
 }
 
+BOFERR Bof_24sleTo32sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_rDstBuffer_X)
+{
+  uint32_t i_U32, NbData24_U32;
+  uint8_t *pDst_U8;
+  const uint8_t *pSrc_U8;
+  BOFERR Rts_E = BOF_ERR_TOO_BIG;
+
+  if ((_rSrcBuffer_X.pData_U8) && (_rDstBuffer_X.pData_U8) && (((_rSrcBuffer_X.Size_U64 * 4) / 3) <= _rDstBuffer_X.Size_U64))
+  {
+    Rts_E = BOF_ERR_TOO_BIG;
+    if ((_rSrcBuffer_X.Size_U64 % 12) == 0)
+    {
+      Rts_E = BOF_ERR_NO_ERROR;
+      NbData24_U32 = _rSrcBuffer_X.Size_U64 / 3;
+      pSrc_U8 = reinterpret_cast<const uint8_t *>(_rSrcBuffer_X.pData_U8);
+      pDst_U8 = _rDstBuffer_X.pData_U8;
+      for (i_U32 = 0; i_U32 < NbData24_U32; i_U32++, pSrc_U8 += 3, pDst_U8 += 4)
+      {
+        //Right shift sample by 8 to restore sign
+        pDst_U8[0] = 0;
+        pDst_U8[1] = pSrc_U8[0];
+        pDst_U8[2] = pSrc_U8[1];
+        pDst_U8[3] = pSrc_U8[2]; //(pSrc_U8[2] & 0x80) ? 0xFF : 0x00;
+      }
+    }
+  }
+  return Rts_E;
+}
+
+BOFERR Bof_32sleTo24sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_rDstBuffer_X)
+{
+  uint32_t i_U32, NbData32_U32;
+  uint8_t *pDst_U8;
+  const uint8_t *pSrc_U8;
+  BOFERR Rts_E = BOF_ERR_TOO_BIG;
+
+  if ((_rSrcBuffer_X.pData_U8) && (_rDstBuffer_X.pData_U8) && (((_rSrcBuffer_X.Size_U64 * 3) / 4) <= _rDstBuffer_X.Size_U64))
+  {
+    Rts_E = BOF_ERR_TOO_BIG;
+    if ((_rSrcBuffer_X.Size_U64 % 12) == 0)
+    {
+      Rts_E = BOF_ERR_NO_ERROR;
+      NbData32_U32 = _rSrcBuffer_X.Size_U64 / 4;
+      pSrc_U8 = reinterpret_cast<const uint8_t *>(_rSrcBuffer_X.pData_U8);
+      pDst_U8 = _rDstBuffer_X.pData_U8;
+      for (i_U32 = 0; i_U32 < NbData32_U32; i_U32, pSrc_U8 += 4, pDst_U8 += 3)
+      {
+        //Left shift sample by 8 to keep the sign
+        pDst_U8[0] = pSrc_U8[1];
+        pDst_U8[1] = pSrc_U8[2];
+        pDst_U8[2] = pSrc_U8[3];
+      }
+    }
+  }
+  return Rts_E;
+}
 END_BOF2D_NAMESPACE()

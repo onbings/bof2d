@@ -484,15 +484,16 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
                         }
-                      }
+                  }
 #else
                       for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
                       {
-                        for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); Index_U32 += (mAudDecOption_X.NbChannel_U32 * 4))
+                        for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); /*NO j_U32++, */ Index_U32 += (mAudDecOption_X.NbChannel_U32 * 4))
                         {
-                          ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 0];
+                          //Left shift sample by 8 to keep sign
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
+                          ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 3];
                         }
                       }
 
