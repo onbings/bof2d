@@ -111,7 +111,6 @@ target_include_directories(bof2d-objects
 target_link_libraries(bof2d-objects
   PUBLIC
     #ONBINGS::onbings-another-lib
-
   PRIVATE
 #    Qt5::Widgets
 	Freetype::Freetype
@@ -124,13 +123,21 @@ target_link_libraries(bof2d-objects
     SDL2::SDL2 #SDL2-static
 
 #	${Boost_LIBRARIES}
-	${AVCODEC_LIBRARY}
-	${AVDEVICE_LIBRARY}
-	${AVFILTER_LIBRARY}
+### Link order in static lib is very important: if not respected you will get random undefined symbols depending of the order ###  
+  	${AVDEVICE_LIBRARY}
 	${AVFORMAT_LIBRARY}
-	${AVUTIL_LIBRARY}
+	${AVFILTER_LIBRARY}
+	${AVCODEC_LIBRARY}
 	${SWRESAMPLE_LIBRARY}
 	${SWSCALE_LIBRARY}
+	${AVUTIL_LIBRARY}
+	${POSTPROC_LIBRARY}
+
+# =AVCODEC_LIBRARY=/home/bha/bld/evs-muse/vcpkg_installed/evs-x64-swx-linux-static/debug/lib/libavcodec.a	
+#	/home/bha/pro/vcpkg/buildtrees/ffmpeg/evs-x64-swx-linux-static-dbg/libavcodec/avfft.o
+#	/home/bha/pro/vcpkg/buildtrees/ffmpeg/evs-x64-swx-linux-static-dbg/libavcodec/avdct.o
+#	/home/bha/pro/vcpkg/buildtrees/ffmpeg/evs-x64-swx-linux-static-dbg/libavcodec/adts_parser.o
+
 )
 #message("=Boost_INCLUDE_DIRS==============>"${Boost_INCLUDE_DIRS})
 #message("=Boost_LIBRARIES==============>"${Boost_LIBRARIES})

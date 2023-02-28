@@ -97,4 +97,9 @@ find_library(SWSCALE_LIBRARY swscale)
 message("===SWSCALE_INCLUDE_DIR===========>" ${SWSCALE_INCLUDE_DIR})
 message("===SWSCALE_LIBRARY===========>" ${SWSCALE_LIBRARY})
 
+find_path(POSTPROC_INCLUDE_DIR libpostproc/postprocess.h )
+find_library(POSTPROC_LIBRARY postproc)
+message("===POSTPROC_INCLUDE_DIR===========>" ${POSTPROC_INCLUDE_DIR})
+message("===POSTPROC_LIBRARY===========>" ${POSTPROC_LIBRARY})
+
 find_package_dependency(bofstd REQUIRED)
