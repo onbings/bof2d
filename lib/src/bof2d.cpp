@@ -18,15 +18,15 @@
  */
 /*
 Republish a new version
-- Change version in C:\pro\github\bof2d\CMakeLists.txt: project(bof2d VERSION 4.1.1.9)
-- Change version in C:\pro\github\bof2d\vcpkg.json:     "version": "4.1.1.9",
+- Change version in C:\pro\github\bof2d\CMakeLists.txt: project(bof2d VERSION 4.1.1.10)
+- Change version in C:\pro\github\bof2d\vcpkg.json:     "version": "4.1.1.10",
 - Change version in C:\pro\github\bof2d\vcpkg-configuration.json 
                 BofStd depend "baseline": "cfb68fa913eabb47939ea85c5ab3dda3e35b05d9",
 Push all modified files to git and get git push ref: 
-get push ref 7812181d9de27655be6d9b6dbee0ede93cf0ad7b		used also during last phase with the .\update-port.py command at rhe end of the procedure
+get push ref c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50		used also during last phase with the .\update-port.py command at rhe end of the procedure
 
 - Change REF and SHA512 in C:\pro\github\onbings-vcpkg-registry\ports\bof2d\portfile.cmake  / C:\pro\evs-vcpkg-registry\ports\bof2d\portfile.cmake
-  REF 7812181d9de27655be6d9b6dbee0ede93cf0ad7b
+  REF c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50
   SHA512 0
 
 - Validate BofSrd and Bof2d with the C:\pro\github\vcpkg-packaging-env project
@@ -35,11 +35,11 @@ get push ref 7812181d9de27655be6d9b6dbee0ede93cf0ad7b		used also during last pha
   cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\github\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\github\onbings-vcpkg-registry\ports\ C:\pro\github\vcpkg-packaging-env
   cmake -DCMAKE_TOOLCHAIN_FILE=C:\pro\vcpkg\scripts\buildsystems\vcpkg.cmake -DBUILD_SHARED_LIBS=ON -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-dynamic -DVCPKG_OVERLAY_PORTS=C:\pro\evs-vcpkg-registry\ports\ C:\pro\vcpkg-packaging-env
 
-  [DEBUG] Downloading https:\\github.com\onbings\bofstd\archive\7812181d9de27655be6d9b6dbee0ede93cf0ad7b.tar.gz
+  [DEBUG] Downloading https:\\github.com\onbings\bofstd\archive\c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50.tar.gz
   Error: Failed to download from mirror set:
   File does not have the expected hash:
-             url : [ https:\\github.com\onbings\bofstd\archive\7812181d9de27655be6d9b6dbee0ede93cf0ad7b.tar.gz ]
-       File path : [ C:\pro\vcpkg\downloads\onbings-bofstd-7812181d9de27655be6d9b6dbee0ede93cf0ad7b.tar.gz.20964.part ]
+             url : [ https:\\github.com\onbings\bofstd\archive\c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50.tar.gz ]
+       File path : [ C:\pro\vcpkg\downloads\onbings-bofstd-c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50.tar.gz.20964.part ]
    Expected hash : [ 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 ]
      Actual hash : [ 6b637a3633827d5969077628f5cad7a4469c0f78fea94fef61bff5665bad0170136e6d4a0510c8e260ef2522887f9ba264ed43ccdad7941f8bf8febc45bf0e30 ]
 
@@ -50,10 +50,10 @@ get push ref 7812181d9de27655be6d9b6dbee0ede93cf0ad7b		used also during last pha
 
   cd C:\pro\github\onbings-vcpkg-registry / cd c:\pro\evs-vcpkg-registry
   git pull
-  python .\update-port.py bof2d 4.1.1.9 7812181d9de27655be6d9b6dbee0ede93cf0ad7b
+  python .\update-port.py bof2d 4.1.1.10 c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50
   git push
   git log
-  commit message should be "Update bofstd to 4.1.1.9\7812181d9de27655be6d9b6dbee0ede93cf0ad7b"
+  commit message should be "Update bofstd to 4.1.1.10\c2bd568cd7f05b2fb630d16a35c9881d1a3c4b50"
 
   get the new push git ref 1efe88199dcecb73e2d4941d49eaeea31238cc0a
 
