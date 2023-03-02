@@ -131,7 +131,7 @@ target_link_libraries(bof2d-objects
 	${SWRESAMPLE_LIBRARY}
 	${SWSCALE_LIBRARY}
 	${AVUTIL_LIBRARY}
-	${POSTPROC_LIBRARY}
+#	${POSTPROC_LIBRARY}
 
 # =AVCODEC_LIBRARY=/home/bha/bld/evs-muse/vcpkg_installed/evs-x64-swx-linux-static/debug/lib/libavcodec.a	
 #	/home/bha/pro/vcpkg/buildtrees/ffmpeg/evs-x64-swx-linux-static-dbg/libavcodec/avfft.o

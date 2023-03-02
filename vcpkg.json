@@ -4,16 +4,7 @@
   "description": "The onbings general purpose 2d C++ Multiplatform library",
   "dependencies": [
     { "name": "bofstd" },
-    {
-      "name": "ffmpeg",
-      "features": [
-		"avresample",
-		"postproc",
-		"ffplay",
-		"ffprobe",
-		"ffmpeg"
-      ]	  
-    },
+    { "name": "ffmpeg" },
     { "name": "freetype" },
     { "name": "glad" },
     { "name": "glfw3" },
