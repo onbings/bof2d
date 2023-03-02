@@ -108,7 +108,7 @@ BOFERR Bof2dVideoDecoder::Open(AVFormatContext *_pDecFormatCtx_X, const std::str
               pEntry_X = nullptr;
               while (pEntry_X = av_dict_get(pMetadata_X, "", pEntry_X, AV_DICT_IGNORE_SUFFIX))
               {
-                printf("Video Metadata %s: %s\n", pEntry_X->key, pEntry_X->value);
+                //printf("Video Metadata %s: %s\n", pEntry_X->key, pEntry_X->value);
                 mVidMetadataCollection[pEntry_X->key] = pEntry_X->value;
               }
             }
@@ -241,8 +241,8 @@ BOFERR Bof2dVideoDecoder::Open(AVFormatContext *_pDecFormatCtx_X, const std::str
           mpVidDecFrameConverted_X->format = mPixelFmt_E;
 
           //is it the same than mpVidDecCodecParam_X->width, mpVidDecCodecParam_X->height,
-          printf("Convert from %s %dx%d to %s %dx%d\n", av_get_pix_fmt_name(mpVidDecCodecCtx_X->pix_fmt), mpVidDecCodecCtx_X->width, mpVidDecCodecCtx_X->height,
-            av_get_pix_fmt_name(mPixelFmt_E), mVidDecOption_X.Width_U32, mVidDecOption_X.Height_U32);
+          //printf("Convert from %s %dx%d to %s %dx%d\n", av_get_pix_fmt_name(mpVidDecCodecCtx_X->pix_fmt), mpVidDecCodecCtx_X->width, mpVidDecCodecCtx_X->height,
+          //  av_get_pix_fmt_name(mPixelFmt_E), mVidDecOption_X.Width_U32, mVidDecOption_X.Height_U32);
 
           mpVidDecSwsCtx_X = sws_getContext(mpVidDecCodecCtx_X->width, mpVidDecCodecCtx_X->height, mpVidDecCodecCtx_X->pix_fmt,
             mVidDecOption_X.Width_U32, mVidDecOption_X.Height_U32, mPixelFmt_E, SWS_BICUBIC, nullptr, nullptr, nullptr);
@@ -484,8 +484,8 @@ BOFERR Bof2dVideoDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_VID_DEC_OUT &
           if (Rts_E == BOF_ERR_NO_ERROR)
           {
             mNbVidDecFrameReceived_U64++;
-            printf("VideoFrame Snt/Rcv %zd/%zd Pts %zd Fmt %s Width %d Height %d Buf %x:%p\n", mNbVidDecPacketSent_U64, mNbVidDecFrameReceived_U64, mpVidDecFrame_X->pts, av_get_pix_fmt_name((AVPixelFormat)mpVidDecFrame_X->format),
-              mpVidDecFrame_X->width, mpVidDecFrame_X->height, mpVidDecFrame_X->linesize[0], mpVidDecFrame_X->data[0]);
+            //printf("VideoFrame Snt/Rcv %zd/%zd Pts %zd Fmt %s Width %d Height %d Buf %x:%p\n", mNbVidDecPacketSent_U64, mNbVidDecFrameReceived_U64, mpVidDecFrame_X->pts, av_get_pix_fmt_name((AVPixelFormat)mpVidDecFrame_X->format),
+            //  mpVidDecFrame_X->width, mpVidDecFrame_X->height, mpVidDecFrame_X->linesize[0], mpVidDecFrame_X->data[0]);
 
             Rts_E = ConvertVideo(TotalSizeOfVideoConverted_U32);
             if (Rts_E == BOF_ERR_NO_ERROR)
@@ -560,9 +560,9 @@ BOFERR Bof2dVideoDecoder::ConvertVideo(uint32_t &_rTotalSizeOfVideoConverted_U32
   mNbTotalVidDecFrame_U64++;
   //  mNbTotaVidDecSample_U64 += _rTotalSizeOfVideoConverted_U32;
   uint32_t *pData_U32 = (uint32_t *)mVidDecOut_X.Data_X.pData_U8;
-  printf("Cnv Video %x->%x:%p Fmt %d Pos %zd Dur %zd Sz %d\n", mpVidDecFrameConverted_X->linesize[0], _rTotalSizeOfVideoConverted_U32, mVidDecOut_X.Data_X.pData_U8,
-    mpVidDecFrameConverted_X->format, mpVidDecFrameConverted_X->pkt_pos, mpVidDecFrameConverted_X->pkt_duration, mpVidDecFrameConverted_X->pkt_size);
-  printf("Cnv Data %08x %08x %08x %08x %08x %08x %08x %08x\n", pData_U32[0], pData_U32[1], pData_U32[2], pData_U32[3], pData_U32[4], pData_U32[5], pData_U32[6], pData_U32[7]);
+//  printf("Cnv Video %x->%x:%p Fmt %d Pos %zd Dur %zd Sz %d\n", mpVidDecFrameConverted_X->linesize[0], _rTotalSizeOfVideoConverted_U32, mVidDecOut_X.Data_X.pData_U8,
+//    mpVidDecFrameConverted_X->format, mpVidDecFrameConverted_X->pkt_pos, mpVidDecFrameConverted_X->pkt_duration, mpVidDecFrameConverted_X->pkt_size);
+//  printf("Cnv Data %08x %08x %08x %08x %08x %08x %08x %08x\n", pData_U32[0], pData_U32[1], pData_U32[2], pData_U32[3], pData_U32[4], pData_U32[5], pData_U32[6], pData_U32[7]);
 
   //else
   //{

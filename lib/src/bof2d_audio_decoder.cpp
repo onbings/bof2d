@@ -22,7 +22,6 @@
 #include <bof2d/bof2d_audio_decoder.h>
 #include <bof2d/bof2d_av_codec.h>
 #include <bof2d/bof2d_audio_encoder.h>
-
  //https://www.jensign.com/multichannel/multichannelformat.html
  /*Sample24 bit96kHz5.1.wav
  ----- Sample 24 bit/ 96 kHz 5.1 Multichannel WAV File -------
@@ -46,8 +45,8 @@ BEGIN_BOF2D_NAMESPACE()
 struct BOF2D_WAV_HEADER
 {
   /*000*/  char pRiffHeader_c[4];                 // RIFF Header: "RIFF" Marks the file as a riff file. Characters are each 1 byte long.*/
-  /*004*/  uint32_t WavTotalSizeInByteMinus8_U32; // Size of the overall file - 8 bytes, in bytes (32-bit integer). Typically, you�d fill this in after creation. */
-  /*008*/  char pWavHeader_c[4];                  //File Type Header. For our purposes, it always equals �WAVE�.
+  /*004*/  uint32_t WavTotalSizeInByteMinus8_U32; // Size of the overall file - 8 bytes, in bytes (32-bit integer). Typically, you’d fill this in after creation. */
+  /*008*/  char pWavHeader_c[4];                  //File Type Header. For our purposes, it always equals “WAVE”.
   /*012*/  char pFmtHeader_c[4];                  //Format chunk marker. Includes trailing space and nullptr
   /*016*/  uint32_t FmtChunkSize_U32;             //Length of format data as listed above (Should be 16 for PCM)
   /*020*/  uint16_t AudioFormat_U16;              // Should be 1 for PCM. 3 for IEEE Float 
@@ -56,20 +55,20 @@ struct BOF2D_WAV_HEADER
   /*028*/  uint32_t ByteRate_U32;                 //Number of bytes per second:	(SampleRateInHz_U32 * BitPerSample_U16 * NbChannel_U16) / 8.
   /*032*/  uint16_t SampleAlignment_U16;          //(NbChannel_U16 * BitPerSample_U16) / 8
   /*034*/  uint16_t NbBitPerSample_U16;             //Bits per sample
-  /*036*/  char pDataHeader_X[4];                 //�data� chunk header. Marks the beginning of the data section.
+  /*036*/  char pDataHeader_X[4];                 //“data” chunk header. Marks the beginning of the data section.
   /*040*/  uint32_t DataSizeInByte_U32;           //size of audio: number of samples * num_channels * bit_depth/8
 };
 #pragma pack()
 
 Bof2dAudioDecoder::Bof2dAudioDecoder()
 {
-  mAudDecState_E = BOF2D_AV_CODEC_STATE::BOF2D_AV_CODEC_STATE_IDLE;
   mAudDecOptionParam_X.push_back({ nullptr, "A_NBCHNL", "Specifies the number of audio channel to generate","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.NbChannel_U32, UINT32, 0, 4096) });
   mAudDecOptionParam_X.push_back({ nullptr, "A_LAYOUT", "Specifies the channel layout to generate","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.ChannelLayout_U64, UINT64, 0, 0) });
   mAudDecOptionParam_X.push_back({ nullptr, "A_RATE", "Specifies the audio sample rate to generate","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.SampleRateInHz_U32, UINT32, 0, 128000) });
-  mAudDecOptionParam_X.push_back({ nullptr, "A_BPS", "Specifies the number of bits per sample","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.NbBitPerSample_U32, UINT32, 8, 64) });
+  //Use 99 for float format for example
+  mAudDecOptionParam_X.push_back({ nullptr, "A_BPS", "Specifies the number of bits per sample","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.NbBitPerSample_U32, UINT32, 0, 100) });
   mAudDecOptionParam_X.push_back({ nullptr, "A_DEMUX", "If specifies, each audio channel is extracted and stored in a different memory buffer", "", "", BOF::BOFPARAMETER_ARG_FLAG::NONE, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.DemuxChannel_B, BOOL, true, 0) });
-  mAudDecOptionParam_X.push_back({ nullptr, "A_THREAD", "Specifies number of thread used by decodeer (affect delay)","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.NbThread_U32, UINT32, 1, 64) });
+  mAudDecOptionParam_X.push_back({ nullptr, "V_THREAD", "Specifies number of thread used by decodeer (affect delay)","","", BOF::BOFPARAMETER_ARG_FLAG::CMDLINE_LONGOPT_NEED_ARG, BOF_PARAM_DEF_VARIABLE(mAudDecOption_X.NbThread_U32, UINT32, 1, 64) });
 }
 
 Bof2dAudioDecoder::~Bof2dAudioDecoder()
@@ -130,11 +129,14 @@ BOFERR Bof2dAudioDecoder::Open(AVFormatContext *_pDecFormatCtx_X, const std::str
           mSampleFmt_E = AV_SAMPLE_FMT_S32;
           mAudDecNbBitPerSample_U32 = 32; //Like this in ffmpeg
         }
+        else if (mAudDecOption_X.NbBitPerSample_U32 == 32)
+        {
+          mSampleFmt_E = AV_SAMPLE_FMT_S32;
+        }
         else
         {
-          mSampleFmt_E = AV_SAMPLE_FMT_FLT;
+          mSampleFmt_E = AV_SAMPLE_FMT_FLT; //99 for example
         }
-
         for (i_U32 = 0; i_U32 < _pDecFormatCtx_X->nb_streams; i_U32++)
         {
           if (_pDecFormatCtx_X->streams[i_U32]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
@@ -159,7 +161,7 @@ BOFERR Bof2dAudioDecoder::Open(AVFormatContext *_pDecFormatCtx_X, const std::str
             pEntry_X = nullptr;
             while (pEntry_X = av_dict_get(pMetadata_X, "", pEntry_X, AV_DICT_IGNORE_SUFFIX))
             {
-              printf("Audio Metadata %s: %s\n", pEntry_X->key, pEntry_X->value);
+//              printf("Audio Metadata %s: %s\n", pEntry_X->key, pEntry_X->value);
               mAudMetadataCollection[pEntry_X->key] = pEntry_X->value;
             }
           }
@@ -287,7 +289,7 @@ BOFERR Bof2dAudioDecoder::Open(AVFormatContext *_pDecFormatCtx_X, const std::str
                         FFMPEG_CHK_IF_ERR(Sts_i, "Could not av_opt_set_sample_fmt in_sample_fmt", Rts_E);
                         if (Rts_E == BOF_ERR_NO_ERROR)
                         {
-                          Sts_i = av_opt_set_sample_fmt(mpAudDecSwrCtx_X, "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+                          Sts_i = av_opt_set_sample_fmt(mpAudDecSwrCtx_X, "out_sample_fmt", mSampleFmt_E, 0);
                           FFMPEG_CHK_IF_ERR(Sts_i, "Could not av_opt_set_sample_fmt out_sample_fmt", Rts_E);
                           if (Rts_E == BOF_ERR_NO_ERROR)
                           {
@@ -388,7 +390,7 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
 {
   BOFERR Rts_E = BOF_ERR_EOF;
   int Sts_i;
-  uint32_t NbAudioSampleConvertedPerChannel_U32, TotalSizeOfAudioConvertedPerChannel_U32, TotalSizeOfAudioConverted_U32, i_U32, j_U32, Index_U32;
+  uint32_t TotalNb32BitSampleToConvert_U32, NbAudioSampleConvertedPerChannel_U32, TotalSizeOfAudioConvertedPerChannel_U32, TotalSizeOfAudioConverted_U32, i_U32, j_U32, Index_U32;
   uint64_t NbWritten_U64;
 
   _rAudDecOut_X.Reset();
@@ -420,15 +422,27 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
           if (Rts_E == BOF_ERR_NO_ERROR)
           {
             mNbAudDecFrameReceived_U64++;
-            printf("AudioFrame Snt/Rcv %zd/%zd Pts %zd Fmt %s NbSmp %d Rate %d Buf %x:%p Layout %zx\n", mNbAudDecPacketSent_U64, mNbAudDecFrameReceived_U64, mpAudDecFrame_X->pts, av_get_sample_fmt_name((AVSampleFormat)mpAudDecFrame_X->format),
-              mpAudDecFrame_X->nb_samples, mpAudDecFrame_X->sample_rate, mpAudDecFrame_X->linesize[0], mpAudDecFrame_X->data[0],
-              mpAudDecFrame_X->channel_layout);
+//            printf("AudioFrame Snt/Rcv %zd/%zd Pts %zd Fmt %s NbSmp %d Rate %d Buf %x:%p Layout %zx\n", mNbAudDecPacketSent_U64, mNbAudDecFrameReceived_U64, mpAudDecFrame_X->pts, av_get_sample_fmt_name((AVSampleFormat)mpAudDecFrame_X->format),
+//              mpAudDecFrame_X->nb_samples, mpAudDecFrame_X->sample_rate, mpAudDecFrame_X->linesize[0], mpAudDecFrame_X->data[0],
+//              mpAudDecFrame_X->channel_layout);
 
             //Rts_E = ConvertAudio(false, mpAudDecFrame_X, mpAudDecFrameConverted_X, mAudDecOption_X.NbChannel_U32, static_cast<uint32_t>(mAudDecOption_X.ChannelLayout_U64), mAudDecOption_X.SampleRateInHz_U32, AV_SAMPLE_FMT_S16);
             Rts_E = ConvertAudio(NbAudioSampleConvertedPerChannel_U32);
             if (Rts_E == BOF_ERR_NO_ERROR)
             {
-              TotalSizeOfAudioConvertedPerChannel_U32 = (NbAudioSampleConvertedPerChannel_U32 * (mAudDecOption_X.DemuxChannel_B ? mAudDecOption_X.NbBitPerSample_U32 : mAudDecNbBitPerSample_U32) / 8);
+              if (mAudDecOption_X.NbBitPerSample_U32 == 24)
+              {
+                //FFMPEG put 24 bits audio sample in S32 var
+                TotalNb32BitSampleToConvert_U32 = (NbAudioSampleConvertedPerChannel_U32 * mAudDecOption_X.NbChannel_U32);
+                for (Index_U32 = 0, i_U32 = 0; i_U32 < TotalNb32BitSampleToConvert_U32 * 4; i_U32 += 4)
+                {
+                  //Left shift sample by 8 to keep sign
+                  mAudDecOut_X.InterleavedData_X.pData_U8[Index_U32++] = mAudDecOut_X.InterleavedData_X.pData_U8[i_U32 + 1];
+                  mAudDecOut_X.InterleavedData_X.pData_U8[Index_U32++] = mAudDecOut_X.InterleavedData_X.pData_U8[i_U32 + 2];
+                  mAudDecOut_X.InterleavedData_X.pData_U8[Index_U32++] = mAudDecOut_X.InterleavedData_X.pData_U8[i_U32 + 3];
+                }
+              }
+              TotalSizeOfAudioConvertedPerChannel_U32 = (NbAudioSampleConvertedPerChannel_U32 * mAudDecOption_X.NbBitPerSample_U32) / 8;
               TotalSizeOfAudioConverted_U32 = TotalSizeOfAudioConvertedPerChannel_U32 * mAudDecOption_X.NbChannel_U32;
               mAudDecOut_X.InterleavedData_X.Size_U64 = TotalSizeOfAudioConverted_U32;
               for (auto &rIt : mAudDecOut_X.ChannelBufferCollection)
@@ -448,6 +462,7 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
               {
                 if (mAudDecOption_X.NbChannel_U32 == 1)
                 {
+                  //                  mAudDecOut_X.ChannelBufferCollection[0].Write(TotalSizeOfAudioConverted_U32, mAudDecOut_X.InterleavedData_X.pData_U8, NbWritten_U64);
                   mAudDecOut_X.ChannelBufferCollection[0].Write(TotalSizeOfAudioConverted_U32, mAudDecOut_X.InterleavedData_X.pData_U8, NbWritten_U64);
                 }
                 else
@@ -475,29 +490,15 @@ BOFERR Bof2dAudioDecoder::BeginRead(AVPacket *_pDecPacket_X, BOF2D_AUD_DEC_OUT &
                       break;
 
                     case 24:
-#if 0 //FFMPEG put 24 bits audio sample in S32 var
                       for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
                       {
-                        for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); j_U32++, Index_U32 += (mAudDecOption_X.NbChannel_U32 * 3))
+                        for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); /*NO j_U32++,*/ Index_U32 += (mAudDecOption_X.NbChannel_U32 * 3))
                         {
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 0];
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
                           ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
                         }
-                  }
-#else
-                      for (i_U32 = 0; i_U32 < mAudDecOption_X.NbChannel_U32; i_U32++)
-                      {
-                        for (Index_U32 = (i_U32 * 3), j_U32 = 0; j_U32 < (NbAudioSampleConvertedPerChannel_U32 * 3); /*NO j_U32++, */ Index_U32 += (mAudDecOption_X.NbChannel_U32 * 4))
-                        {
-                          //Left shift sample by 8 to keep sign
-                          ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 1];
-                          ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 2];
-                          ((uint8_t *)mAudDecOut_X.ChannelBufferCollection[i_U32].pData_U8)[j_U32++] = ((uint8_t *)mAudDecOut_X.InterleavedData_X.pData_U8)[Index_U32 + 3];
-                        }
                       }
-
-#endif
                       break;
 
                     case 32:
@@ -554,7 +555,7 @@ BOFERR Bof2dAudioDecoder::EndRead()
   }
   return Rts_E;
 }
-//extern BOFSTD_EXPORT BOF::BOFSTDPARAM GL_BofStdParam_X;
+
 BOFERR Bof2dAudioDecoder::ConvertAudio(uint32_t &_rNbAudioSampleConvertedPerChannel_U32)
 {
   BOFERR Rts_E;
@@ -589,11 +590,11 @@ BOFERR Bof2dAudioDecoder::ConvertAudio(uint32_t &_rNbAudioSampleConvertedPerChan
       mpAudDecFrameConverted_X->pkt_size = mpAudDecFrame_X->pkt_size;
       mNbTotalAudDecFrame_U64++;
       mNbTotaAudDecSample_U64 += TotalSizeOfAudioConverted_U32;
-      int16_t *pData_S16 = (int16_t *)mAudDecOut_X.InterleavedData_X.pData_U8;
-      printf("Cnv Audio %x->%x:%p nbs %d ch %d layout %zx Fmt %d Rate %d Pos %zd Dur %zd Sz %d\n", mpAudDecFrameConverted_X->linesize[0], TotalSizeOfAudioConverted_U32, mAudDecOut_X.InterleavedData_X.pData_U8,
-        mpAudDecFrameConverted_X->nb_samples, mpAudDecFrameConverted_X->channels, mpAudDecFrameConverted_X->channel_layout, mpAudDecFrameConverted_X->format, mpAudDecFrameConverted_X->sample_rate,
-        mpAudDecFrameConverted_X->pkt_pos, mpAudDecFrameConverted_X->pkt_duration, mpAudDecFrameConverted_X->pkt_size);
-      printf("Cnv Data %04x %04x %04x %04x %04x %04x %04x %04x\n", pData_S16[0], pData_S16[1], pData_S16[2], pData_S16[3], pData_S16[4], pData_S16[5], pData_S16[6], pData_S16[7]);
+      //int16_t *pData_S16 = (int16_t *)mAudDecOut_X.InterleavedData_X.pData_U8;
+      //printf("Cnv Audio %x->%x:%p nbs %d ch %d layout %zx Fmt %d Rate %d Pos %zd Dur %zd Sz %d\n", mpAudDecFrameConverted_X->linesize[0], TotalSizeOfAudioConverted_U32, mAudDecOut_X.InterleavedData_X.pData_U8,
+      //  mpAudDecFrameConverted_X->nb_samples, mpAudDecFrameConverted_X->channels, mpAudDecFrameConverted_X->channel_layout, mpAudDecFrameConverted_X->format, mpAudDecFrameConverted_X->sample_rate,
+      //  mpAudDecFrameConverted_X->pkt_pos, mpAudDecFrameConverted_X->pkt_duration, mpAudDecFrameConverted_X->pkt_size);
+      //printf("Cnv Data %04x %04x %04x %04x %04x %04x %04x %04x\n", pData_S16[0], pData_S16[1], pData_S16[2], pData_S16[3], pData_S16[4], pData_S16[5], pData_S16[6], pData_S16[7]);
     }
     else
     {

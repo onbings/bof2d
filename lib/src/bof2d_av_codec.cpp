@@ -61,10 +61,10 @@ Bof2dAvCodec::Bof2dAvCodec(int _LogLevel_i)
   //AV_LOG_TRACE
   av_log_set_callback(Bof2d_FfmpegLogCallback);
   av_log_set_level(_LogLevel_i);  // AV_LOG_VERBOSE); // AV_LOG_TRACE); // AV_LOG_ERROR);
-  printf("FFmpeg avformat version: %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", avformat_version(), av_version_info(), avformat_configuration(), avformat_license());
-  printf("FFmpeg avcodec version:  %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", avcodec_version(), av_version_info(), avcodec_configuration(), avcodec_license());
-  printf("FFmpeg avutil version:   %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", avutil_version(), av_version_info(), avutil_configuration(), avutil_license());
-  printf("FFmpeg swscale version:  %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", swscale_version(), av_version_info(), swscale_configuration(), swscale_license());
+  //printf("FFmpeg avformat version: %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", avformat_version(), av_version_info(), avformat_configuration(), avformat_license());
+  //printf("FFmpeg avcodec version:  %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", avcodec_version(), av_version_info(), avcodec_configuration(), avcodec_license());
+  //printf("FFmpeg avutil version:   %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", avutil_version(), av_version_info(), avutil_configuration(), avutil_license());
+  //printf("FFmpeg swscale version:  %08X\nInfo: %s\nConfig: %s\nLicense: %s\n", swscale_version(), av_version_info(), swscale_configuration(), swscale_license());
 
   printf("LogLevel is %d\n", av_log_get_level());
 

@@ -253,8 +253,8 @@ BOFERR Bof2dAudioEncoder::WriteHeader()
 #define UPDATE_SIZE()         { pAudEncChunkState_X->RemainingChunkSize_U32 -= Nb_U32; \
                                 SizeToWrite_U32 -= Nb_U32; \
                                 IndexInDataBuffer_U32 += Nb_U32; \
-                                printf("    UPD_SZ %d byte written -> DataIndx %d, Still %d to write ChunkSize is %d\n", Nb_U32, IndexInDataBuffer_U32, SizeToWrite_U32, ChunkSize_U32); \
                               }
+//printf("    UPD_SZ %d byte written -> DataIndx %d, Still %d to write ChunkSize is %d\n", Nb_U32, IndexInDataBuffer_U32, SizeToWrite_U32, ChunkSize_U32); \
 
 #define UPDATE_SUB_CHUNK()    { pAudEncChunkState_X->SubChunkId_U32++; \
                                 pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32++; \
@@ -263,8 +263,8 @@ BOFERR Bof2dAudioEncoder::WriteHeader()
                                   pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32 = 0; \
                                 } \
                                 ChunkSize_U32 = (mAudEncOption_X.SaveChunkSizeInSampleCollection[pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32] * mAudDecOut_X.NbBitPerSample_U32) / 8; \
-                                printf("    NXT_SUB SubChunkId %d Index %d ChunkSize %d\n", pAudEncChunkState_X->SubChunkId_U32, pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32,ChunkSize_U32); \
                               }
+//printf("    NXT_SUB SubChunkId %d Index %d ChunkSize %d\n", pAudEncChunkState_X->SubChunkId_U32, pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32, ChunkSize_U32); \
 
 BOFERR Bof2dAudioEncoder::WriteChunkOut()
 {
@@ -317,8 +317,8 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
             {
               ChunkSize_U32 = (mAudEncOption_X.SaveChunkSizeInSampleCollection[pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32] * mAudDecOut_X.NbBitPerSample_U32) / 8;
               IndexInDataBuffer_U32 = 0;
-              printf("Frm %06zd Chnl %02d Rem %d Sz %d LstFn '%s' ToWrt %d SzIndx %d ChunkSize %d SubChunkId %d\n", mNbTotalAudEncFrame_U64, i_U32, pAudEncChunkState_X->RemainingChunkSize_U32, ChunkSize_U32,
-                pAudEncChunkState_X->LastChunkPath_S.c_str(), SizeToWrite_U32, pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32, ChunkSize_U32, pAudEncChunkState_X->SubChunkId_U32);
+              //printf("Frm %06zd Chnl %02d Rem %d Sz %d LstFn '%s' ToWrt %d SzIndx %d ChunkSize %d SubChunkId %d\n", mNbTotalAudEncFrame_U64, i_U32, pAudEncChunkState_X->RemainingChunkSize_U32, ChunkSize_U32,
+              //  pAudEncChunkState_X->LastChunkPath_S.c_str(), SizeToWrite_U32, pAudEncChunkState_X->SaveChunkSizeCollectionIndex_U32, ChunkSize_U32, pAudEncChunkState_X->SubChunkId_U32);
               if (pAudEncChunkState_X->RemainingChunkSize_U32)
               {
                 BOF_ASSERT(pAudEncChunkState_X->LastChunkPath_S != "");
@@ -330,7 +330,7 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
                   Sts_E = BOF::Bof_WriteFile(OutAudioChunkFile, Nb_U32, mAudDecOut_X.ChannelBufferCollection[i_U32 - 1].pData_U8);
                   if (Sts_E == BOF_ERR_NO_ERROR)
                   {
-                    printf("  Append %d bytes to %s Cs %d Rem %d ToWrt %d\n", Nb_U32, pAudEncChunkState_X->LastChunkPath_S.c_str(), ChunkSize_U32, pAudEncChunkState_X->RemainingChunkSize_U32, SizeToWrite_U32);
+                    //printf("  Append %d bytes to %s Cs %d Rem %d ToWrt %d\n", Nb_U32, pAudEncChunkState_X->LastChunkPath_S.c_str(), ChunkSize_U32, pAudEncChunkState_X->RemainingChunkSize_U32, SizeToWrite_U32);
                     UPDATE_SIZE();
                     if (pAudEncChunkState_X->RemainingChunkSize_U32 == 0)
                     {
@@ -340,16 +340,16 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
                   BOF::Bof_CloseFile(OutAudioChunkFile);
                   if (pAudEncChunkState_X->RemainingChunkSize_U32 == 0)
                   {
-                    printf("    %s final size append is %zd Frm %zd SubChunkId %d\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), BOF::Bof_GetFileSize(pAudEncChunkState_X->LastChunkPath_S), mNbTotalAudEncFrame_U64, pAudEncChunkState_X->SubChunkId_U32);
+                    //printf("    %s final size append is %zd Frm %zd SubChunkId %d\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), BOF::Bof_GetFileSize(pAudEncChunkState_X->LastChunkPath_S), mNbTotalAudEncFrame_U64, pAudEncChunkState_X->SubChunkId_U32);
                   }
                   else
                   {
-                    printf("  %s intermediate size is %zd\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), BOF::Bof_GetFileSize(pAudEncChunkState_X->LastChunkPath_S));
+                    //printf("  %s intermediate size is %zd\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), BOF::Bof_GetFileSize(pAudEncChunkState_X->LastChunkPath_S));
                   }
                 }
               }
               SizeToWrite_U32 += pAudEncChunkState_X->RemainingChunkSize_U32;
-              printf("  Rem %d -> ToWrt is %d\n", pAudEncChunkState_X->RemainingChunkSize_U32, SizeToWrite_U32);
+              //printf("  Rem %d -> ToWrt is %d\n", pAudEncChunkState_X->RemainingChunkSize_U32, SizeToWrite_U32);
               if (SizeToWrite_U32)
               {
                 pAudEncChunkState_X->SubChunkId_U32 = 0;
@@ -367,7 +367,7 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
                   Sts_E = BOF::Bof_WriteFile(OutAudioChunkFile, Nb_U32, &mAudDecOut_X.ChannelBufferCollection[i_U32 - 1].pData_U8[IndexInDataBuffer_U32]);
                   if (Sts_E == BOF_ERR_NO_ERROR)
                   {
-                    printf("  Create %s and write %d bytes, ChunkSize %d Rem %d ToWrt %d\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), Nb_U32, ChunkSize_U32, pAudEncChunkState_X->RemainingChunkSize_U32, SizeToWrite_U32);
+                    //printf("  Create %s and write %d bytes, ChunkSize %d Rem %d ToWrt %d\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), Nb_U32, ChunkSize_U32, pAudEncChunkState_X->RemainingChunkSize_U32, SizeToWrite_U32);
                     UPDATE_SIZE();
                     if (SizeToWrite_U32)
                     {
@@ -377,7 +377,7 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
                   BOF::Bof_CloseFile(OutAudioChunkFile);
                   if (SizeToWrite_U32)
                   {
-                    printf("    %s final size is %zd Frm %zd SubChunkId %d\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), BOF::Bof_GetFileSize(pAudEncChunkState_X->LastChunkPath_S), mNbTotalAudEncFrame_U64, pAudEncChunkState_X->SubChunkId_U32);
+                    //printf("    %s final size is %zd Frm %zd SubChunkId %d\n", pAudEncChunkState_X->LastChunkPath_S.c_str(), BOF::Bof_GetFileSize(pAudEncChunkState_X->LastChunkPath_S), mNbTotalAudEncFrame_U64, pAudEncChunkState_X->SubChunkId_U32);
                   }
                 }
               }
