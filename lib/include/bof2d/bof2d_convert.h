@@ -21,6 +21,9 @@
 
 #include <bof2d/bof2d.h>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 BEGIN_BOF2D_NAMESPACE()
 //Video
 BOF2D_EXPORT void Bof_YuvToRgbReference(int y, int u, int v, uint8_t *r, uint8_t *g, uint8_t *b);
@@ -38,5 +41,28 @@ BOF2D_EXPORT BOFERR Bof_BgraToUyvy(uint32_t _Width_U32, int _Height_i, uint32_t 
 //Audio
 BOF2D_EXPORT BOFERR Bof_24sleTo32sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_rDstBuffer_X);
 BOF2D_EXPORT BOFERR Bof_32sleTo24sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_rDstBuffer_X);
+
+
+class BOF2D_EXPORT Bof_AudioSignalGeneratorSinus
+{
+public:
+  Bof_AudioSignalGeneratorSinus(float _AmplitudeMax_f, float _FrequencyInHz_f, uint32_t _SampleRateInHz_U32);
+  Bof_AudioSignalGeneratorSinus();
+  float Next();
+  void Reset();
+  void Reset(float _FrequencyInHz_f, uint32_t _SampleRateInHz_U32);
+  float Frequency() const;
+  float AmplitudeMax() const;
+  void AmplitudeMax(float _AmplitudeMax_f);
+  uint32_t SampleRate() const;
+
+private:
+  constexpr static float mTwoPi_f = 2.0f * M_PI;
+  float                  mSinusIncrement_f = 1.f;
+  float                  mFrequencyInHz_f = 440; 
+  int                    mSampleRateInHz_U32 = 48000;
+  float                  mAmplitudeMax_f = 1.0f;
+  int32_t                mSampleNumber_U32 = 0;
+};
 
 END_BOF2D_NAMESPACE()

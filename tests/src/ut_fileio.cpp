@@ -23,7 +23,7 @@
 
 TEST(Bof2d_FileIo_Test, ReadWrite)
 {
-  BOF2D::BOF_FRAME_DATA FrameData_X;
+  BOF2D::BOF_VIDEO_FRAME_DATA FrameData_X;
   BOF::BOF_SIZE WndSize_X(640, 480);
 
   FrameData_X.Reset();

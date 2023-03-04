@@ -27,7 +27,7 @@
 
 BEGIN_BOF2D_NAMESPACE()
 //https://solarianprogrammer.com/2019/06/10/c-programming-reading-writing-images-stb_image-libraries/
-BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath &_rPath, int _NbChannelToRead_i, BOF_FRAME_DATA &_rFrameData_X)
+BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath &_rPath, int _NbChannelToRead_i, BOF_VIDEO_FRAME_DATA &_rFrameData_X)
 {
   BOFERR Rts_E = BOF_ERR_FORMAT;
   uint8_t *pFrameData_U8;
@@ -37,39 +37,39 @@ BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath &_rPath, int _NbChann
   FileCanbeRead_B = stbi_info(_rPath.FullPathName(false).c_str(), &Width_i, &Height_i, &NbChannel_i);
   if (FileCanbeRead_B)
   {
-    _rFrameData_X.FrameSizeInPixel_X.Width_U32 = Width_i;
-    _rFrameData_X.FrameSizeInPixel_X.Height_U32 = Height_i;
+    _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32 = Width_i;
+    _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32 = Height_i;
     _rFrameData_X.NbChannel_U32 = NbChannel_i;
-    _rFrameData_X.LineSizeInByte_U32 = (_NbChannelToRead_i == 0) ? _rFrameData_X.FrameSizeInPixel_X.Width_U32 * _rFrameData_X.NbChannel_U32 : _rFrameData_X.FrameSizeInPixel_X.Width_U32 * _NbChannelToRead_i;
-    FrameSize_U32 = _rFrameData_X.LineSizeInByte_U32 * _rFrameData_X.FrameSizeInPixel_X.Height_U32;
+    _rFrameData_X.LineSizeInByte_U32 = (_NbChannelToRead_i == 0) ? _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32 * _rFrameData_X.NbChannel_U32 : _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32 * _NbChannelToRead_i;
+    FrameSize_U32 = _rFrameData_X.LineSizeInByte_U32 * _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32;
     Rts_E = BOF_ERR_EINVAL;
-    if ((_rFrameData_X.FrameBuffer_X.pData_U8 == nullptr) && (_rFrameData_X.FrameBuffer_X.Capacity_U64 == 0) && (_rFrameData_X.FrameBuffer_X.Size_U64 == 0))
+    if ((_rFrameData_X.VideoFrameBuffer_X.pData_U8 == nullptr) && (_rFrameData_X.VideoFrameBuffer_X.Capacity_U64 == 0) && (_rFrameData_X.VideoFrameBuffer_X.Size_U64 == 0))
     {
       Rts_E = BOF_ERR_READ;
       pFrameData_U8 = stbi_load(_rPath.FullPathName(false).c_str(), &Width_i, &Height_i, &NbChannel_i, _NbChannelToRead_i);
       if (pFrameData_U8)
       {
-        BOF_ASSERT(Width_i == _rFrameData_X.FrameSizeInPixel_X.Width_U32);
-        BOF_ASSERT(Height_i == _rFrameData_X.FrameSizeInPixel_X.Height_U32);
+        BOF_ASSERT(Width_i == _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32);
+        BOF_ASSERT(Height_i == _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32);
         BOF_ASSERT(NbChannel_i == _rFrameData_X.NbChannel_U32);
-        _rFrameData_X.FrameBuffer_X.SetStorage(FrameSize_U32, FrameSize_U32, pFrameData_U8);
-        _rFrameData_X.FrameBuffer_X.MustBeFreeed_B = true;    //stbi_image_free(pFrameData_U8);
+        _rFrameData_X.VideoFrameBuffer_X.SetStorage(FrameSize_U32, FrameSize_U32, pFrameData_U8);
+        _rFrameData_X.VideoFrameBuffer_X.MustBeFreeed_B = true;    //stbi_image_free(pFrameData_U8);
         Rts_E = BOF_ERR_NO_ERROR;
       }
     }
   }
   return Rts_E;
 }
-BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const BOF::BofPath &_rPath, uint32_t _EncQuality_U32, const BOF_FRAME_DATA &_rFrameData_X)
+BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const BOF::BofPath &_rPath, uint32_t _EncQuality_U32, const BOF_VIDEO_FRAME_DATA &_rFrameData_X)
 {
   BOFERR Rts_E = BOF_ERR_EINVAL;
 
-  if ((_EncQuality_U32 <= 100) && (_rFrameData_X.FrameBuffer_X.pData_U8) && (_rFrameData_X.FrameBuffer_X.Size_U64))
+  if ((_EncQuality_U32 <= 100) && (_rFrameData_X.VideoFrameBuffer_X.pData_U8) && (_rFrameData_X.VideoFrameBuffer_X.Size_U64))
   {
     switch (_Format_E)
     {
       case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_BMP:
-        Rts_E = (stbi_write_bmp(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+        Rts_E = (stbi_write_bmp(_rPath.FullPathName(false).c_str(), _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32, _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.VideoFrameBuffer_X.pData_U8) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
         break;
 
       case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_PNG:
@@ -101,13 +101,13 @@ BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const 
 
         out_len is a output parameter which returns the number of bytes the compressed data has.
         */
-        Rts_E = (stbi_write_png(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8, _rFrameData_X.LineSizeInByte_U32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+        Rts_E = (stbi_write_png(_rPath.FullPathName(false).c_str(), _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32, _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.VideoFrameBuffer_X.pData_U8, _rFrameData_X.LineSizeInByte_U32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
         break;
 
       case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_TGA:
         Rts_E = BOF_ERR_NO_ERROR;
         stbi_write_tga_with_rle = (_EncQuality_U32 != 0) ? true : false;             // defaults to true; set to 0 to disable RLE
-        Rts_E = (stbi_write_tga(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+        Rts_E = (stbi_write_tga(_rPath.FullPathName(false).c_str(), _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32, _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.VideoFrameBuffer_X.pData_U8) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
         break;
 
       case BOF2D_AV_VIDEO_FORMAT::BOF2D_AV_VIDEO_FORMAT_JPG:
@@ -119,7 +119,7 @@ BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const 
         but the user can tune the quality parameter if required. I’ve used a quality parameter of 100 in all
         examples from this article.
         */
-        Rts_E = (stbi_write_jpg(_rPath.FullPathName(false).c_str(), _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.FrameBuffer_X.pData_U8, _EncQuality_U32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
+        Rts_E = (stbi_write_jpg(_rPath.FullPathName(false).c_str(), _rFrameData_X.VideoFrameSizeInPixel_X.Width_U32, _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32, _rFrameData_X.VideoFrameBuffer_X.pData_U8, _EncQuality_U32) == 0) ? BOF_ERR_INTERNAL : BOF_ERR_NO_ERROR;
         break;
 
       default:
@@ -131,7 +131,7 @@ BOF2D_EXPORT BOFERR Bof_WriteGraphicFile(BOF2D_AV_VIDEO_FORMAT _Format_E, const 
 }
 
 //https://gigi.nullptrneuron.net/gigilabs/displaying-an-image-in-an-sdl2-window/
-BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF::BOF_SIZE &_rWindowSize_X, const BOF_FRAME_DATA &_rFrameData_X)
+BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF::BOF_SIZE &_rWindowSize_X, const BOF_VIDEO_FRAME_DATA &_rVideoFrameData_X)
 {
   BOFERR Rts_E = BOF_ERR_EINVAL;
   int Sts_i;  // , Width_i, Height_i;
@@ -141,7 +141,7 @@ BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF::BOF_S
   SDL_Texture *pSdlTexture_X = nullptr;
   //SDL_Rect      SdlSrcRect_X, SdlDstRect_X;
 
-  if ((_rFrameData_X.FrameBuffer_X.pData_U8) && (_rFrameData_X.FrameBuffer_X.Size_U64))
+  if ((_rVideoFrameData_X.VideoFrameBuffer_X.pData_U8) && (_rVideoFrameData_X.VideoFrameBuffer_X.Size_U64))
   {
     pSdlWnd_X = SDL_CreateWindow(_rTitle_S.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _rWindowSize_X.Width_U32, _rWindowSize_X.Height_U32, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (pSdlWnd_X == nullptr)
@@ -161,7 +161,7 @@ BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF::BOF_S
         //SDL_CHK_IF_ERR(Sts_i, "Could not SDL_GetRendererOutputSize", Rts_E);
         //if (Rts_E == BOF_ERR_NO_ERROR)
         {
-          pSdlSurface_X = SDL_CreateRGBSurfaceFrom(_rFrameData_X.FrameBuffer_X.pData_U8, _rFrameData_X.FrameSizeInPixel_X.Width_U32, _rFrameData_X.FrameSizeInPixel_X.Height_U32, _rFrameData_X.NbChannel_U32 * 8, _rFrameData_X.LineSizeInByte_U32,
+          pSdlSurface_X = SDL_CreateRGBSurfaceFrom(_rVideoFrameData_X.VideoFrameBuffer_X.pData_U8, _rVideoFrameData_X.VideoFrameSizeInPixel_X.Width_U32, _rVideoFrameData_X.VideoFrameSizeInPixel_X.Height_U32, _rVideoFrameData_X.NbChannel_U32 * 8, _rVideoFrameData_X.LineSizeInByte_U32,
             0x000000FF, 0x0000FF00, 0x00FF0000, 0x00000000);
           //0x00FF0000, 0x0000FF00, 0x000000FF, 0x00000000);
           if (pSdlSurface_X == nullptr)
@@ -195,6 +195,100 @@ BOF2D_EXPORT BOFERR Bof_ViewGraphicFile(const std::string &_rTitle_S, BOF::BOF_S
     SDL_FreeSurface(pSdlSurface_X);
     SDL_DestroyRenderer(pSdlRenderer_X);
     SDL_DestroyWindow(pSdlWnd_X);
+  }
+  return Rts_E;
+}
+
+constexpr uint32_t AUDIO_BUFFER_CHUNK_SIZE_IN_SAMPLE_PER_CHANNEL = 0x2000;
+void Sdl_FillAudioBuffer_Callback(void *_pUser, uint8_t *_pAudioBufferToFill_U8, int _LenOfAudioBuffer_i)
+{
+  int Len_i;
+  uint8_t *pAudioData_U8;
+  uint64_t NbRead_U64, Remain_U64;
+  BOF::BOF_BUFFER *pAudioFrameBuffer_X = reinterpret_cast<BOF::BOF_BUFFER *>(_pUser);
+  //static BOF2D::Bof_AudioSignalGeneratorSinus S_AudioGen(0x7F0000, 4000.0f, 48000);
+
+  if (pAudioFrameBuffer_X)
+  {
+    Remain_U64 = pAudioFrameBuffer_X->RemainToRead();
+    if (Remain_U64)
+    {
+      Len_i = (Remain_U64 < _LenOfAudioBuffer_i) ? Remain_U64 : _LenOfAudioBuffer_i;
+      pAudioData_U8 = pAudioFrameBuffer_X->Read(Len_i, NbRead_U64);
+#if 1 //Faster
+      memcpy(_pAudioBufferToFill_U8, pAudioData_U8, Len_i);
+#else
+      memset(_pAudioBufferToFill_U8, 0, Len_i);
+      SDL_MixAudio(_pAudioBufferToFill_U8, pAudioData_U8, Len_i, SDL_MIX_MAXVOLUME);
+#endif
+    }
+  }
+}
+
+BOF2D_EXPORT BOFERR Bof_ListenAudioFile(volatile bool *_pStopListening_B, const BOF_AUDIO_FRAME_DATA &_rAudioFrameData_X)
+{
+  BOFERR Rts_E = BOF_ERR_EINVAL;
+  BOF::BOF_BUFFER AudioBuffer_X;
+  SDL_AudioSpec SdlAudioSpec_X;
+  int Sts_i;  
+
+  if ((_rAudioFrameData_X.AudioFrameBuffer_X.pData_U8) && (_rAudioFrameData_X.AudioFrameBuffer_X.Size_U64))
+  {
+    Rts_E = BOF_ERR_NO_ERROR;
+
+    AudioBuffer_X = _rAudioFrameData_X.AudioFrameBuffer_X;
+
+    memset(&SdlAudioSpec_X, 0, sizeof(SdlAudioSpec_X));
+    SdlAudioSpec_X.freq = _rAudioFrameData_X.SampleRateInHz_U32;
+    switch (_rAudioFrameData_X.NbBitPerSample_U32)
+    {
+      case 1:
+        SdlAudioSpec_X.format = AUDIO_S8;
+        break;
+
+      case 2:
+        SdlAudioSpec_X.format = AUDIO_S16LSB;
+        break;
+
+      case 4:
+        SdlAudioSpec_X.format = AUDIO_S32LSB;
+        break;
+
+      default:
+        Rts_E = BOF_ERR_FORMAT;
+        break;
+    }
+    if (Rts_E == BOF_ERR_NO_ERROR)
+    {
+      SdlAudioSpec_X.channels = _rAudioFrameData_X.NbChannel_U32;
+      SdlAudioSpec_X.samples = AUDIO_BUFFER_CHUNK_SIZE_IN_SAMPLE_PER_CHANNEL;  /* Good low-latency value for callback */
+      SdlAudioSpec_X.callback = Sdl_FillAudioBuffer_Callback;
+      SdlAudioSpec_X.userdata = &AudioBuffer_X;
+
+      /* Open the audio device, forcing the desired format */
+      Sts_i = SDL_OpenAudio(&SdlAudioSpec_X, nullptr);
+      SDL_CHK_IF_ERR(Sts_i, "Unable to SDL_OpenAudio", Rts_E);
+      if (Rts_E == BOF_ERR_NO_ERROR)
+      {
+        /* Let the callback function play the audio chunk */
+        SDL_PauseAudio(0);
+
+        /* Wait for sound to complete */
+        while (AudioBuffer_X.RemainToRead())
+        {
+          if (_pStopListening_B)
+          {
+            if (*_pStopListening_B)
+            {
+              Rts_E = BOF_ERR_CANCEL;
+              break;
+            }
+          }
+          SDL_Delay(50);
+        }
+        SDL_CloseAudio();
+      }
+    }
   }
   return Rts_E;
 }

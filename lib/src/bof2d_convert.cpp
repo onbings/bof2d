@@ -244,7 +244,7 @@ BOFERR Bof_24sleTo32sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_
   const uint8_t *pSrc_U8;
   BOFERR Rts_E = BOF_ERR_TOO_BIG;
 
-  if ((_rSrcBuffer_X.pData_U8) && (_rDstBuffer_X.pData_U8) && (((_rSrcBuffer_X.Size_U64 * 4) / 3) <= _rDstBuffer_X.Size_U64))
+  if ((_rSrcBuffer_X.pData_U8) && (_rDstBuffer_X.pData_U8) && ((_rDstBuffer_X.Size_U64 + ((_rSrcBuffer_X.Size_U64 * 4) / 3)) <= _rDstBuffer_X.Capacity_U64))
   {
     Rts_E = BOF_ERR_TOO_BIG;
     if ((_rSrcBuffer_X.Size_U64 % 12) == 0)
@@ -252,7 +252,7 @@ BOFERR Bof_24sleTo32sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_
       Rts_E = BOF_ERR_NO_ERROR;
       NbData24_U32 = _rSrcBuffer_X.Size_U64 / 3;
       pSrc_U8 = reinterpret_cast<const uint8_t *>(_rSrcBuffer_X.pData_U8);
-      pDst_U8 = _rDstBuffer_X.pData_U8;
+      pDst_U8 = &_rDstBuffer_X.pData_U8[_rDstBuffer_X.Size_U64];
       for (i_U32 = 0; i_U32 < NbData24_U32; i_U32++, pSrc_U8 += 3, pDst_U8 += 4)
       {
         //Right shift sample by 8 to restore sign
@@ -261,6 +261,8 @@ BOFERR Bof_24sleTo32sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_
         pDst_U8[2] = pSrc_U8[1];
         pDst_U8[3] = pSrc_U8[2]; //(pSrc_U8[2] & 0x80) ? 0xFF : 0x00;
       }
+      _rDstBuffer_X.Size_U64 += (NbData24_U32 * 4);
+      BOF_ASSERT(_rDstBuffer_X.Size_U64 <= _rDstBuffer_X.Capacity_U64);
     }
   }
   return Rts_E;
@@ -273,7 +275,7 @@ BOFERR Bof_32sleTo24sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_
   const uint8_t *pSrc_U8;
   BOFERR Rts_E = BOF_ERR_TOO_BIG;
 
-  if ((_rSrcBuffer_X.pData_U8) && (_rDstBuffer_X.pData_U8) && (((_rSrcBuffer_X.Size_U64 * 3) / 4) <= _rDstBuffer_X.Size_U64))
+  if ((_rSrcBuffer_X.pData_U8) && (_rDstBuffer_X.pData_U8) && ((_rDstBuffer_X.Size_U64 + ((_rSrcBuffer_X.Size_U64 * 3) / 4)) <= _rDstBuffer_X.Capacity_U64))
   {
     Rts_E = BOF_ERR_TOO_BIG;
     if ((_rSrcBuffer_X.Size_U64 % 12) == 0)
@@ -281,16 +283,73 @@ BOFERR Bof_32sleTo24sle(const BOF::BOF_BUFFER &_rSrcBuffer_X, BOF::BOF_BUFFER &_
       Rts_E = BOF_ERR_NO_ERROR;
       NbData32_U32 = _rSrcBuffer_X.Size_U64 / 4;
       pSrc_U8 = reinterpret_cast<const uint8_t *>(_rSrcBuffer_X.pData_U8);
-      pDst_U8 = _rDstBuffer_X.pData_U8;
-      for (i_U32 = 0; i_U32 < NbData32_U32; i_U32, pSrc_U8 += 4, pDst_U8 += 3)
+      pDst_U8 = &_rDstBuffer_X.pData_U8[_rDstBuffer_X.Size_U64];
+      for (i_U32 = 0; i_U32 < NbData32_U32; i_U32++, pSrc_U8 += 4, pDst_U8 += 3)
       {
         //Left shift sample by 8 to keep the sign
         pDst_U8[0] = pSrc_U8[1];
         pDst_U8[1] = pSrc_U8[2];
         pDst_U8[2] = pSrc_U8[3];
       }
+      _rDstBuffer_X.Size_U64 += (NbData32_U32 * 3);
+      BOF_ASSERT(_rDstBuffer_X.Size_U64 <= _rDstBuffer_X.Capacity_U64);
     }
   }
   return Rts_E;
 }
+
+Bof_AudioSignalGeneratorSinus::Bof_AudioSignalGeneratorSinus(float _AmplitudeMax_f, float _FrequencyInHz_f, uint32_t _SampleRateInHz_U32)
+{
+  mAmplitudeMax_f = _AmplitudeMax_f;
+  Reset(_FrequencyInHz_f, _SampleRateInHz_U32);
+}
+
+Bof_AudioSignalGeneratorSinus::Bof_AudioSignalGeneratorSinus()
+{
+  mAmplitudeMax_f = 1.0f;
+  Reset(440, 48000);
+};
+
+float Bof_AudioSignalGeneratorSinus::Next()
+{
+  float Rts_f;
+  //::printf("mSampleNumber_U32 %d ang %f deg sin %f\n", mSampleNumber_U32, (static_cast<float>(mSampleNumber_U32) * mSinusIncrement_f) * 180 / M_PI, sin(static_cast<float>(mSampleNumber_U32) * mSinusIncrement_f));
+  Rts_f = (mAmplitudeMax_f * sin(static_cast<float>(mSampleNumber_U32) * mSinusIncrement_f));
+  mSampleNumber_U32++;
+  return Rts_f;
+}
+
+void Bof_AudioSignalGeneratorSinus::Reset()
+{
+  mSampleNumber_U32 = 0;
+}
+
+void Bof_AudioSignalGeneratorSinus::Reset(float _FrequencyInHz_f, uint32_t _SampleRateInHz_U32)
+{
+  Reset();
+  mFrequencyInHz_f = _FrequencyInHz_f;
+  mSampleRateInHz_U32 = _SampleRateInHz_U32;
+  mSinusIncrement_f = (mTwoPi_f * mFrequencyInHz_f) / float(mSampleRateInHz_U32);
+}
+
+float Bof_AudioSignalGeneratorSinus::Frequency() const
+{
+  return mFrequencyInHz_f;
+}
+
+float Bof_AudioSignalGeneratorSinus::AmplitudeMax() const
+{
+  return mAmplitudeMax_f;
+}
+
+void Bof_AudioSignalGeneratorSinus::AmplitudeMax(float _AmplitudeMax_f)
+{
+  mAmplitudeMax_f = _AmplitudeMax_f;
+}
+
+uint32_t Bof_AudioSignalGeneratorSinus::SampleRate() const
+{
+  return mSampleRateInHz_U32;
+}
+
 END_BOF2D_NAMESPACE()
