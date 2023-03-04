@@ -134,7 +134,7 @@ BEGIN_BOF2D_NAMESPACE()
 struct BOF2D_STATE
 {
   bool LibInit_B;
-  ma_engine *pAudioEngine_X;
+  //ma_engine *pAudioEngine_X;
   BOF2D_STATE()
   {
     Reset();
@@ -142,7 +142,7 @@ struct BOF2D_STATE
   void Reset()
   {
     LibInit_B = false;
-    pAudioEngine_X = nullptr;
+    //pAudioEngine_X = nullptr;
   }
 };
 static BOF2D_STATE S_Bof2dState_X;
@@ -317,10 +317,12 @@ BOFERR Bof_Initialize(const BOF2DPARAM &_r2dParam_X)
 
   if (!S_Bof2dState_X.LibInit_B)
   {
-    Rts_E = BOF_ERR_NO_ERROR;
     GL_Bof2dParam_X = _r2dParam_X;
-    SDL_Init(SDL_INIT_VIDEO);
-    S_Bof2dState_X.LibInit_B = true;
+    SDL_CHK_IF_ERR(SDL_Init(SDL_INIT_EVERYTHING), "Could not SDL_Init", Rts_E); //SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    if (Rts_E == BOF_ERR_NO_ERROR)   
+    {
+      S_Bof2dState_X.LibInit_B = true;
+    }
   }
   return Rts_E;
 }

@@ -19,10 +19,11 @@ int main(int argc, char *argv[])
   //::testing::GTEST_FLAG(filter) = "Bof2d_FileIo_Test.*";
   //::testing::GTEST_FLAG(filter) = "Bof2d_Convert_Test.*";
   //::testing::GTEST_FLAG(filter) = "Bof2d_MediaDetector_Test.*";
-//  ::testing::GTEST_FLAG(filter) = "Bof2d_ffmpeg_Test.FfmpegTool";
- // ::testing::GTEST_FLAG(filter) = "Bof2d_ffmpeg_Test.sdl";
 
-//  Rts_i = RUN_ALL_TESTS();
+   //::testing::GTEST_FLAG(filter) = "Bof2d_ffmpeg_Test.FfmpegTool";
+  ::testing::GTEST_FLAG(filter) = "Bof2d_ffmpeg_Test.sdl";
+
+  Rts_i = RUN_ALL_TESTS();
   EXPECT_EQ(BOF2D::Bof_Shutdown(), BOF_ERR_NO_ERROR);
   EXPECT_EQ(BOF::Bof_Shutdown(), BOF_ERR_NO_ERROR);
 

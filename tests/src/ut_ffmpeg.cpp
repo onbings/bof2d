@@ -29,7 +29,7 @@
 #include <SDL2/SDL.h>
 #include <bofstd/boffs.h>
 
-constexpr uint32_t AUDIO_BUFFER_CHUNK_SIZE_IN_SAMPLE_FOR_ALL_CHANNEL = 0x100;
+constexpr uint32_t AUDIO_BUFFER_CHUNK_SIZE_IN_SAMPLE_FOR_ALL_CHANNEL = 0x1000;
 
 void Sdl_FillAudioBuffer_Callback(void *_pUser, uint8_t *_pAudioBufferToFill_U8, int _LenOfAudioBuffer_i)
 {
@@ -45,6 +45,8 @@ void Sdl_FillAudioBuffer_Callback(void *_pUser, uint8_t *_pAudioBufferToFill_U8,
     {
       Len_i = (Remain_U64 < _LenOfAudioBuffer_i) ? Remain_U64 : _LenOfAudioBuffer_i;
       pAudioData_U8 = pFullAudioBuffer_X->Read(Len_i, NbRead_U64);
+
+      ecrire dans un fichier ce qu'on envoie a sdl et rejouer dans audacity'
       SDL_MixAudio(_pAudioBufferToFill_U8, pAudioData_U8, Len_i, SDL_MIX_MAXVOLUME);
     }
     printf("pAudioBufferToFill %x:%p Rem %zx Sz %zx Off %zx pAudioData %p\n", Len_i, _pAudioBufferToFill_U8, Remain_U64, pFullAudioBuffer_X->Size_U64, pFullAudioBuffer_X->Offset_U64, pAudioData_U8);
@@ -75,7 +77,7 @@ TEST(Bof2d_ffmpeg_Test, sdl)
   EXPECT_EQ(BOF::Bof_ReadFile("./data/FfmpegTool/AudioOut_001.PCM", DiskAudioBuffer_X), BOF_ERR_NO_ERROR);
   FullAudioBuffer_X.SetStorage(DiskAudioBuffer_X.Size_U64 * 4 / 3, DiskAudioBuffer_X.Size_U64 * 4 / 3, nullptr);
   EXPECT_EQ(BOF2D::Bof_24sleTo32sle(DiskAudioBuffer_X, FullAudioBuffer_X), BOF_ERR_NO_ERROR);
-  printf("Playback %d Byte of 32 bits sample\n", FullAudioBuffer_X.Size_U64);
+  printf("Playback %zd Byte of 32 bits sample\n", FullAudioBuffer_X.Size_U64);
   /* Let the callback function play the audio chunk */
   SDL_PauseAudio(0);
 
