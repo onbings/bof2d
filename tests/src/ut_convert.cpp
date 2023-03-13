@@ -31,7 +31,7 @@ uint8_t            GL_ConvertedData_U8[SAMPLE_WIDTH * SAMPLE_HEIGHT * 4];
 TEST(Bof2d_Convert_Test, UyvyToBgra)
 {
   uint32_t Start_U32, DeltaInMs_U32, i_U32, FileSize_U32, ConvertedSize_U32;
-  intptr_t Io;
+  uintptr_t Io;
   BOF_RECT Crop_X(SAMPLE_WIDTH / 2, SAMPLE_HEIGHT / 2, SAMPLE_WIDTH / 2, SAMPLE_HEIGHT / 2);
 
   FileSize_U32 = SAMPLE_WIDTH * SAMPLE_HEIGHT * 2;
@@ -64,7 +64,7 @@ TEST(Bof2d_Convert_Test, UyvyToBgra)
 TEST(Bof2d_Convert_Test, BgraToUyvy)
 {
   uint32_t Start_U32, DeltaInMs_U32, i_U32, FileSize_U32, ConvertedSize_U32;
-  intptr_t Io;
+  uintptr_t Io;
   BOF_RECT Crop_X(SAMPLE_WIDTH / 2, SAMPLE_HEIGHT / 2, SAMPLE_WIDTH / 2, SAMPLE_HEIGHT / 2);
 
   FileSize_U32 = SAMPLE_WIDTH * SAMPLE_HEIGHT * 4;

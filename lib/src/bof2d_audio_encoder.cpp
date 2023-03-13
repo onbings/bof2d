@@ -217,7 +217,7 @@ BOFERR Bof2dAudioEncoder::WriteHeader()
   {
     for (i_U32 = 0; i_U32 < mIoCollection.size(); i_U32++)  //Entry 0 is for interleaved sample global file
     {
-      if (mIoCollection[i_U32].Io != BOF::BOF_FS_INVALID_HANDLE)
+      if (mIoCollection[i_U32].Io != BOF::BOF_INVALID_HANDLE_VALUE)
       {
         Pos_S64 = BOF::Bof_GetFileIoPosition(mIoCollection[i_U32].Io);
         if (Pos_S64 != -1)
@@ -270,11 +270,11 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
 {
   BOFERR Rts_E = BOF_ERR_NO_ERROR, Sts_E;
   uint32_t Nb_U32, ChunkSize_U32, i_U32, SizeToWrite_U32, IndexInDataBuffer_U32;
-  intptr_t OutAudioChunkFile;
+  uintptr_t OutAudioChunkFile;
   BOF2D_AUD_ENC_CHUNK_STATE *pAudEncChunkState_X;
 
   //Entry 0 is for interleaved sample global file
-  if ((mIoCollection[0].Io != BOF::BOF_FS_INVALID_HANDLE)
+  if ((mIoCollection[0].Io != BOF::BOF_INVALID_HANDLE_VALUE)
     && (mAudDecOut_X.InterleavedData_X.pData_U8)
     && (mAudDecOut_X.InterleavedData_X.Size_U64))
   {
@@ -287,7 +287,7 @@ BOFERR Bof2dAudioEncoder::WriteChunkOut()
 
     for (i_U32 = 1; i_U32 < mIoCollection.size(); i_U32++) //Entry 0 is for interleaved sample global file
     {
-      if ((mIoCollection[i_U32].Io != BOF::BOF_FS_INVALID_HANDLE)
+      if ((mIoCollection[i_U32].Io != BOF::BOF_INVALID_HANDLE_VALUE)
         && (mAudDecOut_X.ChannelBufferCollection[i_U32 - 1].pData_U8)
         && (mAudDecOut_X.ChannelBufferCollection[i_U32 - 1].Size_U64)
         )
@@ -402,7 +402,7 @@ BOFERR Bof2dAudioEncoder::CloseFileOut()
   Rts_E = WriteHeader();
   for (i_U32 = 0; i_U32 < mIoCollection.size(); i_U32++)  //Entry 0 is for interleaved sample global file
   {
-    if (mIoCollection[i_U32].Io != BOF::BOF_FS_INVALID_HANDLE)
+    if (mIoCollection[i_U32].Io != BOF::BOF_INVALID_HANDLE_VALUE)
     {
       BOF::Bof_CloseFile(mIoCollection[i_U32].Io);
       mIoCollection[i_U32].Reset();

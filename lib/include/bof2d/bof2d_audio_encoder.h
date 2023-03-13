@@ -49,7 +49,7 @@ struct BOF2D_EXPORT BOF2D_AUD_ENC_OPTION
 
 struct BOF2D_EXPORT BOF2D_AUD_ENC_OUT
 {
-  intptr_t Io;
+  uintptr_t Io;
   uint64_t Size_U64;
 
   BOF2D_AUD_ENC_OUT()
@@ -58,7 +58,7 @@ struct BOF2D_EXPORT BOF2D_AUD_ENC_OUT
   }
   void Reset()
   {
-    Io = BOF::BOF_FS_INVALID_HANDLE;
+    Io = BOF::BOF_INVALID_HANDLE_VALUE;
     Size_U64 = 0;
   }
 };

@@ -24,6 +24,7 @@
 #include <bof2d/bof2d_av_codec.h>
 #include <bof2d/bof2d_fileio.h>
 
+#include <bofstd/boffs.h>
 
  /* c:/users/sbf/Desktop/7001/cam01_frames_p/cam01.mov  c:/users/sbf/Desktop/7001/cam02_frames_p/cam02.mov
  8-bit support
@@ -71,7 +72,7 @@
  http://stackoverflow.com/questions/21007329/what-is-a-sdl-renderer/21007477#21007477
  */
 
-
+#pragma message("TODO: debug this player")
 //https://github.com/fosterseth/sdl2_video_player/blob/master/vidserv.c
 extern "C"
 {
@@ -92,6 +93,7 @@ extern "C"
 //#include <netinet/in.h> // linux
 
 
+#if 0
 
 //#include "packetQueue.h" inserted just after
 
@@ -1223,7 +1225,7 @@ int main(int argc, char *argv[])
 
 
 
-
+#endif
 
 TEST(Bof2d_ffmpeg_Test, FfmpegTool)
 {
@@ -1236,7 +1238,7 @@ TEST(Bof2d_ffmpeg_Test, FfmpegTool)
   BOF2D::Bof2dAvCodec AvCodec;
   BOF::BOF_BUFFER DiskAudioBuffer_X, FullAudioBuffer_X, ConvAudioBuffer_X, IoBuffer_X;
 
-  goto l;
+  //goto l;
 
   //First decoder before encoder !!!
 #if 0
@@ -1313,7 +1315,6 @@ TEST(Bof2d_ffmpeg_Test, FfmpegTool)
 
   bool StopListening_B = false;
   BOF2D::BOF_AUDIO_FRAME_DATA AudioFrameData_X;
-  BOF::BOF_BUFFER DiskAudioBuffer_X, FullAudioBuffer_X;
 
   AudioFrameData_X.NbBitPerSample_U32 = 4;
   AudioFrameData_X.NbChannel_U32 = 2;

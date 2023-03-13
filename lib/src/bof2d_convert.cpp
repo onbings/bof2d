@@ -206,7 +206,7 @@ BOFERR Bof_BgraToUyvy(uint32_t _Width_U32, int _Height_i, uint32_t _BrgaStride_U
         if (Sts_i == 0)
         {
           /*
-                    intptr_t Io;
+                    uintptr_t Io;
                     BOFERR Sts_E = Bof_CreateFile(BOF::BOF_FILE_PERMISSION_READ_FOR_ALL | BOF::BOF_FILE_PERMISSION_WRITE_FOR_ALL, "./crop.raw", false, Io);
                     if (Sts_E == BOF_ERR_NO_ERROR)
                     {
