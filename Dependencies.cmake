@@ -1,7 +1,6 @@
 include(CMakeFindDependencyMacro)
 
 macro(find_package_dependency)
-
   # When loading the *Config.cmake we should
   # call find_dependency which is just a wrapper
   # around find_package to display better
@@ -16,23 +15,21 @@ macro(find_package_dependency)
 
 endmacro()
 
-# =========================
-# == PUBLIC DEPENDENCIES ==
-# =========================
+# ===========================
+# == OPTIONAL DEPENDENCIES ==
+# ===========================
 
-# if(NOT TARGET ONBINGS::onbings-somelib)
-#   find_package_dependency(onbings-somelib REQUIRED)
-# endif()
+if(BOF2D_BUILD_TESTS)
+  find_package(GTest REQUIRED)
+endif()
 
-# ==========================
-# == PRIVATE DEPENDENCIES ==
-# ==========================
+# ===========================
+# == REQUIRED DEPENDENCIES ==
+# ===========================
 
-#find_package_dependency(Qt5 REQUIRED Core Gui Widgets)
-
-# if(NOT TARGET ONBINGS::onbings-anotherlib)
-#   find_package_dependency(onbings-anotherlib REQUIRED)
-# endif()
+set(CMAKE_FIND_DEBUG_MODE TRUE)
+find_package(bofstd REQUIRED)
+set(CMAKE_FIND_DEBUG_MODE FALSE)
 
 find_package_dependency(glfw3 REQUIRED)
 find_package_dependency(glad REQUIRED)
@@ -44,7 +41,6 @@ find_package_dependency(ZLIB REQUIRED)
 find_package_dependency(ZenLib REQUIRED)
 find_package_dependency(MediaInfoLib REQUIRED)
 find_package_dependency(OpenSSL REQUIRED)
-find_package(bofstd REQUIRED)
 find_package(SDL2 REQUIRED)
 
 #message("===SDL2_FOUND===========>" ${SDL2_FOUND})
@@ -103,3 +99,4 @@ message("===POSTPROC_INCLUDE_DIR===========>" ${POSTPROC_INCLUDE_DIR})
 message("===POSTPROC_LIBRARY===========>" ${POSTPROC_LIBRARY})
 
 find_package_dependency(bofstd REQUIRED)
+
