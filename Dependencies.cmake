@@ -27,9 +27,9 @@ endif()
 # == REQUIRED DEPENDENCIES ==
 # ===========================
 
-set(CMAKE_FIND_DEBUG_MODE TRUE)
+#set(CMAKE_FIND_DEBUG_MODE TRUE)
 find_package(bofstd REQUIRED)
-set(CMAKE_FIND_DEBUG_MODE FALSE)
+#set(CMAKE_FIND_DEBUG_MODE FALSE)
 
 find_package_dependency(glfw3 REQUIRED)
 find_package_dependency(glad REQUIRED)
