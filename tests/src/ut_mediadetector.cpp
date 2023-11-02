@@ -223,8 +223,9 @@ struct MUSE_FILE_SYSTEM_MEDIA
 void DisplayParamValue(const std::string &_Title_S, BOF2D::BofMediaDetector &_rMediaInfoParser)
 {
   std::string Result_S;
-  uint32_t i_U32;
-  char *p_c, *q_c, *pColon_c, *pBuffer_c, *pSpace_c;
+  //uint32_t i_U32;
+  char *p_c, *q_c, *pColon_c, *pBuffer_c;
+   //, *pSpace_c;
   const char *pParam_c;
   BOF2D::BofMediaDetector::MediaStreamType MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::General;
   std::string MediaStreamType_S, Type_S, Info_S, Extra_S;
@@ -563,7 +564,7 @@ BOFERR ParseFileBuffer(BofPath &_rPathname, std::string &_rResult_S)
 
   EXPECT_EQ(Bof_ReadFile(_rPathname, BufferToDeleteAfterUsage_X), BOF_ERR_NO_ERROR);
   SubBuffer_X = BufferToDeleteAfterUsage_X;
-  SubBuffer_X.MustBeDeleted_B = false;
+  //???? SubBuffer_X.MustBeDeleted_B = false;
   SubBuffer_X.Size_U64 = (SubBuffer_X.Capacity_U64 >= 0x1000) ? 0x1000 : SubBuffer_X.Capacity_U64;
   pFirstByteOutOfBuffer_U8 = BufferToDeleteAfterUsage_X.pData_U8 + BufferToDeleteAfterUsage_X.Capacity_U64;
 
