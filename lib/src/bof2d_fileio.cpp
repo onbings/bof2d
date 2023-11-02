@@ -53,7 +53,7 @@ BOF2D_EXPORT BOFERR Bof_ReadGraphicFile(const BOF::BofPath &_rPath, int _NbChann
         BOF_ASSERT(Height_i == _rFrameData_X.VideoFrameSizeInPixel_X.Height_U32);
         BOF_ASSERT(NbChannel_i == _rFrameData_X.NbChannel_U32);
         _rFrameData_X.VideoFrameBuffer_X.SetStorage(FrameSize_U32, FrameSize_U32, pFrameData_U8);
-        _rFrameData_X.VideoFrameBuffer_X.MustBeFreeed_B = true;    //stbi_image_free(pFrameData_U8);
+        _rFrameData_X.VideoFrameBuffer_X.Deleter_E = BOF::BOF_BUFFER_DELETER::BOF_BUFFER_DELETER_FREE;    //stbi_image_free(pFrameData_U8);
         Rts_E = BOF_ERR_NO_ERROR;
       }
     }
