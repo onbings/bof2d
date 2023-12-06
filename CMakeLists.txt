@@ -14,6 +14,12 @@
 #cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DVCPKG_HOST_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DVCPKG_OVERLAY_PORTS=C:/pro/github/onbings-vcpkg-registry/ports -DCMAKE_INSTALL_PREFIX=C:\tmp\bof2d -B C:/bld/bof2d -S C:/pro/github/bof2d
 #cmake --build .  --config Release -- -j 16
 #cmake --install . --config Debug
+
+#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/bof2d/binaries -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-linux -DVCPKG_HOST_TRIPLET=x64-linux -DBUILD_SHARED_LIBS=OFF -DCMAKE_PROJECT_INCLUDE=/home/bha/pro/github/bof2d/cmake_option.cmake -S/home/bha/pro/github/bof2d -B/home/bha/bld/bof2d
+
+#cmake -DCMAKE_INSTALL_PREFIX=/home/bha/bld/bof2d/binaries -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=/opt/evs/sdk/aarch64.cmake -DCMAKE_TOOLCHAIN_FILE=/home/bha/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=evs-arm64-linux-static -DVCPKG_HOST_TRIPLET=evs-arm64-linux-static -DBUILD_SHARED_LIBS=OFF -DCMAKE_PROJECT_INCLUDE=/home/bha/pro/github/bof2d/cmake_option.cmake -S/home/bha/pro/github/bof2d -B/home/bha/bld/bof2d
+
+
 cmake_minimum_required(VERSION 3.25)
 
 # Paranoid check : in-source generation is forbidden
@@ -28,7 +34,7 @@ include(vcpkg/vcpkg_install.cmake)
 # in code coverage computation as they are test programs themselves.
 set(EXTRA_COVERAGE_EXCLUSION "\'${CMAKE_CURRENT_SOURCE_DIR}/integration/*\'")
 
-project(bof2d VERSION 4.2.0.1)
+project(bof2d VERSION 4.4.2.1)
 # Some naming conventions either requires lower or upper case.
 # And some don't like underscore.
 # So already prepare all those variables

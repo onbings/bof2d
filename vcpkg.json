@@ -1,7 +1,7 @@
 {
-  "name": "evs-gbio",
-  "version": "0.0.1",
-  "description": "The GigaBit Input/Output solution",
+  "name": "bof2d",
+  "version": "4.4.2.1",
+   "description": "The onbings 2d C++ Multiplatform library",
   "dependencies": [
     { "name": "bofstd" },
     { "name": "ffmpeg" },
