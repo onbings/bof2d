@@ -17,7 +17,7 @@
    V 1.00  Sep 30 2000  BHA : Initial release
  */
 #include <bofstd/bofstring.h>
-#include <bofstd/bofstringformatter.h>
+//#include <bofstd/bofstringformatter.h>
 #include <bofstd/boffs.h>
 
 #include <bof2d/bof2d_audio_encoder.h>

@@ -1,34 +1,34 @@
 #
-# Copyright (c) 2014, Onbings. All rights reserved.
+# Copyright (c) 2044,2040 Onbings. All rights reserved.
 #
 # THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
 # KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
 # PURPOSE.
 # 
-# Name: 		CMakeLists.txt
-# Author: 		Bernard HARMEL
+# Author: 		Bernard HARMEL onbings@gmail.com b.harmel@gmail.com
 # Revision:		5.0
 # 
-# Remarks: 
-# None
-# 
-# History:		05 June 2014: Initial version 
-#               06 March 2021 remove dependency on third party and cmake helpers
-#               22 April 2022 updated with NMA cmake and vcpkg ideas
+# History:		05 June 2004: Initial version 
 
-#cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/github/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_OVERLAY_PORTS=C:/pro/github/onbings-vcpkg-registry/ports/ -DBUILD_SHARED_LIBS=OFF -DVCPKG_TARGET_TRIPLET=evs-x64-swx-windows-static -DBOF2D_GENERATE_HELP=OFF -DBOF2D_VLD=ON C:/pro/github/bof2d
+#cmake -DCMAKE_TOOLCHAIN_FILE=C:/pro/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DVCPKG_HOST_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=OFF -DVCPKG_OVERLAY_PORTS=C:/pro/github/onbings-vcpkg-registry/ports -DCMAKE_INSTALL_PREFIX=C:\tmp\bof2d -B C:/bld/bof2d -S C:/pro/github/bof2d
+#cmake --build .  --config Release -- -j 16
+#cmake --install . --config Debug
+cmake_minimum_required(VERSION 3.25)
+
+# Paranoid check : in-source generation is forbidden
+if("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+  message(FATAL_ERROR "You cannot generate your binary solution into your source directory !")
+endif()
  
-cmake_minimum_required(VERSION 3.15)
-#message("====ANDROID_PLATFORM==ROOT=no include=================>" ${ANDROID_PLATFORM})
-#if(NOT "${ANDROID_PLATFORM}")
-#    message("ANDROID->include vcpkg_android.cmake")
-#    include("vcpkg_android.cmake")
-#endif()
-include(${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/fixup_vs_crt.cmake)
+include(vcpkg/fixup_vs_crt.cmake)
+include(vcpkg/vcpkg_install.cmake)
 
-project(bof2d VERSION 4.2.0.1) 
+# Programs used for integration testing should not be included
+# in code coverage computation as they are test programs themselves.
+set(EXTRA_COVERAGE_EXCLUSION "\'${CMAKE_CURRENT_SOURCE_DIR}/integration/*\'")
 
+project(bof2d VERSION 4.2.0.1)
 # Some naming conventions either requires lower or upper case.
 # And some don't like underscore.
 # So already prepare all those variables
@@ -38,85 +38,9 @@ string(REPLACE "-" "_" PROJECT_NAME_UNDERSCORE       ${PROJECT_NAME})
 string(REPLACE "-" "_" PROJECT_NAME_LOWER_UNDERSCORE ${PROJECT_NAME_LOWER})
 string(REPLACE "-" "_" PROJECT_NAME_UPPER_UNDERSCORE ${PROJECT_NAME_UPPER})
 
-# Easily tweak build number if needed
-option(BOF2D_VERSION_TWEAK "The build number of bof2d" "")
-
-if(BOF2D_VERSION_TWEAK)
-  set(PROJECT_VERSION_TWEAK ${BOF2D_VERSION_TWEAK})
-  set(PROJECT_VERSION       ${PROJECT_VERSION}.${PROJECT_VERSION_TWEAK})
-endif()
-
-# Define options to enable/disable non-necessary artifacts
-option(BOF2D_BUILD_TESTS    "Build units tests of bof2d"      ON)
-
-# Some options allow to tune the 'API & versioning' behaviour.
-#  - Do we want to create binaries with explicit version in them (e.g. libbof2d.so.1.0.1) ?
-#  - Do we want to force exporting all the symbols (API and non-API) [Not recommended] ?
-option(BOF2D_ENABLE_VERSIONING "Enable library versioning naming scheme for bof2d"          ON)
-option(BOF2D_FORCE_EXPORT_ALL  "Force exporting all symbols of bof2d (for shared library)" OFF)
-
-# option(BOF2D_GENERATE_HELP  "Generate documentation" OFF)
-# if(BOF2D_GENERATE_HELP)
-#   find_package(Doxygen)
-#   if (DOXYGEN_FOUND AND NOT TARGET documentation)
-# #	message("CMAKE_CURRENT_BINARY_DIR" ${CMAKE_CURRENT_BINARY_DIR})
-# 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/help/bof2d.Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/help/bof2d.Doxyfile @ONLY)
-# 	add_custom_target(documentation ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/help/bof2d.Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT "Generating API documentation with Doxygen" VERBATIM)
-#   endif()
-# endif()
-
-option(BOF2D_GENERATE_HELP  			"Generate documentation" OFF)
-# set(IT_PM_ADDRESS "" CACHE STRING "Execute Intergration Test on PM with ip address set to... (-it_pm_address)")
-if(BOF2D_GENERATE_HELP)
-  find_program(THRIFT_EXECUTABLE thrift)
-  message("=====================> Thrift compiler: " ${THRIFT_EXECUTABLE})
-  if(${THRIFT_EXECUTABLE} STREQUAL "thrift-NOTFOUND")
-    message(FATAL_ERROR "Could not find thrift executable. Is thrift in your dependencies ?")
-  else()
-    if (NOT TARGET DocThrift)
-      message("Create DocThrift target") 
-	  add_custom_target(DocThrift 
-        COMMAND echo Create directory ${CMAKE_CURRENT_BINARY_DIR}/help/thrift
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/help/thrift
-	    COMMAND echo "Thrift phase        " ${THRIFT_EXECUTABLE} -out ${CMAKE_CURRENT_BINARY_DIR}/help/thrift -v -r --gen html ${CMAKE_CURRENT_SOURCE_DIR}/../../bof2d/idl/main.thrift
-        COMMAND echo "   Thrift result in " ${CMAKE_CURRENT_BINARY_DIR}/help/thrift
-        COMMAND ${THRIFT_EXECUTABLE} -out ${CMAKE_CURRENT_BINARY_DIR}/help/thrift -v -r --gen html ${CMAKE_CURRENT_SOURCE_DIR}/../../bof2d/idl/main.thrift WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT "Generating bof2d thrift documentation" VERBATIM
-      )
-    endif()
-  endif()
-  find_package(Doxygen)
-  message("=====================> Doxygen compiler: " ${DOXYGEN_EXECUTABLE})
-  if(${DOXYGEN_EXECUTABLE} STREQUAL "doxygen-NOTFOUND")
-    message(FATAL_ERROR "Could not find doxygen executable. Is doxygen installed ?")
-  else()
-    if (DOXYGEN_FOUND AND NOT TARGET DocApi)
-	  message("Generate doxygen config file " ${CMAKE_CURRENT_BINARY_DIR}/help/bof2d.Doxyfile " from " ${CMAKE_CURRENT_SOURCE_DIR}/help/bof2d.Doxyfile.in)
-	  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/help/bof2d.Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/help/bof2d.Doxyfile @ONLY)
-      message("Create DocApi target")
-	  add_custom_target(DocApi 
-        COMMAND echo "Doxygen phase        " ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/help/bof2d.Doxyfile 
-        COMMAND echo "   Doxygen result in " ${CMAKE_CURRENT_BINARY_DIR}/help
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/help/bof2d.Doxyfile WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT "Generating bof2d doxygen documentation" VERBATIM
-      )
-    else()
-      message(FATAL_ERROR "DOXYGEN_FOUND ? " ${DOXYGEN_FOUND})
-    endif()
-  endif()
-endif()
-
-option(BOF2D_VLD "Activate Visual Leak Detector (vld)" OFF)
-
-message("=BOF2D_VLD==============> " ${BOF2D_VLD})
-if (${BOF2D_VLD})
-message("===============> Activate Visual Leak Detector")
-else()
-message("===============> Visual Leak Detector is NOT active") 
-endif()
-#option(BUILD_SHARED_LIBS "If ON, all libraries will be built shared unless the library was explicitly added as a static library"          ON)
-
-SET(CMAKE_COLOR_MAKEFILE ON)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-#Problem with vcpkg/cmake set(CMAKE_DEBUG_POSTFIX _d)
+option(BOF2D_BUILD_TESTS       "Build units tests of Bof2d project"                                  ON)
+option(BOF2D_ENABLE_VERSIONING "Enable library versioning naming scheme for Bof2d libraries"         ON)
+option(BOF2D_FORCE_EXPORT_ALL  "Force exporting all symbols of Bof2d libraries (for shared library)" OFF)
 
 # ===============================
 # == NON TRANSITIVE PROPERTIES ==
@@ -129,7 +53,12 @@ SET(CMAKE_VERBOSE_MAKEFILE ON)
 # For convenience, use global initializer for those
 
 # Disable compiler extension to maximize portability
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS        OFF)
+set(CMAKE_CXX_STANDARD          17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_VERBOSE_MAKEFILE ON)
+# set(CMAKE_DEBUG_POSTFIX _d)
 
 # For shared libraries we need to compile with "-fPIC"
 # But for static libraries user can choose
@@ -137,16 +66,10 @@ if(NOT DEFINED CMAKE_POSITION_INDEPENDENT_CODE)
   set(CMAKE_POSITION_INDEPENDENT_CODE  ${BUILD_SHARED_LIBS})
 endif()
 
-# Make sure MSVC runtime is consistent accross
-# all languages (i.e. CXX, CUDA, etc, ...)
-# cfr : https://gitlab.kitware.com/cmake/cmake/-/issues/19428
-set_msvc_runtime_library()
-
 # API visibility control
 if(BOF2D_FORCE_EXPORT_ALL)
 
-  if(MSVC)
-
+  if(MSVC AND ${BUILD_SHARED_LIBS})
     message(WARNING "\nYou requested to force exporting ALL symbols "
                     "in a Windows DLL through CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS\n"
                     "This is a hack that has limitations. Use it as a temporary workaround")
@@ -170,68 +93,15 @@ else()
 
 endif()
 
-# This creates the 'test' target
-# even if you don't have tests
 enable_testing()
 
-# ==================
-# == CONFIG FILES ==
-# ==================
+# Make sure MSVC runtime is consistent accross
+# all languages (i.e. CXX, CUDA, etc, ...)
+# cfr : https://gitlab.kitware.com/cmake/cmake/-/issues/19428
+set_msvc_runtime_library()
 
-# Add configuration files to a dummy library to
-# make sure files are properly found
-if(NOT "${ANDROID_PLATFORM}")
-else()
-add_library(bof2d-config-files INTERFACE
-  Config.cmake.in
-  Dependencies.cmake.in
-  Dependencies.private.cmake
-  vcpkg-configuration.json
-  vcpkg.json
-  lib/CMakeLists.txt
-)
-endif()
-# ===========================
-# == EXTERNAL DEPENDENCIES ==
-# ===========================
-
-# We need to perform some "find_package" to find out our direct dependencies.
-#
-# Moreover, other projects that will depend on us will also have to perform
-# those find_package in order to transitively link with our own dependencies.
-#
-# By isolating them in a file, we fulfill a double objective
-#  1°) We can simply include it to find the dependencies we need
-#  2°) We can later install that file and include it from our configuration
-#      file. As such, our dependees will automatically transitively find
-#      our dependencies
-#
-# Remark 1
-# --------
-#  As always, we might have 2 types of dependencies.
-#    1°) The ones needed to link with our libraries (i.e. usage requirements)
-#    2°) The ones only needed to build              (i.e. build requirements)
-#
-#   As a consequence, we should probably have 2 dependencies files
-#     - A public  one that will be installed     (Dependencies.cmake)
-#     - A private one that will NOT be installed (Dependencies.private.cmake)
-#
-# Remark 2
-# --------
-#  ALL dependencies used by the library (public AND private) should be referenced in the public
-#  dependency file (Dependencies.cmake). Because,
-#  1°) When compiled as a static library, even private libraries needs to be supplied to the linker.
-#  2°) To run unit tests, we might still need to have found private libraries
-
-# Give the file a nice naming convention
-configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/bof2d-dependencies.cmake
-  COPYONLY
-)
-
-include(${CMAKE_CURRENT_BINARY_DIR}/bof2d-dependencies.cmake)
-include(Dependencies.private.cmake)
+# Fix rpath from installed vpckg dependencies
+patch_vcpkg_installed_rpath()
 
 # ==============================
 # == PRESET INSTALL VARIABLES ==
@@ -260,10 +130,58 @@ include(GNUInstallDirs)
 #
 file(RELATIVE_PATH BIN_TO_BASE_INSTALL_PATH ${CMAKE_CURRENT_LIST_DIR}/${CMAKE_INSTALL_BINDIR} ${CMAKE_CURRENT_LIST_DIR})
 set (RELATIVE_PATH_BIN_TO_LIB ${BIN_TO_BASE_INSTALL_PATH}${CMAKE_INSTALL_LIBDIR})
+#see also update_rpath function in update_rpath.cmake
 
-# ===========
-# == BUILD ==
-# ===========
+# =============================
+# == SETUP BUILD DIRECTORIES ==
+# =============================
+
+# Pre-stage binaries like if they were already installed
+#  - CMAKE_LIBRARY_OUTPUT_DIRECTORY is for shared libraries
+#  - CMAKE_ARCHIVE_OUTPUT_DIRECTORY is for static libraries
+#  - CMAKE_RUNTIME_OUTPUT_DIRECTORY is for applications
+set(COMPILED_BINARIES_DIR ${CMAKE_BINARY_DIR}/binaries)
+set(BASE_RESOURCES_DIR    ${CMAKE_BINARY_DIR}/resources)
+ 
+if(WIN32)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${COMPILED_BINARIES_DIR}/bin)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${COMPILED_BINARIES_DIR}/bin)
+else()
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${COMPILED_BINARIES_DIR}/lib)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${COMPILED_BINARIES_DIR}/bin)
+endif()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${COMPILED_BINARIES_DIR}/lib)
+
+# ===============
+# == PACKAGING ==
+# ===============
+
+include(packaging.cmake)
+
+# =======================
+# == POPULATE PROJECTS ==
+# =======================
+
+string(TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_LOWER)
+
+set(VCPKG_DEBUG_LIB_DIR   "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/debug/lib")
+set(VCPKG_RELEASE_LIB_DIR "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/lib")
+
+# Fix RPATH depending on build type
+if("x${CMAKE_BUILD_TYPE_LOWER}x" STREQUAL "xdebugx")
+  set(CMAKE_BUILD_RPATH "${VCPKG_DEBUG_LIB_DIR};${VCPKG_RELEASE_LIB_DIR}")
+else()
+  set(CMAKE_BUILD_RPATH "${VCPKG_RELEASE_LIB_DIR};${VCPKG_DEBUG_LIB_DIR}")
+endif()
+
+include(Dependencies.cmake)
+
+find_package(Doxygen)
+message("=====================> Doxygen compiler: " ${DOXYGEN_EXECUTABLE})
+if(${DOXYGEN_EXECUTABLE} STREQUAL "doxygen-NOTFOUND")
+  message("WARNING: Could not find doxygen executable. Is doxygen installed ?")
+endif()
 
 # Mandatory
 add_subdirectory(lib)
@@ -272,7 +190,6 @@ add_subdirectory(lib)
 if(BOF2D_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
-
 
 # ==========================
 # == PACKAGE INSTALLATION ==
@@ -285,6 +202,24 @@ install(
   NAMESPACE   ONBINGS::
   DESTINATION ${CMAKE_INSTALL_DATADIR}
   COMPONENT   bof2d-devel
+)
+
+# Install dependencies
+set(INCLUDE_REGEXES "^${CMAKE_BINARY_DIR}/vcpkg_installed/")
+set(EXCLUDE_REGEXES 
+  ".*[Aa][Pp][Ii]-[Mm][Ss].*"                                                         # *api-ms*
+  ".*[Ee][Xx][Tt]-[Mm][Ss]-[Ww][Ii][Nn].*"                                            # *ext-ms-win*
+  ".*[/\\\\][Ww][Ii][Nn][Dd][Oo][Ww][Ss][/\\\\][Ss][Yy][Ss][Tt][Ee][Mm]32[/\\\\].*"   # *\Windows\System32\*
+  "^/lib"                                                                             # /lib (unix system)
+  "^/usr/lib"                                                                         # /usr/lib (unix system)
+) 
+
+install(RUNTIME_DEPENDENCY_SET bof2d-imported-runtime-set
+  PRE_INCLUDE_REGEXES    ${INCLUDE_REGEXES}
+  PRE_EXCLUDE_REGEXES    ${EXCLUDE_REGEXES}
+  POST_INCLUDE_REGEXES   ${INCLUDE_REGEXES}
+  POST_EXCLUDE_REGEXES   ${EXCLUDE_REGEXES}
+  COMPONENT              bof2d-runtime
 )
 
 # Create configuration file so that find_package() from
@@ -301,6 +236,14 @@ configure_package_config_file(
 
 unset(INTERNAL_NAMESPACE)
 
+# Give the file a nice naming convention
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/bof2d-dependencies.cmake
+  COPYONLY
+)
+
+
 # Generate the version file and indicates compatibility strategy
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/bof2d-version.cmake
@@ -316,4 +259,7 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_DATADIR}
   COMPONENT   bof2d-devel
 )
+
+
+
 
