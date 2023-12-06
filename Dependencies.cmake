@@ -19,6 +19,11 @@ endmacro()
 # == OPTIONAL DEPENDENCIES ==
 # ===========================
 
+# ===========================
+# == OPTIONAL DEPENDENCIES ==
+# ===========================
+
+
 if(BOF2D_BUILD_TESTS)
   find_package(GTest REQUIRED)
 endif()
@@ -28,7 +33,6 @@ endif()
 # ===========================
 
 #set(CMAKE_FIND_DEBUG_MODE TRUE)
-find_package(bofstd REQUIRED)
 #set(CMAKE_FIND_DEBUG_MODE FALSE)
 if(WIN32)
 message("Building for Windows")
@@ -101,5 +105,6 @@ find_path(POSTPROC_INCLUDE_DIR libpostproc/postprocess.h )
 find_library(POSTPROC_LIBRARY postproc)
 message("===POSTPROC_INCLUDE_DIR===========>" ${POSTPROC_INCLUDE_DIR})
 message("===POSTPROC_LIBRARY===========>" ${POSTPROC_LIBRARY})
+
 
 

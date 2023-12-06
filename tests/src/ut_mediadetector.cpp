@@ -223,8 +223,9 @@ struct MUSE_FILE_SYSTEM_MEDIA
 void DisplayParamValue(const std::string &_Title_S, BOF2D::BofMediaDetector &_rMediaInfoParser)
 {
   std::string Result_S;
-  uint32_t i_U32;
-  char *p_c, *q_c, *pColon_c, *pBuffer_c, *pSpace_c;
+  //uint32_t i_U32;
+  char *p_c, *q_c, *pColon_c, *pBuffer_c;
+   //, *pSpace_c;
   const char *pParam_c;
   BOF2D::BofMediaDetector::MediaStreamType MediaStreamType_E = BOF2D::BofMediaDetector::MediaStreamType::General;
   std::string MediaStreamType_S, Type_S, Info_S, Extra_S;
