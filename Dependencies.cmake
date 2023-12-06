@@ -33,8 +33,9 @@ endif()
 # ===========================
 
 #set(CMAKE_FIND_DEBUG_MODE TRUE)
+find_package(bofstd REQUIRED)
 #set(CMAKE_FIND_DEBUG_MODE FALSE)
-if(WIN32)
+if(MSVC)
 message("Building for Windows")
 find_package(glfw3 REQUIRED)
 else()

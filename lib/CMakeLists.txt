@@ -51,11 +51,18 @@ set(GAME_ENGINE_FILES
 	./src/engine/bof2d_texture.cpp
 )
 
+if(MSVC)	
 set(SOURCES_FILES
 	${API_FILES}
 	${CODEC_FILES}
 	${GAME_ENGINE_FILES}
 )
+else()	
+set(SOURCES_FILES
+	${API_FILES}
+	${CODEC_FILES}
+)
+endif()	
 
 # For Visual Studio
 #source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include/bof2d PREFIX "public" FILES ${PUBLIC_INCLUDES_FILES})
@@ -118,7 +125,7 @@ target_link_libraries(bof2d-objects
 	glad::glad
     yuv
 	mediainfo
-	ONBINGS::bofstd
+	ONBINGS::bofstd  
 	SDL2::SDL2main
     SDL2::SDL2 #SDL2-static
 
@@ -142,7 +149,7 @@ target_link_libraries(bof2d-objects
 #message("=Boost_INCLUDE_DIRS==============>"${Boost_INCLUDE_DIRS})
 #message("=Boost_LIBRARIES==============>"${Boost_LIBRARIES})
 
-if(WIN32)
+if(MSVC)
 target_link_libraries(bof2d-objects
   PUBLIC
     glfw
@@ -159,7 +166,6 @@ else()
 #else()
 target_link_libraries(bof2d-objects
   PUBLIC
-    glfw
 	)
 #endif()
 endif()	
@@ -195,7 +201,7 @@ target_compile_definitions(bof2d-objects
     -DBOF2D_BUILD_MEDIAINFO_AS_LIBRARY=1	#MediaInfo dll is a shame -> use only the static lib version
 
   PRIVATE
-    -Dbof2d_EXPORTS=1	#in lower case to define the SYMBOL BOFSTD_EXPORT (upper case)in bof2d_export.h
+    -Dbof2d_EXPORTS=1	#in lower case to define the SYMBOL BOF2D_EXPORT (upper case)in bof2d_export.h
 
 #	-DCRT_SECURE_NO_WARNINGS
 #	-DCRT_NONSTDC_NO_DEPRECATE
@@ -245,7 +251,7 @@ add_library(ONBINGS::bof2d ALIAS bof2d)
 # ================
 
 # Set version
-if(BOFSTD_ENABLE_VERSIONING)
+if(BOF2D_ENABLE_VERSIONING)
   # Under Linux this function will create the
   # library file with the full version name
   # and the proper symlinks.
@@ -266,7 +272,7 @@ include(GenerateExportHeader)
 
 # This CMake function generates a header file (i.e. bof2d_export.h)
 # that contains all the proper 'defines' to import/export symbols
-# (e.g. BOFSTD_EXPORT) for shared libraries. When building as static
+# (e.g. BOF2D_EXPORT) for shared libraries. When building as static
 # those macros are simply blank. This file will be by default generated
 # into ${CMAKE_CURRENT_BINARY_DIR} (see target_include_directories above)
 generate_export_header(bof2d)

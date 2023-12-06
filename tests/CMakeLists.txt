@@ -60,9 +60,10 @@ set(DATA_FILES
   ./data/Sample24bit96kHz5.1.wav
   ./data/sample-15s.mp3
 )
-
-set(2D_FILES
+set(GAME_ENGINE_FILES
 	./src/ut_gameengine.cpp
+)
+set(2D_FILES
 	./src/ut_2d.cpp
 	./src/ut_mediadetector.cpp
 	./src/ut_fileio.cpp
@@ -74,11 +75,19 @@ set(API_FILES
 	src/main.cpp
 )
 
-set(SOURCES_FILES
-	${2D_FILES}
-	${API_FILES}
-)
 
+if(MSVC)	
+set(SOURCES_FILES
+	${API_FILES}
+	${CODEC_FILES}
+	${GAME_ENGINE_FILES}
+)
+else()	
+set(SOURCES_FILES
+	${API_FILES}
+	${CODEC_FILES}
+)
+endif()	
 # For Visual Studio
 #source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/include/bof2d PREFIX "public" FILES ${PUBLIC_INCLUDES_FILES})
 #source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/src            PREFIX "src"    FILES ${SOURCES_FILES})
